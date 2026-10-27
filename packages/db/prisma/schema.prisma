@@ -10,7 +10,7 @@ generator pothos {
 }
 datasource db {
   provider = "postgresql"
-  schemas = ["default-schema"]
+  schemas = ["default-schema","karan-cloudworx"]
 }
 
 // User of this sample_app.
@@ -34,12 +34,12 @@ model Blog {
   id      Int     @id @default(autoincrement())
   title   String
   tagLine String?
-  body String
+  body    String
 
   published Boolean @default(false)
 
   author User @relation(fields: [userId], references: [id])
-  userId Int  @map("user_id")
+  userId    Int  @map("user_id")
 
   publishedAt DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -50,12 +50,12 @@ model Blog {
 
 /// Product listed in the store
 model Product {
-  id      Int     @id @default(autoincrement())
-  name   String
+  id        Int     @id @default(autoincrement())
+  name      String
   summary   String
   description   String
 
-  price Int
+  price     Int
 
   stockCount Int
 
@@ -63,4 +63,272 @@ model Product {
 
   @@map("product")
   @@schema("default-schema")
+}
+ 
+// User of this sample_app.
+model User1 {
+  id            Int    @id @default(autoincrement())
+  email         String @unique
+  passwordHash  String
+  role          UserRole  // Enum to easily distinguish types at a glance
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations (Optional/Nullable depending on the role)
+  buyerProfile    Buyer?
+  supplierProfile Supplier?
+  salesProfile SalesEngineer?
+
+  @@index([email])
+  @@map("users1")
+  @@schema("karan-cloudworx")
+}
+
+// ==========================================
+// 1. IDENTITY & AUTHORIZATION ENUMS
+// ==========================================
+
+enum UserRole {
+  BUYER
+  SUPPLIER
+  SALES_ENGINEER
+  ADMIN
+  @@schema("karan-cloudworx")
+}
+
+enum COUNTRY {
+  VIETNAM 
+  INDIA 
+  CHINA 
+  GLOBAL
+  @@schema("karan-cloudworx")
+	@@map("RegionCode")
+}
+
+enum RfqStatus {
+  DRAFT
+  OPEN
+  CLOSED
+  AWARDED
+  @@schema("karan-cloudworx")
+}
+
+enum ComplianceStatus {
+  PENDING
+  VERIFIED
+  FLAGGED
+  @@schema("karan-cloudworx")
+}
+ 
+// ==========================================
+// 3. PROFILE DATA PARADIGMS
+// ==========================================
+
+model Buyer {
+  id              Int    @id @default(autoincrement())
+  userId          Int         @unique
+  user            User1        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name            String
+  
+  // Relations
+  rfqsCreated     Rfq[]       @relation("BuyerToRfq")
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  @@schema("karan-cloudworx")
+}
+
+model Supplier {
+  id               Int    @id @default(autoincrement())
+  userId           Int              @unique
+  user             User1            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  companyName      String
+  taxId            String           @unique
+  country          COUNTRY  
+  complianceStatus ComplianceStatus @default(PENDING)
+  
+  // Relations
+  bidsSubmitted    Bid[]            @relation("SupplierToBid")
+  
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  @@index([country])
+  @@index([complianceStatus])
+  @@schema("karan-cloudworx")
+}
+
+
+model SalesEngineer {
+  id       Int    @id @default(autoincrement())
+  userId          Int         @unique
+  user            User1       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name            String
+  
+  // Relations
+  layoutsDesigned Layout3D[]  @relation("SEToLayout")
+  
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@schema("karan-cloudworx")
+}
+
+// ==========================================
+// 4. SURFACE 2 SPATIAL LAYOUT DATA
+// ==========================================
+
+model Layout3D {
+  id              Int    @id @default(autoincrement())
+  projectName     String
+  salesEngineerId Int
+  salesEngineer   SalesEngineer  @relation("SEToLayout", fields: [salesEngineerId], references: [id], onDelete: Cascade)
+  
+  // Preserves raw 3D engine canvas nodes, coordinates, electrical grid vectors, and rules
+  sceneGraphData  Json           
+   
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+	@@map("3dLayout")
+  @@schema("karan-cloudworx")
+}
+
+// ==========================================
+// 5. SURFACE 1 COMMERCIAL PIPELINES
+// ==========================================
+
+model Rfq {
+  id              Int    @id @default(autoincrement())
+  title           String
+  description     String?
+  status          RfqStatus      @default(DRAFT)
+  
+  bidClosingDate     DateTime
+  deliveryDeadline   DateTime
+  
+  // Buyer Linkage
+  buyerId         Int
+  buyer           Buyer          @relation("BuyerToRfq", fields: [buyerId],  references: [id], onDelete: Restrict)
+  
+  lineItems     RfqLineItem[]
+
+  // Relations
+  bidsReceived    Bid[]          @relation("RfqToBid")
+  approvals       Approval[]     @relation("RfqToApproval")
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([status])
+  @@schema("karan-cloudworx")
+}
+
+model RfqLineItem {
+  id       Int      @id @default(autoincrement())
+
+  rfqId   Int
+  rfq     Rfq     @relation(fields: [rfqId],  references: [id], onDelete: Restrict)
+
+  partId   Int
+  part     VehiclePart  @relation(fields: [partId],references: [id],onDelete:Cascade)
+  
+  quantity Int  @default(1)
+
+  bidLineItems BidLineItem[]
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@schema("karan-cloudworx")
+	@@map("RfqEntry")
+}
+
+model VehiclePart {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+
+  vehicleModelId  Int
+  vehicleModel VehicleModel @relation(fields: [vehicleModelId],references: [id],onDelete:Cascade)
+
+  rfqLineItems  RfqLineItem[]
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@schema("karan-cloudworx")
+}
+
+model VehicleModel {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+
+  Parts   VehiclePart[]
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@schema("karan-cloudworx")
+}
+
+model Bid {
+  id              Int            @id @default(autoincrement())
+
+  technicalNotes  String?
+  
+  bidLineItems BidLineItem[]
+
+  // Foreign Keys
+  rfqId           Int
+  rfq             Rfq            @relation("RfqToBid", fields: [rfqId], references: [id],  onDelete: Cascade)
+  supplierId      Int
+  supplier        Supplier       @relation("SupplierToBid", fields: [supplierId], references: [id],  onDelete: Restrict)
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Enforces that a specific supplier can only deploy one holistic bid execution strategy per RFQ
+  @@unique([rfqId, supplierId]) 
+  @@schema("karan-cloudworx")
+}
+
+model BidLineItem {
+  id              Int            @id @default(autoincrement())
+
+  ///  the total elapsed time between the placing of the order and receiving the finished goods.
+  leadTimeWeeks   Int
+  totalAmount     Decimal        @db.Decimal(12, 2)
+  technicalNotes  String?
+
+  approvalId  Int    
+  approval    Approval  @relation(fields: [approvalId], references: [id],  onDelete: Restrict)
+
+  bidId         Int      
+  bid           Bid        @relation(fields: [bidId], references: [id],  onDelete: Cascade)
+
+  rfqLineItemId   Int
+  rfqLineItem     RfqLineItem    @relation(fields: [rfqLineItemId], references: [id],  onDelete: Cascade)
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  @@schema("karan-cloudworx")
+}
+
+model Approval {
+  id              Int            @id @default(autoincrement())
+  decision        Boolean        // True = Approved & PO Issued, False = Rejected
+  justification   String?        // Required text field inside Surface 1 if choosing non-optimal bids
+  
+  // Foreign Keys
+  rfqId           Int
+  rfq             Rfq            @relation("RfqToApproval", fields: [rfqId],  references: [id], onDelete: Cascade)
+  
+  bidLineItems BidLineItem[]
+  
+  createdAt       DateTime       @default(now())
+  @@schema("karan-cloudworx")
 }

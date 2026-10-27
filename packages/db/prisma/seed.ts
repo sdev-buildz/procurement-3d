@@ -4,6 +4,7 @@
  */
 import { logger } from '@packages/logger'
 import { prisma } from './prisma'
+import { seed1 } from './seed-logics.ts/seed1'
 
 async function seedProducts() {
   // Start from an empty table so you can run this file more than once.
@@ -79,6 +80,7 @@ async function seedProducts() {
 
 async function main() {
   await seedProducts()
+  await seed1()
 }
 
 main().catch((error) => {

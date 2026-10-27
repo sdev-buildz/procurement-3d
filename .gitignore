@@ -1,0 +1,24 @@
+
+# Playwright
+**/node_modules
+**/test-results/
+**/test-reports/
+**/playwright-report/
+**/blob-report/
+**/playwright/.cache/
+**/playwright/.auth/
+**/dist
+**/docs
+**/dist-tsc
+**/.turbo
+
+**/*.env*
+!.env.example
+
+**/generated*
+
+**/coverage
+
+**/graphql.schema.json
+
+*.code-workspace

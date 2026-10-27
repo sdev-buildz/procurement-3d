@@ -1,0 +1,55 @@
+{
+  "name": "@packages/web-app-utils",
+  "version": "0.0.0",
+  "description": "Utilities to create web apps containing server and client. Tech Stack: webpack, React, Node.ts, GraphQL Yoga, Pothos and Apollo Client.",
+  "private": true,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./webpack-config": {
+      "types": "./src/node/webpack.config.ts",
+      "default": "./src/node/webpack.config.ts"
+    },
+    "./shared": {
+      "types": "./src/shared/index.ts",
+      "default": "./src/shared/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
+    "@graphql-codegen/cli": "^7.4.0",
+    "@graphql-codegen/typescript": "^6.1.0",
+    "@packages/logger": "workspace:*",
+    "babel-loader": "^10.1.1",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "copy-webpack-plugin": "^14.0.0",
+    "css-loader": "^7.1.5",
+    "css-minimizer-webpack-plugin": "^8.0.0",
+    "graphql": "catalog:",
+    "graphql-ws": "^6.2.1",
+    "graphql-yoga": "^5.21.3",
+    "html-webpack-plugin": "^5.6.8",
+    "mini-css-extract-plugin": "^2.10.2",
+    "postcss-loader": "^8.2.1",
+    "postcss-preset-env": "^11.3.2",
+    "style-loader": "^4.0.0",
+    "ts-morph": "catalog:",
+    "typescript": "catalog:",
+    "uWebSockets.js": "catalog:",
+    "webpack": "catalog:",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.6"
+  }
+}

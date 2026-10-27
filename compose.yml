@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:18 # Use a specific PostgreSQL image
+    ports:
+      - name: db-port
+        target: '${POSTGRES_TARGET_PORT:-5432}'
+        # host_ip: 127.0.0.1
+        published: '${POSTGRES_PUBLISHED_PORT:-5434}'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      # Persistant storgae volume using bind mount
+      - ${PG_VOLUME_HOST_PATH:-C:\projects\postgres-volumes}:${PG_VOLUME_CONTAINER_PATH:-/var/lib/postgresql/18/docker}
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 2s
+      timeout: 10s
+      retries: 5

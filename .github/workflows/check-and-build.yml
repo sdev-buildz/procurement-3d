@@ -1,0 +1,28 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        node: [22, 24]
+    runs-on: ubuntu-latest
+    steps:
+      # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+        # v2
+      - uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2
+        with:
+          runtime: node@${{ matrix.node }}
+          version: 11.27.0
+
+      - run: pnpm exec prettier --write ./pnpm-lock.yaml
+
+      - run: pnpm run check:lite

@@ -1,0 +1,8 @@
+{
+  "extends": ["../../../../tsconfig.references.base.json"],
+  "compilerOptions": {
+    "lib": ["ES2025"],
+    "outDir": "./dist-tsc"
+  },
+  "include": ["./**/*.ts"]
+}

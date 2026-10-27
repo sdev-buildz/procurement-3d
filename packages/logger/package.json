@@ -1,0 +1,23 @@
+{
+  "name": "@packages/logger",
+  "version": "1.0.0",
+  "description": "Custom Winston logger for backend. ",
+  "private": true,
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "build-tsc": "tsc --composite false --declaration true",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "winston": "^3.19.0",
+    "winston-console-format": "^1.0.8"
+  }
+}

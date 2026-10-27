@@ -1,5 +1,7 @@
+import { useReactiveVar } from '@apollo/client/react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
+import { LoginPage } from './components/LoginPage/LoginPage'
 import { NavBar } from './components/NavBar/NavBar'
 import { ProductsPage } from './components/ProductsPage/ProductsPage'
 import { AppContext, defaultAppContext } from './contexts/AppContext'
@@ -38,13 +40,15 @@ const theme = createTheme({
  * It includes the whole App Layout.
  */
 export function App() {
+  const isLoggedIn = useReactiveVar(defaultAppContext.isLoggedIn)
+
   return (
     <div className='app'>
       <ThemeProvider theme={theme} defaultMode='dark'>
         <CssBaseline enableColorScheme />
         <AppContext.Provider value={defaultAppContext}>
           <NavBar />
-          <ProductsPage />
+          {isLoggedIn ? <ProductsPage /> : <LoginPage />}
         </AppContext.Provider>
       </ThemeProvider>
     </div>

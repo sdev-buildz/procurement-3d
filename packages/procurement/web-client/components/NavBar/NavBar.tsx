@@ -1,5 +1,4 @@
 import { useReactiveVar } from '@apollo/client/react'
-import LoginIcon from '@mui/icons-material/Login'
 import LogoutIcon from '@mui/icons-material/Logout'
 import AppBar from '@mui/material/AppBar'
 import Avatar from '@mui/material/Avatar'
@@ -65,14 +64,19 @@ export const NavBar = () => {
         ) : (
           <></>
         )}
-        <Button
-          color='tertiary'
-          variant='outlined'
-          onClick={() => isLoggedIn(!isLoggedIn())}
-          startIcon={isLoggedInState ? <LoginIcon /> : <LogoutIcon />}
-        >
-          {isLoggedInState ? 'Log out' : 'Log In'}
-        </Button>
+        {isLoggedInState ? (
+          <Button
+            color='tertiary'
+            variant='outlined'
+            onClick={() => {
+              window.localStorage.removeItem('authToken')
+              isLoggedIn(false)
+            }}
+            startIcon={<LogoutIcon />}
+          >
+            Log out
+          </Button>
+        ) : null}
       </Toolbar>
     </AppBar>
   )

@@ -1,5 +1,6 @@
 import type { ApolloCache } from '@apollo/client'
 import { ApolloClient, ApolloLink, HttpLink } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { LocalState } from '@apollo/client/local-state'
 import { sharedConfig } from '@packages/web-app-utils/shared'
@@ -17,6 +18,20 @@ const wssUrl = `wss://${sharedConfig.graphqlEndpoint.substring(sharedConfig.grap
 
 const httpLink = new HttpLink({
   uri: sharedConfig.graphqlEndpoint,
+})
+
+const authLink = setContext((_, { headers }) => {
+  const token =
+    typeof window === 'undefined'
+      ? null
+      : window.localStorage.getItem('authToken')
+
+  return {
+    headers: {
+      ...headers,
+      ...(token ? { authorization: 'Bearer '.concat(token) } : {}),
+    },
+  }
 })
 
 const sharedClient = createSharedClient({
@@ -59,7 +74,11 @@ const splitLink = ApolloLink.split(
  * @see Cache {@link inMemoryStore}
  */
 const apolloClientOriginal = new ApolloClient({
-  link: ApolloLink.from([stateSyncLink as unknown as ApolloLink, splitLink]),
+  link: ApolloLink.from([
+    authLink,
+    stateSyncLink as unknown as ApolloLink,
+    splitLink,
+  ]),
   cache: inMemoryStore as unknown as ApolloCache,
   localState: new LocalState(),
 })

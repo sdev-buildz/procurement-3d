@@ -34,7 +34,7 @@
       "path": "./packages/web-app-utils"
     },
     {
-      "path": "./packages/web-app"
+      "path": "./packages/procurement"
     }
   ],
   "exclude": ["**/dist*", "**/dist-tsc"],

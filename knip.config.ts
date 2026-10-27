@@ -33,7 +33,7 @@ const config: KnipConfig = {
         config: ['./src/node/graphql-builder/codegenKnip.ts'],
       },
     },
-    'packages/web-app': webAppWorkspaceConfig,
+    'packages/procurement': webAppWorkspaceConfig,
     'packages/db': {
       ignoreDependencies: [
         '@prisma/client',

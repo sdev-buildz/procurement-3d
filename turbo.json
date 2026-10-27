@@ -9,7 +9,7 @@
 
     "//#build:main": {
       "description": "bundles the web-client.",
-      "outputs": ["./packages/web-app/dist/**"],
+      "outputs": ["./packages/procurement/dist/**"],
       "inputs": [
         "$TURBO_DEFAULT$",
         "!.github/**",
@@ -53,7 +53,7 @@
         "//#build:gql-types",
         "//#prettier:pnpm-lock"
       ],
-      "outputs": ["./packages/web-app/dist/**"]
+      "outputs": ["./packages/procurement/dist/**"]
     },
 
     "//#dev": {

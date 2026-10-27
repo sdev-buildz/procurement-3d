@@ -1,13 +1,7 @@
 {
   "extends": ["../tsconfig.json"],
   "compilerOptions": {
-    "lib": ["ES2025"],
-    "outDir": "./dist"
+    "outDir": "./dist-tsc"
   },
-  "references": [
-    {
-      "path": "../../../packages/logger"
-    }
-  ],
   "include": ["./**/*.ts"]
 }

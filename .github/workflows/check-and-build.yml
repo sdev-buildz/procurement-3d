@@ -17,8 +17,10 @@ jobs:
         # v2
       - uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2
         with:
-          runtime: node@$24
+          runtime: node@24
           version: 11.27.0
+
+      - run: pnpm i
 
       - run: pnpm exec prettier --write ./pnpm-lock.yaml
 

@@ -1,9 +1,24 @@
 import { logger } from '@packages/logger'
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 import { serverConfig } from '../serverConfig'
 
 // The key must be 32 bytes (256 bits) for AES-256
 const key = Buffer.from(serverConfig.auth.jweKey)
+
+/**
+ * Encrypts a payload into the bearer-token format accepted by decryptJwe.
+ */
+export function encryptJwe(plaintext: string): string {
+  const iv = crypto.randomBytes(12)
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv)
+  const ciphertext = Buffer.concat([
+    cipher.update(plaintext, 'utf8'),
+    cipher.final(),
+  ])
+  const authTag = cipher.getAuthTag()
+
+  return Buffer.concat([iv, authTag, ciphertext]).toString('base64')
+}
 
 /**
  * Decrypts the given JWE token.

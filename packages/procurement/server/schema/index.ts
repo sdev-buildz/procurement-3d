@@ -1,4 +1,5 @@
 import { builder } from './lib/builder'
+import './auth'
 import './products'
 
 /**

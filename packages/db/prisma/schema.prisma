@@ -70,6 +70,7 @@ model User1 {
   id            Int    @id @default(autoincrement())
   email         String @unique
   passwordHash  String
+  salt          String
   role          UserRole  // Enum to easily distinguish types at a glance
 
   createdAt DateTime @default(now())

@@ -14,6 +14,12 @@ import type {
 } from '../../generated/prisma-client'
 import { prisma } from '../prisma'
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const TEST_PASSWORD_HASH =
+  'a53a16059083aae76c5279affa9368e134f3eb024031daed7be72b095c28ce3d031f45ad58867a40613bc928f8c87867de9ed270b808360937469f9aeed54e2b'
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const TEST_PASSWORD_SALT = 'a0a64cf9260d3676ca161c1b43c9b7e2'
+
 const userSeeds = [
   { email: 'buyer1@example.test', role: 'BUYER' },
   { email: 'buyer2@example.test', role: 'BUYER' },
@@ -147,11 +153,16 @@ async function seedUser1(): Promise<User1[]> {
     userSeeds.map(({ email, role }) =>
       prisma.user1.upsert({
         where: { email },
-        update: { role },
+        update: {
+          role,
+          passwordHash: TEST_PASSWORD_HASH,
+          salt: TEST_PASSWORD_SALT,
+        },
         create: {
           email,
           role,
-          passwordHash: 'seed-only-placeholder-not-a-login-credential',
+          passwordHash: TEST_PASSWORD_HASH,
+          salt: TEST_PASSWORD_SALT,
         },
       })
     )

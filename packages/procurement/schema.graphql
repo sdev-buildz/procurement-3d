@@ -4,10 +4,24 @@ input CheckoutInput {
   id: ID!
 }
 
+type LoginResult {
+  token: String
+  user: LoginUser
+}
+
+type LoginUser {
+  email: String
+  id: ID
+  role: UserRole
+}
+
 """The schema root for mutating data"""
 type Mutation {
   """Checkout cart"""
   checkout(cart: [CheckoutInput!]!): [Product!]
+
+  """Authenticate with an email and password."""
+  login(email: String!, password: String!): LoginResult
 }
 
 """A Product"""
@@ -34,4 +48,11 @@ type Query {
 type Subscription {
   """Updates the available stock in real-time."""
   productUpdates: [Product!]
+}
+
+enum UserRole {
+  ADMIN
+  BUYER
+  SALES_ENGINEER
+  SUPPLIER
 }

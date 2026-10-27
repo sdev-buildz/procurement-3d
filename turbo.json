@@ -20,12 +20,6 @@
         "!**/*.graphql"
       ]
     },
-
-    "build:gql-types": {
-      "description": "Generates gql sdl files and gql types from server schemas.",
-      "outputs": ["**/*.graphql"],
-      "inputs": ["packages/server/src/schema", "pnpm-lock.yaml", "package.json"]
-    },
     "prisma:generate": {
       "description": "Generates the Prisma client and Pothos types.",
       "outputs": ["generated/**"]

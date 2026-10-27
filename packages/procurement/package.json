@@ -14,8 +14,8 @@
   "dependencies": {
     "@apollo/client": "catalog:",
     "@emotion/react": "^11.14.0",
-    "@fontsource/roboto": "^5.3.0",
     "@emotion/styled": "^11.14.1",
+    "@fontsource/roboto": "^5.3.0",
     "@mui/icons-material": "^9.4.0",
     "@mui/material": "^9.4.0",
     "@mui/utils": "^9.4.0",
@@ -31,11 +31,12 @@
     "graphql-yoga": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-router": "^8.5.0",
     "uWebSockets.js": "catalog:"
   },
   "devDependencies": {
-    "@packages/web-app-utils": "workspace:*",
     "@packages/db": "workspace:*",
+    "@packages/web-app-utils": "workspace:*",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "concurrently": "^10.0.5",

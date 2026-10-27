@@ -1,11 +1,13 @@
 import { makeVarSynced, type ReactiveVarSynced } from 'apollo-state-sync'
 import { createContext } from 'react'
+import type { AuthenticatedUser } from '../util/auth'
 
 /**
  * Type for the {@link AppContext}
  */
 export interface AppContextType {
   isLoggedIn: ReactiveVarSynced<boolean>
+  user: ReactiveVarSynced<AuthenticatedUser | null>
 }
 
 /**
@@ -14,6 +16,7 @@ export interface AppContextType {
  */
 export const defaultAppContext: AppContextType = {
   isLoggedIn: makeVarSynced(false, 'isLoggedIn'),
+  user: makeVarSynced<AuthenticatedUser | null>(null, 'authenticatedUser'),
 }
 
 /**

@@ -9,6 +9,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { visuallyHidden } from '@mui/utils'
 import { useContext } from 'react'
+import { useNavigate } from 'react-router'
 import { AppContext } from '../../contexts/AppContext'
 import { ColorModeSwitch } from './ColorModeSwitch'
 
@@ -16,8 +17,9 @@ import { ColorModeSwitch } from './ColorModeSwitch'
  * The top NavBar component.
  */
 export const NavBar = () => {
-  const { isLoggedIn } = useContext(AppContext)
+  const { isLoggedIn, user } = useContext(AppContext)
   const isLoggedInState = useReactiveVar(isLoggedIn)
+  const navigate = useNavigate()
 
   const { mode, setMode, systemMode } = useColorScheme()
 
@@ -70,7 +72,9 @@ export const NavBar = () => {
             variant='outlined'
             onClick={() => {
               window.localStorage.removeItem('authToken')
+              user(null)
               isLoggedIn(false)
+              navigate('/login', { replace: true })
             }}
             startIcon={<LogoutIcon />}
           >

@@ -1,0 +1,10 @@
+{
+  "extends": ["../tsconfig.json"],
+  "compilerOptions": {
+    "lib": ["ES2025"],
+    "types": ["vitest/globals", "node"],
+    "outDir": "./dist-tsc"
+  },
+  "references": [{ "path": "../" }],
+  "include": ["./**/*.ts"]
+}

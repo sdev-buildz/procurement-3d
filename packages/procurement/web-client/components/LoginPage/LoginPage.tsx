@@ -13,7 +13,9 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import type { Mutation } from '@types-gen-react-apollo'
 import { useContext, useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router'
 import { AppContext } from '../../contexts/AppContext'
+import { getRoleHomePath, isUserRole } from '../../util/auth'
 
 const loginMutation = gql`
   mutation Login($email: String!, $password: String!) {
@@ -32,15 +34,30 @@ const loginMutation = gql`
  * Presents the login form and authenticates the user with the GraphQL API.
  */
 export const LoginPage = () => {
-  const { isLoggedIn } = useContext(AppContext)
+  const { isLoggedIn, user } = useContext(AppContext)
+  const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [login, { loading, error }] = useMutation(loginMutation, {
     onCompleted: ({ login: result }) => {
-      if (!result?.token) return
+      const loginUser = result?.user
+      if (
+        !result?.token ||
+        typeof loginUser?.id !== 'string' ||
+        typeof loginUser.email !== 'string' ||
+        !isUserRole(loginUser.role)
+      ) {
+        return
+      }
 
       window.localStorage.setItem('authToken', result.token)
+      user({
+        id: loginUser.id,
+        email: loginUser.email,
+        role: loginUser.role,
+      })
       isLoggedIn(true)
+      navigate(getRoleHomePath(loginUser.role), { replace: true })
     },
   })
 

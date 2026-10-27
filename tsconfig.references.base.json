@@ -1,0 +1,14 @@
+{
+  "extends": ["./tsconfig.json"],
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    // "declaration" is true by default with composite:true.
+    // But to build from inside workspace folders, set composite to false (maybe from cli).
+    "declaration": true,
+    "declarationMap": true,
+    "rewriteRelativeImportExtensions": true,
+    "outDir": "./dist-tsc"
+  },
+  "include": []
+}

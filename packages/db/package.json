@@ -1,0 +1,38 @@
+{
+  "name": "@packages/db",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The database using Prisma.",
+  "type": "module",
+  "exports": {
+    "./prisma": {
+      "types": "./prisma/prisma.ts",
+      "default": "./prisma/prisma.ts"
+    },
+    "./pothos-prisma-types": {
+      "types": "./generated/pothos-prisma-types.ts",
+      "default": "./generated/pothos-prisma-types.ts"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:seed": "prisma db seed",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate-dev:create-only": "prisma migrate dev --create-only",
+    "prisma:migrate-dev": "prisma migrate dev",
+    "prisma:migrate-prod": "prisma migrate deploy",
+    "prisma:migrate-reset": "prisma migrate reset"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.8",
+    "@prisma/adapter-pg": "^7.2.0"
+  },
+  "devDependencies": {
+    "@packages/logger": "workspace:*",
+    "@pothos/plugin-prisma": "^4.14.2",
+    "@prisma/client": "^7.2.0",
+    "prisma": "^7.2.0",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,6 @@
+# Prettier automatically keeps track of the .gitignore file. 
+# So paths in .gitignore are already ignored by Prettier.
+
+**.graphql
+packages/migration/**/test-source-files
+.changeset/*.md

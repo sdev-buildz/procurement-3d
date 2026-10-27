@@ -1,0 +1,111 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+
+  "tasks": {
+    "//#prettier:check": {
+      "dependsOn": ["//#turbo-build"]
+    },
+    "//#lint": {},
+
+    "//#build:main": {
+      "description": "bundles the web-client.",
+      "outputs": ["./packages/web-app/dist/**"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!.github/**",
+        "!.vscode/**",
+        "!.changeset/**",
+        "!e2e/**",
+        "!*.md",
+        "!**/*.graphql"
+      ]
+    },
+
+    "build:gql-types": {
+      "description": "Generates gql sdl files and gql types from server schemas.",
+      "outputs": ["**/*.graphql"],
+      "inputs": ["packages/server/src/schema", "pnpm-lock.yaml", "package.json"]
+    },
+    "prisma:generate": {
+      "description": "Generates the Prisma client and Pothos types.",
+      "outputs": ["generated/**"]
+    },
+    "//#build:gql-types": {
+      "description": "Generates GraphQL types through the root build script.",
+      "dependsOn": ["@packages/db#prisma:generate"],
+      "outputs": [
+        "packages/web-app/generated/**",
+        "packages/web-app/schema.graphql"
+      ]
+    },
+
+    "//#prettier:pnpm-lock": {
+      "description": "Formats pnpm-lock.yaml file.",
+      "dependsOn": ["//#build:main", "//#build:gql-types"],
+      "outputs": ["pnpm-lock.yaml"],
+      "inputs": ["pnpm-lock.yaml"]
+    },
+
+    "//#turbo-build": {
+      "description": "Performs all the build tasks.",
+      "dependsOn": [
+        "//#build:main",
+        "//#build:gql-types",
+        "//#prettier:pnpm-lock"
+      ],
+      "outputs": ["./packages/web-app/dist/**"]
+    },
+
+    "//#dev": {
+      "dependsOn": ["^dev"]
+    },
+
+    "//#type-check": {
+      "description": "Checks the TypeScript types.",
+      "dependsOn": ["//#turbo-build"],
+      "outputs": ["**/dist-tsc/**"]
+    },
+
+    "//#coverage": {
+      "dependsOn": ["//#turbo-build"],
+      "outputs": ["./coverage/**"],
+      "persistent": true
+    },
+    "//#coverage:ci": {
+      "dependsOn": ["//#turbo-build"],
+      "outputs": ["./coverage/**"]
+    },
+    "//#knip": {
+      "dependsOn": ["//#turbo-build"]
+    },
+    "//#knip:ci": {
+      "dependsOn": ["//#turbo-build"]
+    },
+    "//#e2e": {
+      "dependsOn": ["//#turbo-build"],
+      "persistent": true,
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!.github/**",
+        "!.vscode/**",
+        "!.changeset/**",
+        "**/*.md"
+      ]
+    },
+    "//#e2e:ci": {
+      "dependsOn": ["//#turbo-build"],
+      "persistent": true,
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "!.github/**",
+        "!.vscode/**",
+        "!.changeset/**",
+        "**/*.md"
+      ]
+    },
+    "//#docs": {
+      "dependsOn": ["//#turbo-build"],
+      "outputs": ["./docs/api-reference"]
+    }
+  }
+}

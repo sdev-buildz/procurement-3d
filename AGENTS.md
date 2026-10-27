@@ -1,0 +1,6 @@
+- To run checks use "pnpm check:lite".
+- Since "pnpm check" consumes more time and resources, use it only when absolutely necessary.
+- Knip doesn't throw when an unused dependency acts as a override. So when a dependency is not needed after making changes, make sure to remove it from package.json.
+- Try to use strict TypeScript types.
+- Unless explicitly told, do not edit already existing commits using git features such as interactive rebase, or "git commit --amend".
+- After fixing bugs or adding new features, add unit tests as appropriate.

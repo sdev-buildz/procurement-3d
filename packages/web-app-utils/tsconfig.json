@@ -1,0 +1,22 @@
+{
+  "extends": ["../../tsconfig.references.base.json"],
+  "compilerOptions": {
+    "outDir": "./dist-tsc",
+    "paths": {
+      "@shared/*": ["./src/shared/*"],
+      "@shared": ["./src/shared"]
+    }
+  },
+  "references": [
+    {
+      "path": "./src/node"
+    },
+    {
+      "path": "./src/browser"
+    },
+    {
+      "path": "./src/shared"
+    }
+  ],
+  "include": ["./**/*.ts"]
+}

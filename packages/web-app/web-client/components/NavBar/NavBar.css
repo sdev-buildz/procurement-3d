@@ -1,0 +1,11 @@
+#nav-bar {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  outline: 1px solid rgb(76, 0, 255);
+  color: white;
+  background-color: var(--grey-darker);
+}

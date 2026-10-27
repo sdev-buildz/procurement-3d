@@ -1,0 +1,37 @@
+"""Checkout input"""
+input CheckoutInput {
+  count: Int!
+  id: ID!
+}
+
+"""The schema root for mutating data"""
+type Mutation {
+  """Checkout cart"""
+  checkout(cart: [CheckoutInput!]!): [Product!]
+}
+
+"""A Product"""
+type Product {
+  description: String
+  id: ID
+  imageUrl: String
+  name: String
+  price: Int
+  stockCount: Int
+  summary: String
+}
+
+"""The schema root for fetching data."""
+type Query {
+  """Fetch a product by id."""
+  productById(id: ID!): Product
+
+  """List of available products."""
+  products: [Product!]
+}
+
+"""The schema root for subscriptions"""
+type Subscription {
+  """Updates the available stock in real-time."""
+  productUpdates: [Product!]
+}

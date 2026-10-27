@@ -1,0 +1,47 @@
+{
+  "name": "@examples/web-app",
+  "version": "0.0.0",
+  "private": "true",
+  "description": "A full-stack e-commerce application featuring authentication (signup/login), shopping cart management, and checkout processing, with real-time product count updates driven by WebSockets.",
+  "type": "module",
+  "scripts": {
+    "start-server": "concurrently \"tsx server/index.ts\" \"tsx ./buildGql.ts\"",
+    "start-server:watch": "concurrently \"tsx --watch server/index.ts\" \"tsx --watch ./buildGql.ts\"",
+    "start-react:watch": "tsx ./webpack/webpack.dev-server.ts",
+    "build:react": " ",
+    "build:gql-types": "tsx ./buildGql.ts"
+  },
+  "dependencies": {
+    "@apollo/client": "catalog:",
+    "@emotion/react": "^11.14.0",
+    "@fontsource/roboto": "^5.3.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.4.0",
+    "@mui/material": "^9.4.0",
+    "@mui/utils": "^9.4.0",
+    "@packages/logger": "workspace:*",
+    "@pothos/core": "catalog:",
+    "@pothos/plugin-prisma": "^4.14.2",
+    "apollo-shared-ws": "^1.0.2",
+    "apollo-state-sync": "^1.1.1",
+    "colorthief": "^3.5.0",
+    "graphql": "catalog:",
+    "graphql-shared-ws": "^1.0.3",
+    "graphql-ws": "^6.2.1",
+    "graphql-yoga": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "uWebSockets.js": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/web-app-utils": "workspace:*",
+    "@packages/db": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "concurrently": "^10.0.5",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "webpack": "catalog:",
+    "webpack-cli": "^6.0.1"
+  }
+}

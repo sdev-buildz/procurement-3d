@@ -1,6 +1,7 @@
 import { gql, type TypedDocumentNode } from '@apollo/client'
 import { useQuery } from '@apollo/client/react'
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -45,6 +46,7 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
               leadTimeWeeks
               technicalNotes
               totalAmount
+              isApproved
               bid {
                 supplier {
                   id
@@ -52,11 +54,6 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
                   country
                   name
                 }
-              }
-              approval {
-                id
-                decision
-                justification
               }
             }
           }
@@ -127,7 +124,14 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
                   {rfqLineItem.part?.vehicleModel?.name}
                 </TableCell>
                 {rfqLineItem.bidLineItems?.map((bidLineItem) => (
-                  <TableCell key={bidLineItem.id}>
+                  <TableCell
+                    key={bidLineItem.id}
+                    sx={{
+                      ...(bidLineItem.isApproved && {
+                        outline: '1px solid blue',
+                      }),
+                    }}
+                  >
                     {bidLineItem.totalAmount}
                   </TableCell>
                 ))}
@@ -136,6 +140,10 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Button type='button' variant={'outlined'}>
+        Approve Selections
+      </Button>
     </section>
   )
 }

@@ -1,13 +1,3 @@
-"""An Approval to a bid line item"""
-type Approval {
-  bidLineItems: [BidLineItem!]
-  decision: Boolean
-  id: ID
-  justification: String
-  rfq: Rfq
-  rfqId: ID
-}
-
 """A Bid"""
 type Bid {
   bidLineItems: [BidLineItem!]
@@ -21,10 +11,10 @@ type Bid {
 
 """A Bid LineItem"""
 type BidLineItem {
-  approval: Approval
   bid: Bid
   bidId: ID
   id: ID
+  isApproved: Boolean
   leadTimeWeeks: Int
   rfqLineItem: RfqLineItem
   rfqLineItemId: ID

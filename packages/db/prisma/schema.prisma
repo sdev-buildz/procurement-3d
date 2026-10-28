@@ -222,7 +222,6 @@ model Rfq {
 
   // Relations
   bidsReceived    Bid[]          @relation("RfqToBid")
-  approvals       Approval[]     @relation("RfqToApproval")
   
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
@@ -307,8 +306,7 @@ model BidLineItem {
   totalAmount     Decimal        @db.Decimal(12, 2)
   technicalNotes  String?
 
-  approvalId  Int    
-  approval    Approval  @relation(fields: [approvalId], references: [id],  onDelete: Restrict)
+  isApproved      Boolean @default(false)
 
   bidId         Int      
   bid           Bid        @relation(fields: [bidId], references: [id],  onDelete: Cascade)
@@ -318,20 +316,5 @@ model BidLineItem {
 
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
-  @@schema("karan-cloudworx")
-}
-
-model Approval {
-  id              Int            @id @default(autoincrement())
-  decision        Boolean        // True = Approved & PO Issued, False = Rejected
-  justification   String?        // Required text field inside Surface 1 if choosing non-optimal bids
-  
-  // Foreign Keys
-  rfqId           Int
-  rfq             Rfq            @relation("RfqToApproval", fields: [rfqId],  references: [id], onDelete: Cascade)
-  
-  bidLineItems BidLineItem[]
-  
-  createdAt       DateTime       @default(now())
   @@schema("karan-cloudworx")
 }

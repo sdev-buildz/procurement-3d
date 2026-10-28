@@ -1,6 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc -- Internal sample-data helpers are self-describing. */
 import type {
-  Approval,
   Bid,
   BidLineItem,
   Buyer,
@@ -318,7 +317,6 @@ async function seedRfqLineItem(
     },
   })
   await prisma.bid.deleteMany({ where: { rfqId: { in: rfqIds } } })
-  await prisma.approval.deleteMany({ where: { rfqId: { in: rfqIds } } })
   await prisma.rfqLineItem.deleteMany({ where: { rfqId: { in: rfqIds } } })
 
   const lineItemSeeds = [
@@ -480,47 +478,11 @@ function createBidLineSeeds(
   return lineSeeds
 }
 
-async function seedApproval(bidLineSeeds: BidLineSeed[]): Promise<Approval[]> {
-  const selectedApprovals = new Map<number, number>()
-
-  for (const rfqId of new Set(bidLineSeeds.map(({ rfqId }) => rfqId))) {
-    const indices = bidLineSeeds.flatMap((seed, index) =>
-      seed.rfqId === rfqId ? [index] : []
-    )
-    const selectedIndex = requireRecord(
-      indices[Math.floor(Math.random() * indices.length)],
-      `bid line for RFQ ${rfqId}`
-    )
-    selectedApprovals.set(rfqId, selectedIndex)
-  }
-
-  return Promise.all(
-    bidLineSeeds.map((seed, index) =>
-      prisma.approval.create({
-        data: {
-          rfqId: seed.rfqId,
-          decision: selectedApprovals.get(seed.rfqId) === index,
-          justification:
-            selectedApprovals.get(seed.rfqId) === index
-              ? 'Selected as a sample approved bid.'
-              : 'Sample bid not selected for award.',
-        },
-      })
-    )
-  )
-}
-
 async function seedBidLineItem(
-  bidLineSeeds: BidLineSeed[],
-  approvals: Approval[]
+  bidLineSeeds: BidLineSeed[]
 ): Promise<BidLineItem[]> {
   return Promise.all(
     bidLineSeeds.map((seed, index) => {
-      const approval = requireRecord(
-        approvals[index],
-        `approval for bid line ${index + 1}`
-      )
-
       return prisma.bidLineItem.create({
         data: {
           leadTimeWeeks: seed.leadTimeWeeks,
@@ -528,7 +490,6 @@ async function seedBidLineItem(
           technicalNotes: seed.technicalNotes,
           bidId: seed.bidId,
           rfqLineItemId: seed.rfqLineItemId,
-          approvalId: approval.id,
         },
       })
     })
@@ -549,6 +510,5 @@ export async function seed1(): Promise<void> {
   const lineItems = await seedRfqLineItem(rfqs, parts)
   const bids = await seedBid(rfqs, suppliers)
   const bidLineSeeds = createBidLineSeeds(rfqs, lineItems, bids, suppliers)
-  const approvals = await seedApproval(bidLineSeeds)
-  await seedBidLineItem(bidLineSeeds, approvals)
+  await seedBidLineItem(bidLineSeeds)
 }

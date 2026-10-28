@@ -201,26 +201,11 @@ export const BidLineItemRef: PrismaObjectRef<
     leadTimeWeeks: t.exposeInt('leadTimeWeeks', { nullable: true }),
     totalAmount: t.exposeInt('totalAmount', { nullable: true }),
 
+    isApproved: t.exposeBoolean('isApproved', { nullable: true }),
+
     technicalNotes: t.exposeString('technicalNotes', { nullable: true }),
 
     rfqLineItem: t.relation('rfqLineItem'),
     rfqLineItemId: t.exposeID('rfqLineItemId', { nullable: true }),
-
-    approval: t.relation('approval'),
-  }),
-})
-
-export const ApprovalRef: PrismaObjectRef<
-  PothosSchemaTypes.ExtendDefaultTypes<CustomSchemaTypes>,
-  PrismaTypes['Approval']
-> = builder.prismaObject('Approval', {
-  description: 'An Approval to a bid line item',
-  fields: (t) => ({
-    id: t.exposeID('id'),
-    decision: t.exposeBoolean('decision'),
-    justification: t.exposeString('justification'),
-    rfqId: t.exposeID('rfqId'),
-    rfq: t.relation('rfq'),
-    bidLineItems: t.relation('bidLineItems'),
   }),
 })

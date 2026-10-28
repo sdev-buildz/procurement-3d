@@ -22,6 +22,7 @@
     "@packages/logger": "workspace:*",
     "@pothos/core": "catalog:",
     "@pothos/plugin-prisma": "^4.14.2",
+    "@pothos/plugin-scope-auth": "^4.2.2",
     "apollo-shared-ws": "^1.0.2",
     "apollo-state-sync": "^1.1.1",
     "colorthief": "^3.5.0",

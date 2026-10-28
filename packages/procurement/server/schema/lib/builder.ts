@@ -5,6 +5,7 @@ import type { User1 } from '@packages/db/prisma-client'
 import { sharedConfig } from '@packages/web-app-utils'
 import SchemaBuilder from '@pothos/core'
 import PrismaPlugin from '@pothos/plugin-prisma'
+import ScopeAuthPlugin from '@pothos/plugin-scope-auth'
 import { DateTimeResolver } from 'graphql-scalars'
 import type { pubsub } from '../../util/pubsub'
 
@@ -29,13 +30,29 @@ export type CustomSchemaTypes = {
   }
   PrismaTypes: PrismaTypes
   Context: CustomGraphqlContextType
+  AuthScopes: {
+    // Define the names of your "middleware" guards
+    isLoggedIn: boolean
+    isBuyer: boolean
+    isSupplier: boolean
+    isSalesEngineer: boolean
+  }
 }
 
 /**
  * The Pothos GraphQL schema builder instance.
  */
 export const builder = new SchemaBuilder<CustomSchemaTypes>({
-  plugins: [PrismaPlugin],
+  plugins: [PrismaPlugin, ScopeAuthPlugin],
+  scopeAuth: {
+    // 3. Write the evaluation logic for each scope (your middleware logic)
+    authScopes: async (context) => ({
+      isLoggedIn: !!context.currentUser,
+      isBuyer: context.currentUser?.role === 'BUYER',
+      isSupplier: context.currentUser?.role === 'SUPPLIER',
+      isSalesEngineer: context.currentUser?.role === 'SALES_ENGINEER',
+    }),
+  },
   prisma: {
     client: prisma,
     // This give pothos information about your tables, relations, and indexes to help it generate optimal queries at runtime.

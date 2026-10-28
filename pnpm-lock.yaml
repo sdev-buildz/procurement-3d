@@ -465,6 +465,9 @@ importers:
       '@pothos/plugin-prisma':
         specifier: ^4.14.2
         version: 4.17.0(@pothos/core@4.15.1(graphql@17.0.2))(@prisma/client@7.10.1(@typescript/typescript6@6.0.2)(prisma@7.10.1(@types/node@26.6.5)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(@typescript/typescript6@6.0.2)(magicast@0.5.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)))(graphql@17.0.2)
+      '@pothos/plugin-scope-auth':
+        specifier: ^4.2.2
+        version: 4.2.2(@pothos/core@4.15.1(graphql@17.0.2))(graphql@17.0.2)
       apollo-shared-ws:
         specifier: ^1.0.2
         version: 1.0.2(@apollo/client@4.3.4(graphql-ws@6.4.1(graphql@17.0.2)(ws@8.22.0))(graphql@17.0.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rxjs@7.8.2))(graphql-shared-ws@1.0.3(@typescript/typescript6@6.0.2)(graphql-ws@6.4.1(graphql@17.0.2)(ws@8.22.0)))(ts-morph@28.0.0)
@@ -4598,6 +4601,15 @@ packages:
     peerDependencies:
       '@pothos/core': '*'
       '@prisma/client': '*'
+      graphql: ^16.10.0 || ^17.0.0
+
+  '@pothos/plugin-scope-auth@4.2.2':
+    resolution:
+      {
+        integrity: sha512-do0T2n/UZcZYhqTZhxppZSvzVP0pANadeHgU9O0iKDhrAu1hbXMX+pnx7xcxQxIoBc538ezplEDN77e5f9x8eQ==,
+      }
+    peerDependencies:
+      '@pothos/core': '*'
       graphql: ^16.10.0 || ^17.0.0
 
   '@pothos/selection-mapper@0.1.0':
@@ -15390,6 +15402,11 @@ snapshots:
       '@pothos/selection-mapper': 0.1.0(@pothos/core@4.15.1(graphql@17.0.2))(graphql@17.0.2)
       '@prisma/client': 7.10.1(@typescript/typescript6@6.0.2)(prisma@7.10.1(@types/node@26.6.5)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(@typescript/typescript6@6.0.2)(magicast@0.5.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       '@prisma/generator-helper': 7.10.1
+      graphql: 17.0.2
+
+  '@pothos/plugin-scope-auth@4.2.2(@pothos/core@4.15.1(graphql@17.0.2))(graphql@17.0.2)':
+    dependencies:
+      '@pothos/core': 4.15.1(graphql@17.0.2)
       graphql: 17.0.2
 
   '@pothos/selection-mapper@0.1.0(@pothos/core@4.15.1(graphql@17.0.2))(graphql@17.0.2)':

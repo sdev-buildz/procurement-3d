@@ -11,12 +11,8 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material'
-import {
-  SortBidsEnum,
-  type FilterInput,
-  type Query,
-} from '@types-gen-react-apollo'
-import { useEffect, useState } from 'react'
+import { type Query } from '@types-gen-react-apollo'
+import { useState } from 'react'
 
 /**
  * Buyers can review the bids on their RFQs.
@@ -69,7 +65,6 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
         return selectedBid.id == null ? [] : [selectedBid.id]
       }
     )
-    console.log('ids =', ids)
     if (!ids?.length) {
       return
     }
@@ -144,12 +139,10 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
       >
     )
 
-  const [filter] = useState<FilterInput>({
-    sort: SortBidsEnum.TotalAmount,
-  })
-  useEffect(() => {
-    console.dir(filter)
-  }, [filter])
+  // const [filter] = useState<FilterInput>({
+  //   sort: SortBidsEnum.TotalAmount,
+  // })
+
   return (
     <section aria-labelledby='review-bids-title'>
       <h2 id='review-bids-title'>Review Bids</h2>

@@ -111,6 +111,7 @@ export const RfqRef: PrismaObjectRef<
     title: t.exposeString('title'),
     description: t.exposeString('description'),
     status: t.exposeString('status'),
+    rfqLineItems: t.relation('lineItems'),
     bidClosingDate: t.field({
       type: 'String',
       resolve: ({ bidClosingDate }) => bidClosingDate.toISOString(),
@@ -140,6 +141,7 @@ export const RfqLineItemRef: PrismaObjectRef<
     id: t.exposeID('id'),
     rfqId: t.exposeID('rfqId'),
     quantity: t.exposeInt('quantity'),
+    bidLineItems: t.relation('bidLineItems'),
   }),
 })
 
@@ -153,7 +155,9 @@ export const BidRef: PrismaObjectRef<
     rfqId: t.exposeID('rfqId'),
     supplierId: t.exposeID('supplierId'),
     supplier: t.relation('supplier'),
+    technicalNotes: t.exposeString('technicalNotes'),
     rfq: t.relation('rfq'),
+    bidLineItems: t.relation('bidLineItems'),
   }),
 })
 
@@ -166,6 +170,12 @@ export const BidLineItemRef: PrismaObjectRef<
     id: t.exposeID('id', { nullable: true }),
     bidId: t.exposeID('bidId', { nullable: true }),
     bid: t.relation('bid', { nullable: true }),
+
+    leadTimeWeeks: t.exposeInt('leadTimeWeeks', { nullable: true }),
+    totalAmount: t.exposeInt('totalAmount', { nullable: true }),
+
+    technicalNotes: t.exposeString('technicalNotes', { nullable: true }),
+
     rfqLineItem: t.relation('rfqLineItem'),
     rfqLineItemId: t.exposeID('rfqLineItemId', { nullable: true }),
   }),

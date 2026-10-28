@@ -10,11 +10,13 @@ type Approval {
 
 """A Bid"""
 type Bid {
+  bidLineItems: [BidLineItem!]
   id: ID
   rfq: Rfq
   rfqId: ID
   supplier: Supplier
   supplierId: ID
+  technicalNotes: String
 }
 
 """A Bid LineItem"""
@@ -22,8 +24,11 @@ type BidLineItem {
   bid: Bid
   bidId: ID
   id: ID
+  leadTimeWeeks: Int
   rfqLineItem: RfqLineItem
   rfqLineItemId: ID
+  technicalNotes: String
+  totalAmount: Int
 }
 
 """A Buyer"""
@@ -62,6 +67,15 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
+input FilterInput {
+  comlianceStatus: ComplianceStatus
+  companyNames: [String!]
+  country: COUNTRY
+  ids: [Int!]
+  pagination: PaginationInput
+  sort: SortBidsEnum
+}
+
 type LoginResult {
   token: String
   user: LoginUser
@@ -82,6 +96,11 @@ type Mutation {
   login(email: String!, password: String!): LoginResult
 }
 
+input PaginationInput {
+  skip: Int
+  take: Int
+}
+
 """A Product"""
 type Product {
   description: String
@@ -95,6 +114,12 @@ type Product {
 
 """The schema root for fetching data."""
 type Query {
+  """Used by buyers to review bids."""
+  bidsOfRfq(filter: FilterInput, rfqId: Int!): [Rfq!]
+
+  """Used by buyers to review bids."""
+  bidsOfRfq1(filter: FilterInput, rfqId: Int!): [Rfq!]
+
   """Fetch a product by id."""
   productById(id: ID!): Product
 
@@ -110,6 +135,7 @@ type Rfq {
   deliveryDeadline: String
   description: String
   id: ID
+  rfqLineItems: [RfqLineItem!]
   status: String
   title: String
   updatedAt: String
@@ -117,6 +143,7 @@ type Rfq {
 
 """A line item in a request for quotation"""
 type RfqLineItem {
+  bidLineItems: [BidLineItem!]
   id: ID
   quantity: Int
   rfqId: ID
@@ -128,6 +155,11 @@ enum RfqStatus {
   CLOSED
   DRAFT
   OPEN
+}
+
+enum SortBidsEnum {
+  leadTimeWeeks
+  totalAmount
 }
 
 """The schema root for subscriptions"""
@@ -154,9 +186,7 @@ type User1 {
   createdAt: DateTime
   email: String
   id: ID
-  passwordHash: String
   role: UserRole
-  salt: String
   updatedAt: DateTime
 }
 

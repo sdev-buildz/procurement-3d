@@ -464,11 +464,12 @@ function createBidLineSeeds(
           ),
           'bid for sample RFQ and supplier'
         )
+        const leadTimes = [5, 2, 7, 5, 3, 8]
         lineSeeds.push({
           rfqId: rfq.id,
           bidId: bid.id,
           rfqLineItemId: lineItem.id,
-          leadTimeWeeks: 5 + supplierIndex + bidLineIndex,
+          leadTimeWeeks: leadTimes[bidLineIndex % leadTimes.length]!,
           totalAmount: 12500 + lineIndex * 2750 + supplierIndex * 900,
           technicalNotes: `Sample quote option ${bidLineIndex + 1}.`,
         })

@@ -1,3 +1,4 @@
+import type { BidLineItem } from '@packages/db/prisma-client'
 import { createPubSub } from 'graphql-yoga'
 import type { Product } from './types'
 
@@ -6,6 +7,7 @@ import type { Product } from './types'
  */
 export type PubsubEventsType = {
   productUpdates: [Product[]]
+  bidApproval: [Pick<BidLineItem, 'id'>[]]
 }
 
 /**

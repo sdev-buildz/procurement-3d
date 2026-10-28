@@ -156,6 +156,9 @@ enum SortBidsEnum {
 
 """The schema root for subscriptions"""
 type Subscription {
+  """Notifies whenever any bids are approved."""
+  bidApprovals: [BidLineItem!]
+
   """Updates the available stock in real-time."""
   productUpdates: [Product!]
 }

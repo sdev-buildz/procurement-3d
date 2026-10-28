@@ -4,6 +4,8 @@ import {
   Box,
   Button,
   Paper,
+  SnackbarContent,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -13,6 +15,7 @@ import {
 } from '@mui/material'
 import { type Query } from '@types-gen-react-apollo'
 import { useState } from 'react'
+import { useNotifications } from './useNotifications'
 
 /**
  * Buyers can review the bids on their RFQs.
@@ -139,6 +142,8 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
       >
     )
 
+  const notifications = useNotifications()
+
   // const [filter] = useState<FilterInput>({
   //   sort: SortBidsEnum.TotalAmount,
   // })
@@ -146,7 +151,18 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
   return (
     <section aria-labelledby='review-bids-title'>
       <h2 id='review-bids-title'>Review Bids</h2>
-      {/* Filter form */}
+
+      {/* Real-time notifications about stock and price updates. */}
+      <Stack
+        className='notifications'
+        direction={'column'}
+        spacing={2}
+        aria-live='polite'
+      >
+        {notifications.map((notification, idx) => (
+          <SnackbarContent key={idx} message={notification}></SnackbarContent>
+        ))}
+      </Stack>
 
       <h3>RFQ Details</h3>
       {bidsOfRfq.loading && <p aria-live='polite'>Loading...</p>}

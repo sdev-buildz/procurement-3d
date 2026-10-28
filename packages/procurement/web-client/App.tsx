@@ -3,6 +3,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { UserRole } from '@types-gen-react-apollo'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
+import { ReviewBids } from './components/Dashboards/ReviewBids'
 import { HomePage } from './components/HomePage/HomePage'
 import { LoginPage } from './components/LoginPage/LoginPage'
 import { NavBar } from './components/NavBar/NavBar'
@@ -46,9 +47,20 @@ const theme = createTheme({
 export function App() {
   const isLoggedIn = useReactiveVar(defaultAppContext.isLoggedIn)
   const user = useReactiveVar(defaultAppContext.user)
+  const reviewBidsElement =
+    !isLoggedIn || !user ? (
+      <Navigate to='/login' replace />
+    ) : user.role === UserRole.Buyer ? (
+      <ReviewBids rfqId={0} />
+    ) : (
+      <Navigate to={getRoleHomePath(user.role)} replace />
+    )
 
   return (
     <div className='app'>
+      <button type='button' onClick={() => console.log(isLoggedIn, user)}>
+        gprint
+      </button>
       <ThemeProvider theme={theme} defaultMode='dark'>
         <CssBaseline enableColorScheme />
         <AppContext.Provider value={defaultAppContext}>
@@ -80,9 +92,13 @@ export function App() {
                 element={<HomePage role={UserRole.Buyer} />}
               />
               <Route
+                path='/buyer/review-bids'
+                element={<ReviewBids rfqId={1} />}
+              />
+              <Route
                 path='/supplier'
                 element={<HomePage role={UserRole.Supplier} />}
-              />
+              ></Route>
               <Route
                 path='/sales-engineer'
                 element={<HomePage role={UserRole.SalesEngineer} />}

@@ -1,5 +1,5 @@
 import { prisma } from '@packages/db/prisma'
-import type { BidLineItem } from '@packages/db/prisma-client'
+import { ComplianceStatus, type BidLineItem } from '@packages/db/prisma-client'
 import { builder } from '../lib/builder'
 import { ComplianceEnumRef, CountryEnumRef, RfqRef } from '../prisma-objects'
 
@@ -38,38 +38,39 @@ const FilterInput = builder.inputType('FilterInput', {
 
 builder.queryField('bidsOfRfq', (t) =>
   t.prismaField({
-    type: [RfqRef],
+    type: RfqRef,
     args: {
       rfqId: t.arg.int({ required: true }),
       filter: t.arg({ type: FilterInput, required: false }),
     },
     description: 'Used by buyers to review bids.',
     resolve: (query, root, args, context, info) => {
-      return prisma.rfq.findMany({
-        select: {
-          bidClosingDate: true,
-          bidsReceived: true,
-          approvals: true,
-          buyer: true,
-          buyerId: true,
-          createdAt: true,
-          deliveryDeadline: true,
-          description: true,
-          status: true,
-          title: true,
-          updatedAt: true,
-          id: true,
+      const extraSelect = {
+        include: {
           lineItems: {
-            select: {
+            include: {
               bidLineItems: {
                 // Sorting the bids by total amount or lead time
                 orderBy: {
                   [args.filter?.sort ?? 'totalAmount']: 'asc',
                 },
+                take: args.filter?.pagination?.take ?? 40,
+                skip: args.filter?.pagination?.skip ?? 0,
               },
             },
           },
         },
+      }
+      // 2. Use Object.assign to merge the extra select into the Pothos-generated query.
+      // Note: If both objects contain a 'select' block, a shallow Object.assign
+      // will overwrite the client's selection. We target query.select directly:
+      if (query.include) {
+        Object.assign(query.include, extraSelect.include)
+      } else {
+        Object.assign(query, extraSelect)
+      }
+      return prisma.rfq.findFirst({
+        ...query,
         where: {
           id: args.rfqId,
           lineItems: {
@@ -79,7 +80,9 @@ builder.queryField('bidsOfRfq', (t) =>
                   bid: {
                     supplier: {
                       ...(args.filter?.comlianceStatus && {
-                        complianceStatus: args.filter?.comlianceStatus,
+                        // complianceStatus: args.filter?.comlianceStatus,
+                        complianceStatus:
+                          ComplianceStatus[args.filter?.comlianceStatus],
                       }),
                       ...(args.filter?.companyNames && {
                         companyName: {
@@ -96,8 +99,6 @@ builder.queryField('bidsOfRfq', (t) =>
             },
           },
         },
-        take: args.filter?.pagination?.take ?? 40,
-        skip: args.filter?.pagination?.skip ?? 0,
       })
     },
   })

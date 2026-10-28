@@ -24,6 +24,7 @@ export function encryptJwe(plaintext: string): string {
  * Decrypts the given JWE token.
  */
 export function decryptJwe(encryptedBase64: string): string | null {
+  console.log('encryptedBase64 =', encryptedBase64)
   const inputBuffer = Buffer.from(encryptedBase64, 'base64')
 
   // The IV is the first 12 bytes
@@ -49,3 +50,5 @@ export function decryptJwe(encryptedBase64: string): string | null {
 
   return plaintext
 }
+
+console.log(decryptJwe('wopSZmFItgC0WGLGIUMzOsqa4CR91H0KARmZvkQqFIpPnvlO2FU'))

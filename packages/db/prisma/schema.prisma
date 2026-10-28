@@ -146,6 +146,8 @@ model Supplier {
   userId           Int              @unique
   user             User1            @relation(fields: [userId], references: [id], onDelete: Cascade)
   
+  name            String  @default("sample-name")
+
   companyName      String
   taxId            String           @unique
   country          COUNTRY  

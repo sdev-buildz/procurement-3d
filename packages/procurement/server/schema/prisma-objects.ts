@@ -76,6 +76,7 @@ export const SupplierRef: PrismaObjectRef<
   fields: (t) => ({
     id: t.exposeID('id'),
     user: t.relation('user'),
+    name: t.exposeString('name'),
 
     companyName: t.exposeString('companyName'),
     taxId: t.exposeString('taxId'),
@@ -140,8 +141,34 @@ export const RfqLineItemRef: PrismaObjectRef<
   fields: (t) => ({
     id: t.exposeID('id'),
     rfqId: t.exposeID('rfqId'),
+    rfq: t.relation('rfq'),
     quantity: t.exposeInt('quantity'),
     bidLineItems: t.relation('bidLineItems'),
+    part: t.relation('part'),
+  }),
+})
+
+export const VehiclePartRef: PrismaObjectRef<
+  PothosSchemaTypes.ExtendDefaultTypes<CustomSchemaTypes>,
+  PrismaTypes['VehiclePart']
+> = builder.prismaObject('VehiclePart', {
+  description: 'A Vehicle Part',
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    name: t.exposeString('name'),
+    vehicleModel: t.relation('vehicleModel'),
+  }),
+})
+
+export const VehicleModelRef: PrismaObjectRef<
+  PothosSchemaTypes.ExtendDefaultTypes<CustomSchemaTypes>,
+  PrismaTypes['VehicleModel']
+> = builder.prismaObject('VehicleModel', {
+  description: 'A Vehicle Model',
+  fields: (t) => ({
+    id: t.exposeID('id'),
+    name: t.exposeString('name'),
+    parts: t.relation('Parts'),
   }),
 })
 
@@ -178,6 +205,8 @@ export const BidLineItemRef: PrismaObjectRef<
 
     rfqLineItem: t.relation('rfqLineItem'),
     rfqLineItemId: t.exposeID('rfqLineItemId', { nullable: true }),
+
+    approval: t.relation('approval'),
   }),
 })
 

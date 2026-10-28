@@ -21,6 +21,7 @@ type Bid {
 
 """A Bid LineItem"""
 type BidLineItem {
+  approval: Approval
   bid: Bid
   bidId: ID
   id: ID
@@ -115,10 +116,7 @@ type Product {
 """The schema root for fetching data."""
 type Query {
   """Used by buyers to review bids."""
-  bidsOfRfq(filter: FilterInput, rfqId: Int!): [Rfq!]
-
-  """Used by buyers to review bids."""
-  bidsOfRfq1(filter: FilterInput, rfqId: Int!): [Rfq!]
+  bidsOfRfq(filter: FilterInput, rfqId: Int!): Rfq
 
   """Fetch a product by id."""
   productById(id: ID!): Product
@@ -145,7 +143,9 @@ type Rfq {
 type RfqLineItem {
   bidLineItems: [BidLineItem!]
   id: ID
+  part: VehiclePart
   quantity: Int
+  rfq: Rfq
   rfqId: ID
 }
 
@@ -176,6 +176,7 @@ type Supplier {
   country: COUNTRY
   createdAt: DateTime
   id: ID
+  name: String
   taxId: String
   updatedAt: DateTime
   user: User1
@@ -196,4 +197,18 @@ enum UserRole {
   BUYER
   SALES_ENGINEER
   SUPPLIER
+}
+
+"""A Vehicle Model"""
+type VehicleModel {
+  id: ID
+  name: String
+  parts: [VehiclePart!]
+}
+
+"""A Vehicle Part"""
+type VehiclePart {
+  id: ID
+  name: String
+  vehicleModel: VehicleModel
 }

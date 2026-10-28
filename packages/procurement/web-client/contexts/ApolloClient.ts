@@ -77,6 +77,7 @@ const apolloClientOriginal = new ApolloClient({
   link: ApolloLink.from([
     authLink,
     stateSyncLink as unknown as ApolloLink,
+    // dateTimeLink,
     splitLink,
   ]),
   cache: inMemoryStore as unknown as ApolloCache,

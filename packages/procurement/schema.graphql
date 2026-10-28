@@ -1,8 +1,66 @@
+"""An Approval to a bid line item"""
+type Approval {
+  bidLineItems: [BidLineItem!]
+  decision: Boolean
+  id: ID
+  justification: String
+  rfq: Rfq
+  rfqId: ID
+}
+
+"""A Bid"""
+type Bid {
+  id: ID
+  rfq: Rfq
+  rfqId: ID
+  supplier: Supplier
+  supplierId: ID
+}
+
+"""A Bid LineItem"""
+type BidLineItem {
+  bid: Bid
+  bidId: ID
+  id: ID
+  rfqLineItem: RfqLineItem
+  rfqLineItemId: ID
+}
+
+"""A Buyer"""
+type Buyer {
+  createdAt: DateTime
+  id: ID
+  name: String
+  rfqsCreated: [Rfq!]
+  updatedAt: DateTime
+  user: User1
+}
+
+"""COUNTRY"""
+enum COUNTRY {
+  CHINA
+  GLOBAL
+  INDIA
+  VIETNAM
+}
+
 """Checkout input"""
 input CheckoutInput {
   count: Int!
   id: ID!
 }
+
+"""ComplianceStatus of supplier"""
+enum ComplianceStatus {
+  FLAGGED
+  PENDING
+  VERIFIED
+}
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar DateTime
 
 type LoginResult {
   token: String
@@ -44,12 +102,65 @@ type Query {
   products: [Product!]
 }
 
+"""A request for quotation"""
+type Rfq {
+  bidClosingDate: String
+  buyerId: ID
+  createdAt: String
+  deliveryDeadline: String
+  description: String
+  id: ID
+  status: String
+  title: String
+  updatedAt: String
+}
+
+"""A line item in a request for quotation"""
+type RfqLineItem {
+  id: ID
+  quantity: Int
+  rfqId: ID
+}
+
+"""RfqStatus"""
+enum RfqStatus {
+  AWARDED
+  CLOSED
+  DRAFT
+  OPEN
+}
+
 """The schema root for subscriptions"""
 type Subscription {
   """Updates the available stock in real-time."""
   productUpdates: [Product!]
 }
 
+"""A Supplier"""
+type Supplier {
+  bidsSubmitted: [Bid!]
+  companyName: String
+  complianceStatus: ComplianceStatus
+  country: COUNTRY
+  createdAt: DateTime
+  id: ID
+  taxId: String
+  updatedAt: DateTime
+  user: User1
+}
+
+"""A User"""
+type User1 {
+  createdAt: DateTime
+  email: String
+  id: ID
+  passwordHash: String
+  role: UserRole
+  salt: String
+  updatedAt: DateTime
+}
+
+"""User roles"""
 enum UserRole {
   ADMIN
   BUYER

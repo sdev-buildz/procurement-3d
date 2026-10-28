@@ -26,6 +26,7 @@
     "apollo-state-sync": "^1.1.1",
     "colorthief": "^3.5.0",
     "graphql": "catalog:",
+    "graphql-scalars": "^2.0.1",
     "graphql-shared-ws": "^1.0.3",
     "graphql-ws": "^6.2.1",
     "graphql-yoga": "catalog:",

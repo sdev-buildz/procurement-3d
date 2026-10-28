@@ -3,6 +3,7 @@ import { encryptJwe } from '@packages/web-app-utils'
 import { GraphQLError } from 'graphql'
 import { scrypt, timingSafeEqual } from 'node:crypto'
 import { builder } from './lib/builder'
+import { UserRoleRef } from './prisma-objects'
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const HASH_SIZE = 64
@@ -20,16 +21,12 @@ type LoginResult = {
   }
 }
 
-const UserRole = builder.enumType('UserRole', {
-  values: ['BUYER', 'SUPPLIER', 'SALES_ENGINEER', 'ADMIN'] as const,
-})
-
 const UserRef = builder.objectRef<LoginResult['user']>('LoginUser').implement({
   fields: (t) => ({
     id: t.exposeID('id'),
     email: t.exposeString('email'),
     role: t.field({
-      type: UserRole,
+      type: UserRoleRef,
       resolve: (user) => user.role,
     }),
   }),

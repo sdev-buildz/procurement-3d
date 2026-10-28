@@ -12,6 +12,10 @@
     "./pothos-prisma-types": {
       "types": "./generated/pothos-prisma-types.ts",
       "default": "./generated/pothos-prisma-types.ts"
+    },
+    "./prisma-client": {
+      "types": "./generated/prisma-client/index.d.ts",
+      "default": "./generated/prisma-client/index.js"
     }
   },
   "scripts": {

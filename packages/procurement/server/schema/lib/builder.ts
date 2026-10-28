@@ -4,6 +4,7 @@ import { prisma } from '@packages/db/prisma'
 import { sharedConfig } from '@packages/web-app-utils'
 import SchemaBuilder from '@pothos/core'
 import PrismaPlugin from '@pothos/plugin-prisma'
+import { DateTimeResolver } from 'graphql-scalars'
 import type { pubsub } from '../../util/pubsub'
 import type { User } from '../../util/types'
 
@@ -51,6 +52,8 @@ export const builder = new SchemaBuilder<CustomSchemaTypes>({
     onUnusedQuery: sharedConfig.environment === 'PROD' ? null : 'warn',
   },
 })
+
+builder.addScalarType('DateTime', DateTimeResolver, {})
 
 builder.queryType({
   description: 'The schema root for fetching data.',

@@ -1,5 +1,6 @@
-import { builder } from './lib/builder'
 import './auth'
+import { builder } from './lib/builder'
+import './prisma-objects'
 import './products'
 
 /**

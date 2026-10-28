@@ -64,6 +64,7 @@ postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=SCHEMA
 Use a driver adapter for the standard SQL workflow.
 
 1. Install adapter and driver:
+
    ```bash
    npm install @prisma/adapter-pg@7 pg
    ```
@@ -81,15 +82,18 @@ Use a driver adapter for the standard SQL workflow.
 ## Common Issues
 
 ### "Can't reach database server"
+
 - Check host and port
 - Check firewall settings
 - Ensure database is running
 
 ### "Authentication failed"
+
 - Check user/password
 - Special characters in password must be URL-encoded
 
 ### "Schema does not exist"
+
 - Ensure `?schema=public` (or your schema) is in the URL
 
 ## References

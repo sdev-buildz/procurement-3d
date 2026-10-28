@@ -47,14 +47,6 @@ const theme = createTheme({
 export function App() {
   const isLoggedIn = useReactiveVar(defaultAppContext.isLoggedIn)
   const user = useReactiveVar(defaultAppContext.user)
-  const reviewBidsElement =
-    !isLoggedIn || !user ? (
-      <Navigate to='/login' replace />
-    ) : user.role === UserRole.Buyer ? (
-      <ReviewBids rfqId={0} />
-    ) : (
-      <Navigate to={getRoleHomePath(user.role)} replace />
-    )
 
   return (
     <div className='app'>

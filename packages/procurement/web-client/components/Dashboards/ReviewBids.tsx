@@ -169,17 +169,57 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
       {bidsOfRfq.error && <p aria-live='polite'>Error...</p>}
       {approveBidsError && <p aria-live='assertive'>Error approving bids...</p>}
       {bidsOfRfq.data && (
-        <>
-          <h4>{bidsOfRfq.data.bidsOfRfq?.title}</h4>
-          <dl>
-            <dt>Description:</dt>
-            <dd>{bidsOfRfq.data.bidsOfRfq?.description}</dd>
-            <dt>Bid Closing Date:</dt>
-            <dd>{bidsOfRfq.data.bidsOfRfq?.bidClosingDate}</dd>
-            <dt>Delivery Deadline:</dt>
-            <dd>{bidsOfRfq.data.bidsOfRfq?.deliveryDeadline}</dd>
-          </dl>
-        </>
+        <Paper variant='outlined' sx={{ mb: 3, p: { xs: 2, sm: 3 } }}>
+          <Stack spacing={2}>
+            <Box
+              component='h4'
+              sx={{ m: 0, typography: 'h5', fontWeight: 600 }}
+            >
+              {bidsOfRfq.data.bidsOfRfq?.title}
+            </Box>
+            <Box
+              component='dl'
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'minmax(150px, max-content) 1fr',
+                },
+                columnGap: 2,
+                rowGap: 1.5,
+                m: 0,
+              }}
+            >
+              <Box
+                component='dt'
+                sx={{ m: 0, color: 'text.secondary', fontWeight: 600 }}
+              >
+                Description
+              </Box>
+              <Box component='dd' sx={{ m: 0 }}>
+                {bidsOfRfq.data.bidsOfRfq?.description}
+              </Box>
+              <Box
+                component='dt'
+                sx={{ m: 0, color: 'text.secondary', fontWeight: 600 }}
+              >
+                Bid Closing Date
+              </Box>
+              <Box component='dd' sx={{ m: 0 }}>
+                {bidsOfRfq.data.bidsOfRfq?.bidClosingDate}
+              </Box>
+              <Box
+                component='dt'
+                sx={{ m: 0, color: 'text.secondary', fontWeight: 600 }}
+              >
+                Delivery Deadline
+              </Box>
+              <Box component='dd' sx={{ m: 0 }}>
+                {bidsOfRfq.data.bidsOfRfq?.deliveryDeadline}
+              </Box>
+            </Box>
+          </Stack>
+        </Paper>
       )}
 
       <h3>RFQ Line Items</h3>

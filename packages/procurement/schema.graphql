@@ -1,23 +1,23 @@
 """A Bid"""
 type Bid {
   bidLineItems: [BidLineItem!]
-  id: ID
+  id: Int
   rfq: Rfq
-  rfqId: ID
+  rfqId: Int
   supplier: Supplier
-  supplierId: ID
+  supplierId: Int
   technicalNotes: String
 }
 
 """A Bid LineItem"""
 type BidLineItem {
   bid: Bid
-  bidId: ID
-  id: ID
+  bidId: Int
+  id: Int
   isApproved: Boolean
   leadTimeWeeks: Int
   rfqLineItem: RfqLineItem
-  rfqLineItemId: ID
+  rfqLineItemId: Int
   technicalNotes: String
   totalAmount: Int
 }
@@ -25,7 +25,7 @@ type BidLineItem {
 """A Buyer"""
 type Buyer {
   createdAt: DateTime
-  id: ID
+  id: Int
   name: String
   rfqsCreated: [Rfq!]
   updatedAt: DateTime
@@ -80,6 +80,8 @@ type LoginUser {
 
 """The schema root for mutating data"""
 type Mutation {
+  approveBids(ids: [Int!]!): [BidLineItem!]
+
   """Checkout cart"""
   checkout(cart: [CheckoutInput!]!): [Product!]
 
@@ -118,11 +120,11 @@ type Query {
 """A request for quotation"""
 type Rfq {
   bidClosingDate: String
-  buyerId: ID
+  buyerId: Int
   createdAt: String
   deliveryDeadline: String
   description: String
-  id: ID
+  id: Int
   rfqLineItems: [RfqLineItem!]
   status: String
   title: String
@@ -132,11 +134,11 @@ type Rfq {
 """A line item in a request for quotation"""
 type RfqLineItem {
   bidLineItems: [BidLineItem!]
-  id: ID
+  id: Int
   part: VehiclePart
   quantity: Int
   rfq: Rfq
-  rfqId: ID
+  rfqId: Int
 }
 
 """RfqStatus"""
@@ -165,7 +167,7 @@ type Supplier {
   complianceStatus: ComplianceStatus
   country: COUNTRY
   createdAt: DateTime
-  id: ID
+  id: Int
   name: String
   taxId: String
   updatedAt: DateTime
@@ -176,7 +178,7 @@ type Supplier {
 type User1 {
   createdAt: DateTime
   email: String
-  id: ID
+  id: Int
   role: UserRole
   updatedAt: DateTime
 }
@@ -191,14 +193,14 @@ enum UserRole {
 
 """A Vehicle Model"""
 type VehicleModel {
-  id: ID
+  id: Int
   name: String
   parts: [VehiclePart!]
 }
 
 """A Vehicle Part"""
 type VehiclePart {
-  id: ID
+  id: Int
   name: String
   vehicleModel: VehicleModel
 }

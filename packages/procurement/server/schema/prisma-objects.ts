@@ -24,7 +24,7 @@ export const UserRef: PrismaObjectRef<
 > = builder.prismaObject('User1', {
   description: 'A User',
   fields: (t) => ({
-    id: t.exposeID('id'),
+    id: t.exposeInt('id'),
     email: t.exposeString('email'),
     role: t.expose('role', { type: UserRoleRef }),
     createdAt: t.expose('createdAt', {
@@ -42,7 +42,7 @@ export const BuyerRef: PrismaObjectRef<
 > = builder.prismaObject('Buyer', {
   description: 'A Buyer',
   fields: (t) => ({
-    id: t.exposeID('id'),
+    id: t.exposeInt('id'),
     user: t.relation('user'),
 
     name: t.exposeString('name'),
@@ -74,7 +74,7 @@ export const SupplierRef: PrismaObjectRef<
 > = builder.prismaObject('Supplier', {
   description: 'A Supplier',
   fields: (t) => ({
-    id: t.exposeID('id'),
+    id: t.exposeInt('id'),
     user: t.relation('user'),
     name: t.exposeString('name'),
 
@@ -108,7 +108,7 @@ export const RfqRef: PrismaObjectRef<
 > = builder.prismaObject('Rfq', {
   description: 'A request for quotation',
   fields: (t) => ({
-    id: t.exposeID('id'),
+    id: t.exposeInt('id'),
     title: t.exposeString('title'),
     description: t.exposeString('description'),
     status: t.exposeString('status'),
@@ -121,7 +121,7 @@ export const RfqRef: PrismaObjectRef<
       type: 'String',
       resolve: ({ deliveryDeadline }) => deliveryDeadline.toISOString(),
     }),
-    buyerId: t.exposeID('buyerId'),
+    buyerId: t.exposeInt('buyerId'),
     createdAt: t.field({
       type: 'String',
       resolve: ({ createdAt }) => createdAt.toISOString(),
@@ -139,8 +139,8 @@ export const RfqLineItemRef: PrismaObjectRef<
 > = builder.prismaObject('RfqLineItem', {
   description: 'A line item in a request for quotation',
   fields: (t) => ({
-    id: t.exposeID('id'),
-    rfqId: t.exposeID('rfqId'),
+    id: t.exposeInt('id'),
+    rfqId: t.exposeInt('rfqId'),
     rfq: t.relation('rfq'),
     quantity: t.exposeInt('quantity'),
     bidLineItems: t.relation('bidLineItems'),
@@ -154,7 +154,7 @@ export const VehiclePartRef: PrismaObjectRef<
 > = builder.prismaObject('VehiclePart', {
   description: 'A Vehicle Part',
   fields: (t) => ({
-    id: t.exposeID('id'),
+    id: t.exposeInt('id'),
     name: t.exposeString('name'),
     vehicleModel: t.relation('vehicleModel'),
   }),
@@ -166,7 +166,7 @@ export const VehicleModelRef: PrismaObjectRef<
 > = builder.prismaObject('VehicleModel', {
   description: 'A Vehicle Model',
   fields: (t) => ({
-    id: t.exposeID('id'),
+    id: t.exposeInt('id'),
     name: t.exposeString('name'),
     parts: t.relation('Parts'),
   }),
@@ -178,9 +178,9 @@ export const BidRef: PrismaObjectRef<
 > = builder.prismaObject('Bid', {
   description: 'A Bid',
   fields: (t) => ({
-    id: t.exposeID('id'),
-    rfqId: t.exposeID('rfqId'),
-    supplierId: t.exposeID('supplierId'),
+    id: t.exposeInt('id'),
+    rfqId: t.exposeInt('rfqId'),
+    supplierId: t.exposeInt('supplierId'),
     supplier: t.relation('supplier'),
     technicalNotes: t.exposeString('technicalNotes'),
     rfq: t.relation('rfq'),
@@ -194,8 +194,8 @@ export const BidLineItemRef: PrismaObjectRef<
 > = builder.prismaObject('BidLineItem', {
   description: 'A Bid LineItem',
   fields: (t) => ({
-    id: t.exposeID('id', { nullable: true }),
-    bidId: t.exposeID('bidId', { nullable: true }),
+    id: t.exposeInt('id', { nullable: true }),
+    bidId: t.exposeInt('bidId', { nullable: true }),
     bid: t.relation('bid', { nullable: true }),
 
     leadTimeWeeks: t.exposeInt('leadTimeWeeks', { nullable: true }),
@@ -206,6 +206,6 @@ export const BidLineItemRef: PrismaObjectRef<
     technicalNotes: t.exposeString('technicalNotes', { nullable: true }),
 
     rfqLineItem: t.relation('rfqLineItem'),
-    rfqLineItemId: t.exposeID('rfqLineItemId', { nullable: true }),
+    rfqLineItemId: t.exposeInt('rfqLineItemId', { nullable: true }),
   }),
 })

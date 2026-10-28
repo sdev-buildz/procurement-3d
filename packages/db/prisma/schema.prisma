@@ -100,6 +100,8 @@ model Supplier {
   taxId            String           @unique
   country          COUNTRY  
   complianceStatus ComplianceStatus @default(PENDING)
+  // Flexible onboarding details and document metadata stay on the Supplier row.
+  onboardingData   Json?
   
   // Relations
   bidsSubmitted    Bid[]            @relation("SupplierToBid")

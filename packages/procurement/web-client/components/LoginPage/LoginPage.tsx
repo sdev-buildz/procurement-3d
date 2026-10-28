@@ -71,6 +71,9 @@ export const LoginPage = () => {
     })
   }
 
+  const usernameHelperText =
+    'Use the email address associated with your account.'
+
   return (
     <Container
       component='main'
@@ -85,14 +88,22 @@ export const LoginPage = () => {
       }}
     >
       <Paper elevation={6} sx={{ width: '100%', p: { xs: 3, sm: 4 } }}>
-        <Stack component='form' onSubmit={submitLogin} spacing={2.5}>
+        <Stack
+          component='form'
+          onSubmit={submitLogin}
+          spacing={2.5}
+          aria-labelledby='login-title'
+          aria-busy={loading}
+          noValidate
+        >
           <Stack sx={{ alignItems: 'center' }} spacing={1}>
             <Avatar
+              aria-hidden='true'
               sx={{ bgcolor: 'primary.main', color: 'primary.contrastText' }}
             >
               <LockOutlined />
             </Avatar>
-            <Typography component='h1' variant='h5'>
+            <Typography component='h1' id='login-title' variant='h5'>
               Sign in
             </Typography>
             <Typography color='text.secondary' variant='body2'>
@@ -101,7 +112,7 @@ export const LoginPage = () => {
           </Stack>
 
           {error ? (
-            <Alert severity='error' role='alert'>
+            <Alert severity='error' role='alert' aria-live='assertive'>
               {error.message}
             </Alert>
           ) : null}
@@ -110,16 +121,30 @@ export const LoginPage = () => {
             autoComplete='username'
             autoFocus
             fullWidth
+            id='login-username'
+            slotProps={{
+              htmlInput: {
+                'aria-describedby': 'login-username-help',
+                'aria-invalid': !!error,
+              },
+              formHelperText: { id: 'login-username-help' },
+            }}
             label='Username'
             name='username'
             onChange={(event) => setUsername(event.target.value)}
             required
             value={username}
-            helperText='Use the email address associated with your account.'
+            helperText={usernameHelperText}
           />
           <TextField
             autoComplete='current-password'
             fullWidth
+            id='login-password'
+            slotProps={{
+              htmlInput: {
+                'aria-invalid': !!error,
+              },
+            }}
             label='Password'
             name='password'
             onChange={(event) => setPassword(event.target.value)}
@@ -129,6 +154,7 @@ export const LoginPage = () => {
           />
           <Box>
             <Button
+              aria-label={loading ? 'Signing in' : 'Sign in'}
               disabled={loading}
               fullWidth
               size='large'
@@ -136,7 +162,11 @@ export const LoginPage = () => {
               variant='contained'
             >
               {loading ? (
-                <CircularProgress color='inherit' size={24} />
+                <CircularProgress
+                  aria-label='Signing in'
+                  color='inherit'
+                  size={24}
+                />
               ) : (
                 'Sign in'
               )}

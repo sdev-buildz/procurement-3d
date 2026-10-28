@@ -17,6 +17,9 @@ import { Navigate, Link as RouterLink } from 'react-router'
 import { defaultAppContext } from '../../contexts/AppContext'
 import { getRoleHomePath } from '../../util/auth'
 
+const getSectionId = (title: string) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+
 /**
  * Different contents to display to users as per their roles
  */
@@ -132,30 +135,50 @@ export const HomePage = ({ role }: { role: UserRole }) => {
           </Typography>
         </Stack>
 
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          {content.sections.map(({ title, description, href }) => (
-            <Paper
-              key={title}
-              component='section'
-              elevation={3}
-              sx={{ flex: 1, minHeight: 180, p: 3 }}
-            >
-              <Stack spacing={2}>
-                <RoleIcon color='primary' />
-                <Typography component='h2' variant='h6'>
-                  {title}
-                </Typography>
-                <Typography color='text.secondary' variant='body2'>
-                  {description}
-                </Typography>
-                {href ? (
-                  <Button component={RouterLink} to={href} variant='outlined'>
-                    Browse catalog
-                  </Button>
-                ) : null}
-              </Stack>
-            </Paper>
-          ))}
+        <Stack
+          component='nav'
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          aria-label={`${content.title} navigation`}
+        >
+          {content.sections.map(({ title, description, href }) => {
+            const sectionId = getSectionId(title)
+            const buttonLabel = href ? `Browse ${title}` : `${title} overview`
+
+            return (
+              <Paper
+                key={title}
+                component='section'
+                elevation={3}
+                aria-labelledby={`${sectionId}-heading`}
+                sx={{ flex: 1, minHeight: 180, p: 3 }}
+              >
+                <Stack spacing={2}>
+                  <RoleIcon aria-hidden='true' color='primary' />
+                  <Typography
+                    component='h2'
+                    id={`${sectionId}-heading`}
+                    variant='h6'
+                  >
+                    {title}
+                  </Typography>
+                  <Typography color='text.secondary' variant='body2'>
+                    {description}
+                  </Typography>
+                  {href ? (
+                    <Button
+                      component={RouterLink}
+                      to={href}
+                      variant='outlined'
+                      aria-label={buttonLabel}
+                    >
+                      Browse {title}
+                    </Button>
+                  ) : null}
+                </Stack>
+              </Paper>
+            )
+          })}
         </Stack>
       </Stack>
     </Container>

@@ -1,6 +1,7 @@
 import { gql, type TypedDocumentNode } from '@apollo/client'
 import { useMutation, useQuery } from '@apollo/client/react'
 import {
+  Box,
   Button,
   Paper,
   Table,
@@ -150,14 +151,14 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
     console.dir(filter)
   }, [filter])
   return (
-    <section>
-      <h2>Review Bids</h2>
+    <section aria-labelledby='review-bids-title'>
+      <h2 id='review-bids-title'>Review Bids</h2>
       {/* Filter form */}
 
       <h3>RFQ Details</h3>
-      {bidsOfRfq.loading && <p>Loading...</p>}
-      {bidsOfRfq.error && <p>Error...</p>}
-      {approveBidsError && <p>Error approving bids...</p>}
+      {bidsOfRfq.loading && <p aria-live='polite'>Loading...</p>}
+      {bidsOfRfq.error && <p aria-live='polite'>Error...</p>}
+      {approveBidsError && <p aria-live='assertive'>Error approving bids...</p>}
       {bidsOfRfq.data && (
         <>
           <h4>{bidsOfRfq.data.bidsOfRfq?.title}</h4>
@@ -174,7 +175,7 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
 
       <h3>RFQ Line Items</h3>
       <TableContainer component={Paper}>
-        <Table>
+        <Table aria-label='RFQ bids review table'>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
@@ -199,17 +200,19 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
                 (bidLineItem) => bidLineItem.isApproved
               )
               const selectedBidId = selectedApprovals[rfqLineItemId]
+              const partName = rfqLineItem.part?.name ?? 'Unknown part'
+              const vehicleName =
+                rfqLineItem.part?.vehicleModel?.name ?? 'Unknown model'
 
               return (
                 <TableRow key={rfqLineItemId}>
                   <TableCell>{rfqLineItemId}</TableCell>
                   <TableCell>{rfqLineItem.quantity}</TableCell>
                   <TableCell>
-                    {rfqLineItem.part?.id}-{rfqLineItem.part?.name}
+                    {rfqLineItem.part?.id}-{partName}
                   </TableCell>
                   <TableCell>
-                    {rfqLineItem.part?.vehicleModel?.id}-
-                    {rfqLineItem.part?.vehicleModel?.name}
+                    {rfqLineItem.part?.vehicleModel?.id}-{vehicleName}
                   </TableCell>
                   {rfqLineItem.bidLineItems?.map((bidLineItem, bidIndex) => {
                     const bidLineItemId = bidLineItem.id
@@ -218,20 +221,17 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
                     const isApproved = !!bidLineItem.isApproved
                     const isInteractive =
                       !rowHasApprovedBid && bidLineItemId != null
+                    const supplierName =
+                      bidLineItem.bid?.supplier?.companyName ??
+                      bidLineItem.bid?.supplier?.name ??
+                      'Supplier'
+                    const bidSummary = `${supplierName} bid for ${partName} total ${bidLineItem.totalAmount}`
 
                     return (
                       <TableCell
                         key={bidLineItemId ?? bidIndex}
-                        onClick={() => {
-                          if (!rowHasApprovedBid && bidLineItemId != null) {
-                            handleBidApprovalSelection(
-                              rfqLineItemId,
-                              bidLineItemId
-                            )
-                          }
-                        }}
                         sx={{
-                          cursor: isInteractive ? 'pointer' : 'default',
+                          p: 0,
                           transition: 'all 0.2s ease',
                           ...(isApproved && {
                             outline: '1px solid blue',
@@ -250,7 +250,49 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
                             }),
                         }}
                       >
-                        {bidLineItem.totalAmount}
+                        <Box
+                          component='button'
+                          type='button'
+                          onClick={() => {
+                            if (!rowHasApprovedBid && bidLineItemId != null) {
+                              handleBidApprovalSelection(
+                                rfqLineItemId,
+                                bidLineItemId
+                              )
+                            }
+                          }}
+                          onKeyDown={(event) => {
+                            if (
+                              (event.key === 'Enter' || event.key === ' ') &&
+                              isInteractive &&
+                              bidLineItemId != null
+                            ) {
+                              event.preventDefault()
+                              handleBidApprovalSelection(
+                                rfqLineItemId,
+                                bidLineItemId
+                              )
+                            }
+                          }}
+                          disabled={!isInteractive}
+                          aria-label={bidSummary}
+                          aria-pressed={isSelected}
+                          sx={{
+                            width: '100%',
+                            minHeight: 52,
+                            border: 'none',
+                            background: 'transparent',
+                            color: 'inherit',
+                            cursor: isInteractive ? 'pointer' : 'not-allowed',
+                            font: 'inherit',
+                            textAlign: 'center',
+                            px: 1,
+                            py: 1.5,
+                            opacity: isInteractive ? 1 : 0.75,
+                          }}
+                        >
+                          {bidLineItem.totalAmount}
+                        </Box>
                       </TableCell>
                     )
                   })}
@@ -266,6 +308,7 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
         variant={'outlined'}
         onClick={handleApproveSelections}
         disabled={approvingBids || Object.keys(selectedApprovals).length === 0}
+        aria-label={`Confirm selected approvals for ${Object.keys(selectedApprovals).length} line items`}
       >
         {approvingBids ? 'Approving...' : 'Confirm Approvals'}
       </Button>

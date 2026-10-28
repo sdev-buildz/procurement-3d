@@ -31,8 +31,12 @@ export const NavBar = () => {
   return (
     <AppBar position='static' variant='elevation' color='transparent'>
       <Toolbar>
-        <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-          Shopping Site
+        <Typography
+          variant='h6'
+          component='div'
+          sx={{ flexGrow: 1, flexWrap: 'nowrap', whiteSpace: 'nowrap' }}
+        >
+          Enterprise Procurement Workspace
         </Typography>
 
         <FormControlLabel

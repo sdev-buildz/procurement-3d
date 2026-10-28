@@ -50,9 +50,6 @@ export function App() {
 
   return (
     <div className='app'>
-      <button type='button' onClick={() => console.log(isLoggedIn, user)}>
-        gprint
-      </button>
       <ThemeProvider theme={theme} defaultMode='dark'>
         <CssBaseline enableColorScheme />
         <AppContext.Provider value={defaultAppContext}>

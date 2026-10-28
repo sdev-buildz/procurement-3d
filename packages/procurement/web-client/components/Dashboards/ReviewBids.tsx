@@ -206,7 +206,11 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
                 Bid Closing Date
               </Box>
               <Box component='dd' sx={{ m: 0 }}>
-                {bidsOfRfq.data.bidsOfRfq?.bidClosingDate}
+                {bidsOfRfq.data.bidsOfRfq?.bidClosingDate
+                  ? new Date(
+                      bidsOfRfq.data.bidsOfRfq?.bidClosingDate
+                    ).toDateString()
+                  : ''}
               </Box>
               <Box
                 component='dt'
@@ -215,7 +219,11 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
                 Delivery Deadline
               </Box>
               <Box component='dd' sx={{ m: 0 }}>
-                {bidsOfRfq.data.bidsOfRfq?.deliveryDeadline}
+                {bidsOfRfq.data.bidsOfRfq?.deliveryDeadline
+                  ? new Date(
+                      bidsOfRfq.data.bidsOfRfq?.deliveryDeadline
+                    ).toDateString()
+                  : ''}
               </Box>
             </Box>
           </Stack>

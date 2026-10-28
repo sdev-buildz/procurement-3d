@@ -7,6 +7,7 @@ import { ReviewBids } from './components/Dashboards/ReviewBids'
 import { HomePage } from './components/HomePage/HomePage'
 import { LoginPage } from './components/LoginPage/LoginPage'
 import { NavBar } from './components/NavBar/NavBar'
+import { SupplierOnboarding } from './components/Supplier/SupplierOnboarding'
 import { AppContext, defaultAppContext } from './contexts/AppContext'
 import { getRoleHomePath } from './util/auth'
 
@@ -83,10 +84,7 @@ export function App() {
                 path='/buyer/review-bids'
                 element={<ReviewBids rfqId={1} />}
               />
-              <Route
-                path='/supplier'
-                element={<HomePage role={UserRole.Supplier} />}
-              ></Route>
+              <Route path='/supplier' element={<SupplierOnboarding />} />
               <Route
                 path='/sales-engineer'
                 element={<HomePage role={UserRole.SalesEngineer} />}

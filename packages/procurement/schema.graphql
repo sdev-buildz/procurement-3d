@@ -40,12 +40,6 @@ enum COUNTRY {
   VIETNAM
 }
 
-"""Checkout input"""
-input CheckoutInput {
-  count: Int!
-  id: ID!
-}
-
 """ComplianceStatus of supplier"""
 enum ComplianceStatus {
   FLAGGED
@@ -82,9 +76,6 @@ type LoginUser {
 type Mutation {
   approveBids(ids: [Int!]!): [BidLineItem!]
 
-  """Checkout cart"""
-  checkout(cart: [CheckoutInput!]!): [Product!]
-
   """Authenticate with an email and password."""
   login(email: String!, password: String!): LoginResult
 }
@@ -94,27 +85,10 @@ input PaginationInput {
   take: Int
 }
 
-"""A Product"""
-type Product {
-  description: String
-  id: ID
-  imageUrl: String
-  name: String
-  price: Int
-  stockCount: Int
-  summary: String
-}
-
 """The schema root for fetching data."""
 type Query {
   """Used by buyers to review bids."""
   bidsOfRfq(filter: FilterInput, rfqId: Int!): Rfq
-
-  """Fetch a product by id."""
-  productById(id: ID!): Product
-
-  """List of available products."""
-  products: [Product!]
 }
 
 """A request for quotation"""
@@ -158,9 +132,6 @@ enum SortBidsEnum {
 type Subscription {
   """Notifies whenever any bids are approved."""
   bidApprovals: [BidLineItem!]
-
-  """Updates the available stock in real-time."""
-  productUpdates: [Product!]
 }
 
 """A Supplier"""

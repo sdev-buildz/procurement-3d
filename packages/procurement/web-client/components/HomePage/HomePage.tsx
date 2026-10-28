@@ -40,13 +40,9 @@ const roleHomeContent: Record<
     description: 'Manage sourcing requests and compare supplier bids.',
     sections: [
       {
-        title: 'Product catalog',
-        description: 'Browse parts available for procurement.',
-        href: '/catalog',
-      },
-      {
         title: 'Review bids',
         description: 'Compare supplier offers and track your decisions.',
+        href: '/buyer/review-bids',
       },
     ],
   },

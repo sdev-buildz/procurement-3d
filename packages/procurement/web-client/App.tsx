@@ -7,7 +7,6 @@ import { ReviewBids } from './components/Dashboards/ReviewBids'
 import { HomePage } from './components/HomePage/HomePage'
 import { LoginPage } from './components/LoginPage/LoginPage'
 import { NavBar } from './components/NavBar/NavBar'
-import { ProductsPage } from './components/ProductsPage/ProductsPage'
 import { AppContext, defaultAppContext } from './contexts/AppContext'
 import { getRoleHomePath } from './util/auth'
 
@@ -95,16 +94,6 @@ export function App() {
               <Route
                 path='/admin'
                 element={<HomePage role={UserRole.Admin} />}
-              />
-              <Route
-                path='/catalog'
-                element={
-                  isLoggedIn && user ? (
-                    <ProductsPage />
-                  ) : (
-                    <Navigate to='/login' replace />
-                  )
-                }
               />
               <Route path='*' element={<Navigate to='/' replace />} />
             </Routes>

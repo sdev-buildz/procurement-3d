@@ -12,58 +12,6 @@ datasource db {
   provider = "postgresql"
   schemas = ["default-schema","karan-cloudworx"]
 }
-
-// User of this sample_app.
-model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  userName String @unique @map("user_name")
-
-  createdBlogs Blog[] /// The blogs created by the user
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([email])
-  @@map("users")
-  @@schema("default-schema")
-}
-
-/// Blog created by the user
-model Blog {
-  id      Int     @id @default(autoincrement())
-  title   String
-  tagLine String?
-  body    String
-
-  published Boolean @default(false)
-
-  author User @relation(fields: [userId], references: [id])
-  userId    Int  @map("user_id")
-
-  publishedAt DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("blog")
-  @@schema("default-schema")
-}
-
-/// Product listed in the store
-model Product {
-  id        Int     @id @default(autoincrement())
-  name      String
-  summary   String
-  description   String
-
-  price     Int
-
-  stockCount Int
-
-  imageUrl   String
-
-  @@map("product")
-  @@schema("default-schema")
-}
  
 // User of this sample_app.
 model User1 {

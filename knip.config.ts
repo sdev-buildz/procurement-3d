@@ -35,7 +35,10 @@ const config: KnipConfig = {
     },
     'packages/procurement': {
       ...webAppWorkspaceConfig,
-      entry: ['./server/schema/prisma-objects.ts'],
+      entry: [
+        './server/schema/prisma-objects.ts',
+        './web-client/lib/colors.ts',
+      ],
     },
     'packages/db': {
       ignoreDependencies: [

@@ -50,5 +50,3 @@ export function decryptJwe(encryptedBase64: string): string | null {
 
   return plaintext
 }
-
-console.log(decryptJwe('wopSZmFItgC0WGLGIUMzOsqa4CR91H0KARmZvkQqFIpPnvlO2FU'))

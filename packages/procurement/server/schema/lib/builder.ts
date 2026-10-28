@@ -1,18 +1,18 @@
 import type PrismaTypes from '@packages/db/pothos-prisma-types'
 import { getDatamodel } from '@packages/db/pothos-prisma-types'
 import { prisma } from '@packages/db/prisma'
+import type { User1 } from '@packages/db/prisma-client'
 import { sharedConfig } from '@packages/web-app-utils'
 import SchemaBuilder from '@pothos/core'
 import PrismaPlugin from '@pothos/plugin-prisma'
 import { DateTimeResolver } from 'graphql-scalars'
 import type { pubsub } from '../../util/pubsub'
-import type { User } from '../../util/types'
 
 /**
  *  The custom objects added to the context.
  */
 export type CustomGraphqlContextType = {
-  currentUser: User | undefined
+  currentUser: Pick<User1, 'id' | 'role'> | undefined
   reqOrigin: string
   pubsub: typeof pubsub
 }

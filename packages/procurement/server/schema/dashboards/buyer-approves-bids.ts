@@ -9,6 +9,9 @@ builder.mutationField('approveBids', (t) =>
       ids: t.arg.intList({ required: true }),
     },
     resolve: async (query, _, { ids }, ctx) => {
+      if (ctx.currentUser?.role !== 'BUYER')
+        throw new Error('You are not a buyer!')
+
       await prisma.bidLineItem.updateMany({
         where: { id: { in: ids } },
         data: { isApproved: true },
@@ -31,7 +34,11 @@ builder.subscriptionField('bidApprovals', (t) =>
   t.field({
     type: [BidLineItemRef],
     description: 'Notifies whenever any bids are approved.',
-    subscribe: (_parent, _args, ctx) => ctx.pubsub.subscribe('bidApproval'),
+    subscribe: (_parent, _args, ctx) => {
+      if (ctx.currentUser?.role !== 'BUYER')
+        throw new Error('You are not a buyer!')
+      return ctx.pubsub.subscribe('bidApproval')
+    },
     resolve: (value) => value,
   })
 )

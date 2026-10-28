@@ -1,11 +1,4 @@
 /**
- * User
- */
-export type User = {
-  id: string
-}
-
-/**
  * Product
  */
 export type Product = {

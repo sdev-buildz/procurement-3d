@@ -44,7 +44,9 @@ builder.queryField('bidsOfRfq', (t) =>
       filter: t.arg({ type: FilterInput, required: false }),
     },
     description: 'Used by buyers to review bids.',
-    resolve: (query, root, args, context, info) => {
+    resolve: (query, root, args, ctx, info) => {
+      if (ctx.currentUser?.role !== 'BUYER')
+        throw new Error('You are not a buyer!')
       const extraSelect = {
         include: {
           lineItems: {

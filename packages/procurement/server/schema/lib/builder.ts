@@ -17,12 +17,23 @@ export type CustomGraphqlContextType = {
 }
 
 /**
- * The Pothos GraphQL schema builder instance.
+ * The custom types added to the pothos schema.
  */
-export const builder = new SchemaBuilder<{
+export type CustomSchemaTypes = {
+  Scalars: {
+    DateTime: {
+      Input: Date
+      Output: Date
+    }
+  }
   PrismaTypes: PrismaTypes
   Context: CustomGraphqlContextType
-}>({
+}
+
+/**
+ * The Pothos GraphQL schema builder instance.
+ */
+export const builder = new SchemaBuilder<CustomSchemaTypes>({
   plugins: [PrismaPlugin],
   prisma: {
     client: prisma,

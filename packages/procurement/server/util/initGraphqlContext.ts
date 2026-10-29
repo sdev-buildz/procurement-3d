@@ -34,7 +34,7 @@ export const initGraphqlContext = async (
         role: true,
       },
       where: {
-        id: payload.id,
+        id: Number(payload.id),
       },
     })
   }

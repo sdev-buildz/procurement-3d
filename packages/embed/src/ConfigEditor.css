@@ -310,6 +310,36 @@
   height: 20px;
 }
 
+.ce-icon-carConcept > span {
+  width: 24px;
+  height: 10px;
+  border-radius: 8px 8px 3px 3px;
+  transform: translateY(2px);
+}
+
+.ce-icon-commercialRefrigerator > span {
+  width: 15px;
+  height: 27px;
+  border-radius: 3px 3px 1px 1px;
+}
+
+.ce-icon-sheenChair > span {
+  width: 16px;
+  height: 17px;
+  border-radius: 5px 5px 3px 3px;
+  transform: translateY(-3px);
+  box-shadow:
+    3px 14px 0 -4px color-mix(in srgb, var(--equipment-color), white 12%),
+    -3px 14px 0 -4px color-mix(in srgb, var(--equipment-color), white 12%);
+}
+
+.ce-icon-diffuseTransmissionTeacup > span {
+  width: 17px;
+  height: 12px;
+  border-radius: 2px 2px 9px 9px;
+  transform: translateY(5px);
+}
+
 .ce-palette-copy {
   display: grid;
   min-width: 0;

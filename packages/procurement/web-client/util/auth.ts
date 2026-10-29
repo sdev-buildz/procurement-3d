@@ -55,7 +55,8 @@ export const clearLogoutData = async (
   options: LogoutCleanupOptions = {}
 ): Promise<void> => {
   const browserLocalStorage =
-    options.localStorage ?? (typeof window === 'undefined' ? undefined : window.localStorage)
+    options.localStorage ??
+    (typeof window === 'undefined' ? undefined : window.localStorage)
   const browserSessionStorage =
     options.sessionStorage ??
     (typeof window === 'undefined' ? undefined : window.sessionStorage)
@@ -87,7 +88,9 @@ export const clearLogoutData = async (
             const request = indexedDatabase.deleteDatabase(database.name!)
             request.addEventListener('success', () => resolve())
             request.addEventListener('error', () =>
-              reject(request.error ?? new Error('Unable to delete browser database'))
+              reject(
+                request.error ?? new Error('Unable to delete browser database')
+              )
             )
           })
       )
@@ -99,6 +102,8 @@ export const clearLogoutData = async (
     (typeof navigator === 'undefined' ? undefined : navigator.serviceWorker)
   if (serviceWorker) {
     const registrations = await serviceWorker.getRegistrations()
-    await Promise.all(registrations.map((registration) => registration.unregister()))
+    await Promise.all(
+      registrations.map((registration) => registration.unregister())
+    )
   }
 }

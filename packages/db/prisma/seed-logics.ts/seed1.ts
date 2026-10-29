@@ -283,13 +283,10 @@ async function seedVehiclePart(models: VehicleModel[]): Promise<VehiclePart[]> {
 async function seedRfq(buyers: Buyer[]): Promise<Rfq[]> {
   const rfqs: Rfq[] = []
 
-  for (const [seedIndex, {
-    title,
-    description,
-    buyerEmail,
-    bidClosingDate,
-    deliveryDeadline,
-  }] of rfqSeeds.entries()) {
+  for (const [
+    seedIndex,
+    { title, description, buyerEmail, bidClosingDate, deliveryDeadline },
+  ] of rfqSeeds.entries()) {
     const buyerSeed = requireRecord(
       buyerSeeds.find((candidate) => candidate.email === buyerEmail),
       `buyer seed ${buyerEmail}`

@@ -375,7 +375,9 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
           type='button'
           variant='contained'
           onClick={handleApproveSelections}
-          disabled={approvingBids || Object.keys(selectedApprovals).length === 0}
+          disabled={
+            approvingBids || Object.keys(selectedApprovals).length === 0
+          }
           aria-label={`Confirm selected approvals for ${Object.keys(selectedApprovals).length} line items`}
           sx={{ m: 1 }}
         >

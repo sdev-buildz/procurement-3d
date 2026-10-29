@@ -236,6 +236,26 @@ export function RoomScene({
           onPointerUp={handleItemUp}
           onPointerCancel={handleItemUp}
         />
+        {items
+          .filter(
+            (item) =>
+              item.type === 'carConcept' ||
+              item.type === 'commercialRefrigerator' ||
+              item.type === 'sheenChair' ||
+              item.type === 'diffuseTransmissionTeacup'
+          )
+          .map((item) => (
+            <EquipmentModel
+              key={item.id}
+              item={item}
+              selected={selectedIds.has(item.id)}
+              violation={violationIds.has(item.id)}
+              onPointerDown={(event) => handleItemDown(item, event)}
+              onPointerMove={(event) => handleItemMove(item, event)}
+              onPointerUp={handleItemUp}
+              onPointerCancel={handleItemUp}
+            />
+          ))}
         {previewItem ? (
           <EquipmentModel
             item={previewItem}

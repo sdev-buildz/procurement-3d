@@ -58,6 +58,46 @@ export const EQUIPMENT = {
     /** Price per unit in USD. */
     price: 960,
   },
+  carConcept: {
+    nameKey: 'carConcept',
+    sku: 'MDL-CAR',
+    width: 2.8,
+    depth: 1.4,
+    height: 1.4,
+    color: '#d98d8d',
+    price: 3200,
+    model: '../../models/CarConcept.glb',
+  },
+  commercialRefrigerator: {
+    nameKey: 'commercialRefrigerator',
+    sku: 'MDL-RFG',
+    width: 1.2,
+    depth: 0.8,
+    height: 2.0,
+    color: '#8fc5d8',
+    price: 2100,
+    model: '../../models/CommercialRefrigerator.glb',
+  },
+  sheenChair: {
+    nameKey: 'sheenChair',
+    sku: 'MDL-CHR',
+    width: 0.9,
+    depth: 0.9,
+    height: 1.1,
+    color: '#d7a6cf',
+    price: 780,
+    model: '../../models/SheenChair.glb',
+  },
+  diffuseTransmissionTeacup: {
+    nameKey: 'diffuseTransmissionTeacup',
+    sku: 'MDL-TCP',
+    width: 0.5,
+    depth: 0.5,
+    height: 0.5,
+    color: '#d9c89a',
+    price: 420,
+    model: '../../models/DiffuseTransmissionTeacup.glb',
+  },
 } as const
 
 /** Supported equipment categories in the room. */

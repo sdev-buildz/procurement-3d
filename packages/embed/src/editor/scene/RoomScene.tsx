@@ -82,7 +82,13 @@ function makeWireGeometry(items: LayoutItem[]): BufferGeometry {
   return geometry
 }
 
-function CameraControls({ topDown }: { topDown: boolean }) {
+function CameraControls({
+  topDown,
+  onControlsReady,
+}: {
+  topDown: boolean
+  onControlsReady: (controls: OrbitControls | null) => void
+}) {
   const { camera, gl } = useThree()
 
   useEffect(() => {
@@ -95,7 +101,11 @@ function CameraControls({ topDown }: { topDown: boolean }) {
     controls.enableRotate = !topDown
     controls.enableDamping = true
     controls.update()
-    return () => controls.dispose()
+    onControlsReady(controls)
+    return () => {
+      onControlsReady(null)
+      controls.dispose()
+    }
   }, [camera, gl, topDown])
 
   return null
@@ -109,6 +119,7 @@ function EquipmentModel({
   onPointerDown,
   onPointerMove,
   onPointerUp,
+  onPointerCancel,
 }: {
   item: LayoutItem
   selected: boolean
@@ -117,6 +128,7 @@ function EquipmentModel({
   onPointerDown?: (event: ThreeEvent<PointerEvent>) => void
   onPointerMove?: (event: ThreeEvent<PointerEvent>) => void
   onPointerUp?: (event: ThreeEvent<PointerEvent>) => void
+  onPointerCancel?: (event: ThreeEvent<PointerEvent>) => void
 }) {
   const equipment = EQUIPMENT[item.type]
   const color = violation ? '#ff6577' : equipment.color
@@ -137,6 +149,7 @@ function EquipmentModel({
       {...(onPointerDown ? { onPointerDown } : {})}
       {...(onPointerMove ? { onPointerMove } : {})}
       {...(onPointerUp ? { onPointerUp } : {})}
+      {...(onPointerCancel ? { onPointerCancel } : {})}
       onPointerOver={(event) => {
         event.stopPropagation()
         if (!ghost) document.body.style.cursor = 'grab'
@@ -300,6 +313,7 @@ export function RoomScene({
   const gridGeometry = useMemo(makeGridGeometry, [])
   const wireGeometry = useMemo(() => makeWireGeometry(items), [items])
   const draggingId = useRef<string | null>(null)
+  const controlsRef = useRef<OrbitControls | null>(null)
 
   const handleItemDown = (
     item: LayoutItem,
@@ -309,6 +323,7 @@ export function RoomScene({
     onSelect(item.id, event.nativeEvent.shiftKey)
     onDragStart(item.id)
     draggingId.current = item.id
+    if (controlsRef.current) controlsRef.current.enabled = false
     document.body.style.cursor = 'grabbing'
   }
   const handleItemMove = (
@@ -319,7 +334,10 @@ export function RoomScene({
   }
   const handleItemUp = () => {
     const activeId = draggingId.current
-    if (activeId) onDragEnd(activeId)
+    if (activeId) {
+      onDragEnd(activeId)
+      if (controlsRef.current) controlsRef.current.enabled = true
+    }
     draggingId.current = null
     document.body.style.cursor = ''
   }
@@ -344,7 +362,12 @@ export function RoomScene({
         castShadow
         shadow-mapSize={[1024, 1024]}
       />
-      <CameraControls topDown={topDown} />
+      <CameraControls
+        topDown={topDown}
+        onControlsReady={(controls) => {
+          controlsRef.current = controls
+        }}
+      />
 
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
@@ -361,6 +384,7 @@ export function RoomScene({
           }
         }}
         onPointerUp={handleItemUp}
+        onPointerCancel={handleItemUp}
       >
         <planeGeometry args={[ROOM.width, ROOM.depth]} />
         <meshStandardMaterial color='#202b34' roughness={0.9} />
@@ -389,6 +413,7 @@ export function RoomScene({
           onPointerDown={(event) => handleItemDown(item, event)}
           onPointerMove={(event) => handleItemMove(item, event)}
           onPointerUp={handleItemUp}
+          onPointerCancel={handleItemUp}
         />
       ))}
       {previewItem ? (

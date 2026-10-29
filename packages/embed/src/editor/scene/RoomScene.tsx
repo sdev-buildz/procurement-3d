@@ -1,3 +1,4 @@
+import { A11y, A11yAnnouncer } from '@react-three/a11y'
 import type { ThreeEvent } from '@react-three/fiber'
 import { Canvas, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
@@ -343,88 +344,101 @@ export function RoomScene({
   }
 
   return (
-    <Canvas
-      shadows
-      gl={{ localClippingEnabled: true }}
-      dpr={[1, 1.5]}
-      camera={{
-        position: topDown ? [0, 23, 0.01] : [14, 12, 16],
-        fov: topDown ? 39 : 42,
-        near: 0.1,
-        far: 100,
-      }}
-      onPointerMissed={onClearSelection}
-    >
-      <color attach='background' args={['#101820']} />
-      <ambientLight intensity={1.35} />
-      <directionalLight
-        position={[-5, 12, 7]}
-        intensity={2.2}
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-      />
-      <CameraControls
-        topDown={topDown}
-        onControlsReady={(controls) => {
-          controlsRef.current = controls
+    <>
+      <A11yAnnouncer />
+      <Canvas
+        shadows
+        gl={{ localClippingEnabled: true }}
+        dpr={[1, 1.5]}
+        camera={{
+          position: topDown ? [0, 23, 0.01] : [14, 12, 16],
+          fov: topDown ? 39 : 42,
+          near: 0.1,
+          far: 100,
         }}
-      />
-
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.035, 0]}
-        receiveShadow
-        onPointerDown={(event) => {
-          event.stopPropagation()
-          if (placementType) onPlace(event.point.x, event.point.z)
-          else onClearSelection()
-        }}
-        onPointerMove={(event) => {
-          if (draggingId.current) {
-            onDrag(draggingId.current, event.point.x, event.point.z)
-          }
-        }}
-        onPointerUp={handleItemUp}
-        onPointerCancel={handleItemUp}
+        onPointerMissed={onClearSelection}
       >
-        <planeGeometry args={[ROOM.width, ROOM.depth]} />
-        <meshStandardMaterial color='#202b34' roughness={0.9} />
-      </mesh>
-      <lineSegments geometry={gridGeometry}>
-        <lineBasicMaterial color='#3a4954' transparent opacity={0.66} />
-      </lineSegments>
-      <lineSegments geometry={wireGeometry}>
-        <lineBasicMaterial color='#75e6d1' transparent opacity={0.9} />
-      </lineSegments>
-      <mesh position={[0, 1.5, -ROOM.depth / 2]} receiveShadow>
-        <boxGeometry args={[ROOM.width, 3, 0.12]} />
-        <meshStandardMaterial color='#28343d' roughness={0.84} />
-      </mesh>
-      <mesh position={[-ROOM.width / 2, 1.5, 0]} receiveShadow>
-        <boxGeometry args={[0.12, 3, ROOM.depth]} />
-        <meshStandardMaterial color='#25313a' roughness={0.84} />
-      </mesh>
+        <color attach='background' args={['#101820']} />
+        <ambientLight intensity={1.35} />
+        <directionalLight
+          position={[-5, 12, 7]}
+          intensity={2.2}
+          castShadow
+          shadow-mapSize={[1024, 1024]}
+        />
+        <CameraControls
+          topDown={topDown}
+          onControlsReady={(controls) => {
+            controlsRef.current = controls
+          }}
+        />
 
-      {items.map((item) => (
-        <EquipmentModel
-          key={item.id}
-          item={item}
-          selected={selectedIds.has(item.id)}
-          violation={violationIds.has(item.id)}
-          onPointerDown={(event) => handleItemDown(item, event)}
-          onPointerMove={(event) => handleItemMove(item, event)}
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, -0.035, 0]}
+          receiveShadow
+          onPointerDown={(event) => {
+            event.stopPropagation()
+            if (placementType) onPlace(event.point.x, event.point.z)
+            else onClearSelection()
+          }}
+          onPointerMove={(event) => {
+            if (draggingId.current) {
+              onDrag(draggingId.current, event.point.x, event.point.z)
+            }
+          }}
           onPointerUp={handleItemUp}
           onPointerCancel={handleItemUp}
-        />
-      ))}
-      {previewItem ? (
-        <EquipmentModel
-          item={previewItem}
-          selected={false}
-          violation={false}
-          ghost
-        />
-      ) : null}
-    </Canvas>
+        >
+          <planeGeometry args={[ROOM.width, ROOM.depth]} />
+          <meshStandardMaterial color='#202b34' roughness={0.9} />
+        </mesh>
+        <lineSegments geometry={gridGeometry}>
+          <lineBasicMaterial color='#3a4954' transparent opacity={0.66} />
+        </lineSegments>
+        <lineSegments geometry={wireGeometry}>
+          <lineBasicMaterial color='#75e6d1' transparent opacity={0.9} />
+        </lineSegments>
+        <mesh position={[0, 1.5, -ROOM.depth / 2]} receiveShadow>
+          <boxGeometry args={[ROOM.width, 3, 0.12]} />
+          <meshStandardMaterial color='#28343d' roughness={0.84} />
+        </mesh>
+        <mesh position={[-ROOM.width / 2, 1.5, 0]} receiveShadow>
+          <boxGeometry args={[0.12, 3, ROOM.depth]} />
+          <meshStandardMaterial color='#25313a' roughness={0.84} />
+        </mesh>
+
+        {items.map((item) => (
+          <A11y
+            role='button'
+            description={`Click to select the ${item.type} with id ${item.id}`}
+            actionCall={() =>
+              console.log(
+                `${item.type} with id ${item.id} is clicked or activated via keyboard.`
+              )
+            }
+          >
+            <EquipmentModel
+              key={item.id}
+              item={item}
+              selected={selectedIds.has(item.id)}
+              violation={violationIds.has(item.id)}
+              onPointerDown={(event) => handleItemDown(item, event)}
+              onPointerMove={(event) => handleItemMove(item, event)}
+              onPointerUp={handleItemUp}
+              onPointerCancel={handleItemUp}
+            />
+          </A11y>
+        ))}
+        {previewItem ? (
+          <EquipmentModel
+            item={previewItem}
+            selected={false}
+            violation={false}
+            ghost
+          />
+        ) : null}
+      </Canvas>
+    </>
   )
 }

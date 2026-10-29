@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "start-react:watch": "tsx ./webpack/webpack.dev-server.ts",
+    "start-react:watch": "tsx --env-file-if-exists=.env ./webpack/webpack.dev-server.ts",
     "test": "vitest run src"
   },
   "keywords": [],

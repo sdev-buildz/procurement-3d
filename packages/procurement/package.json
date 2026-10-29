@@ -5,9 +5,9 @@
   "description": "A full-stack e-commerce application featuring authentication (signup/login), shopping cart management, and checkout processing, with real-time product count updates driven by WebSockets.",
   "type": "module",
   "scripts": {
-    "start-server": "concurrently \"tsx server/index.ts\" \"tsx ./buildGql.ts\"",
-    "start-server:watch": "concurrently \"tsx --watch server/index.ts\" \"tsx --watch ./buildGql.ts\"",
-    "start-react:watch": "tsx ./webpack/webpack.dev-server.ts",
+    "start-server": "concurrently \"tsx --env-file-if-exists=.env server/index.ts\" \"tsx ./buildGql.ts\"",
+    "start-server:watch": "concurrently \"tsx --env-file-if-exists=.env --watch server/index.ts\" \"tsx --watch ./buildGql.ts\"",
+    "start-react:watch": "tsx --env-file-if-exists=.env ./webpack/webpack.dev-server.ts",
     "build:react": " ",
     "build:gql-types": "tsx ./buildGql.ts"
   },

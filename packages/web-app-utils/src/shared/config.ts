@@ -13,7 +13,7 @@ try {
 }
 
 const apiServerPort: number = Number(
-  process.env.PORT ?? (process.env.CI ? 3080 : 443)
+  process.env.API_SERVER_PORT ?? (process.env.CI ? 3080 : 443)
 )
 const webClientPort: number = Number(process.env.WEB_CLIENT_PORT ?? 3000)
 const embedClientPort: number = Number(process.env.EMBED_CLIENT_PORT ?? 3001)

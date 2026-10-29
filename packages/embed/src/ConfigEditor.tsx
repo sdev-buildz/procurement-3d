@@ -405,6 +405,8 @@ export function ConfigEditor(): ReactElement {
             <span />
             {t('localDemo')}
           </span>
+          <span className='ce-save-state'>{t('multiSelect')}</span>
+
           <label className='ce-language'>
             <span className='ce-sr-only'>{t('language')}</span>
             <select

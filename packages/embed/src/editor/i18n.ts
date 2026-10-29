@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      multiSelect: 'To multi-select, hold shift',
       currency: 'USD',
       editor: 'Room designer',
       project: 'Northstar · Electrical room',
@@ -100,6 +101,7 @@ const resources = {
   },
   vi: {
     translation: {
+      multiSelect: 'Để chọn nhiều mục, hãy giữ phím Shift.',
       currency: 'VND',
       editor: 'Thiết kế phòng',
       project: 'Northstar · Phòng điện',
@@ -198,6 +200,7 @@ const resources = {
 
   zh: {
     translation: {
+      multiSelect: '若要多选，请按住 Shift 键。',
       currency: 'CNY',
       editor: '房间布局设计器',
       project: 'Northstar · 配电室',

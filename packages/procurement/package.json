@@ -21,7 +21,6 @@
     "@mui/utils": "^9.4.0",
     "@packages/embed-3d": "workspace:*",
     "@packages/logger": "workspace:*",
-    "@packages/optimizer-3d": "workspace:*",
     "@pothos/core": "catalog:",
     "@pothos/plugin-prisma": "^4.14.2",
     "@pothos/plugin-scope-auth": "^4.2.2",

@@ -1,11 +1,6 @@
+import { sharedConfig } from '@packages/web-app-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fetchCurrentUser } from './currentUser'
-
-vi.mock('@packages/web-app-utils/shared', () => ({
-  sharedConfig: {
-    graphqlEndpoint: 'https://localhost:443/api/graphql',
-  },
-}))
 
 describe('fetchCurrentUser', () => {
   afterEach(() => {
@@ -32,7 +27,7 @@ describe('fetchCurrentUser', () => {
       role: 'SALES_ENGINEER',
     })
     expect(fetchMock).toHaveBeenCalledWith(
-      graphqlEndpoint,
+      sharedConfig.graphqlEndpoint,
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({

@@ -5,7 +5,7 @@ const userRoles = ['BUYER', 'SUPPLIER', 'SALES_ENGINEER', 'ADMIN'] as const
 /**
  * Supported account roles returned by the procurement GraphQL API.
  */
-export type UserRole = (typeof userRoles)[number]
+type UserRole = (typeof userRoles)[number]
 
 /**
  * Public identity information retained after successful authentication.

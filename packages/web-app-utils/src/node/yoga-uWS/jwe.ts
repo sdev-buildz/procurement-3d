@@ -35,7 +35,6 @@ export function encryptJwe(plaintext: string): string {
   // Layout: [ IV (12) | AuthTag (16) | Ciphertext ]
   return Buffer.concat([iv, authTag, ciphertext]).toString('base64')
 }
-const a = 'j+4y81S/l0CYbcn+ckd3RhBYH8hU8t3hDqhWWiI+Y8s3JAHE2tE='
 export function decryptJwe(encryptedBase64: string): string | null {
   if (encryptedBase64.toLowerCase().startsWith('bearer '))
     encryptedBase64 = encryptedBase64.slice('Bearer '.length)

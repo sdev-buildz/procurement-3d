@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /**
  * Message type sent by the iframe to ask the host for an auth token.
  */

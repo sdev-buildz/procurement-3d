@@ -11,16 +11,16 @@ const createFixtureFile = async (): Promise<File> => {
     'optimizer',
     'src',
     'models',
-    'SheenChair.glb',
+    'SheenChair.glb'
   )
   const packageFixturePath = resolve(
     process.cwd(),
     'src',
     'models',
-    'SheenChair.glb',
+    'SheenChair.glb'
   )
   const fixture = await readFile(
-    existsSync(rootFixturePath) ? rootFixturePath : packageFixturePath,
+    existsSync(rootFixturePath) ? rootFixturePath : packageFixturePath
   )
   const buffer = new ArrayBuffer(fixture.byteLength)
   new Uint8Array(buffer).set(fixture)
@@ -39,7 +39,9 @@ describe('optimizeModel', () => {
     expect(result.after.triangles).toBe(result.before.triangles)
     expect(result.before.vertices).toBeGreaterThan(0)
     expect(result.outputFileName).toBe('SheenChair.optimized.glb')
-    expect(Array.from(result.output.subarray(0, 4))).toEqual([0x67, 0x6c, 0x54, 0x46])
+    expect(Array.from(result.output.subarray(0, 4))).toEqual([
+      0x67, 0x6c, 0x54, 0x46,
+    ])
   })
 
   it('reports a missing external resource for a glTF JSON upload', async () => {
@@ -51,11 +53,11 @@ describe('optimizeModel', () => {
         }),
       ],
       'model.gltf',
-      { type: 'model/gltf+json' },
+      { type: 'model/gltf+json' }
     )
 
     await expect(optimizeModel(file)).rejects.toThrow(
-      'Missing glTF resource "model.bin"',
+      'Missing glTF resource "model.bin"'
     )
   })
 })

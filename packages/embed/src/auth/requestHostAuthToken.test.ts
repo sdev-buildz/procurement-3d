@@ -1,3 +1,4 @@
+import { sharedConfig } from '@packages/web-app-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   AUTH_TOKEN_RESPONSE_TYPE,
@@ -8,13 +9,7 @@ import {
   requestHostAuthToken,
 } from './requestHostAuthToken'
 
-const hostOrigin = 'https://localhost:3000'
-
-vi.mock('@packages/web-app-utils/shared', () => ({
-  sharedConfig: {
-    webClientOrigin: hostOrigin,
-  },
-}))
+const hostOrigin = sharedConfig.webClientOrigin
 
 describe('requestHostAuthToken', () => {
   afterEach(() => {

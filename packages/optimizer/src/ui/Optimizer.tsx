@@ -48,7 +48,9 @@ const Optimizer = () => {
       setResult(await optimizeModel(modelFile, files))
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : 'The model could not be optimized.',
+        error instanceof Error
+          ? error.message
+          : 'The model could not be optimized.'
       )
     } finally {
       setIsOptimizing(false)
@@ -59,7 +61,7 @@ const Optimizer = () => {
     if (!result) return
 
     const url = URL.createObjectURL(
-      new Blob([result.output], { type: 'model/gltf-binary' }),
+      new Blob([result.output], { type: 'model/gltf-binary' })
     )
     const link = window.document.createElement('a')
     link.href = url
@@ -94,8 +96,8 @@ const Optimizer = () => {
         style={{ display: 'block', margin: '12px 0' }}
       />
       <p id={`${inputId}-help`} style={{ color: '#536078', fontSize: 14 }}>
-        Upload one .gltf or .glb file. You can multi-select its external resource
-        files when using .gltf.
+        Upload one .gltf or .glb file. You can multi-select its external
+        resource files when using .gltf.
       </p>
 
       {isOptimizing ? <p role='status'>Optimizing model…</p> : null}
@@ -131,12 +133,36 @@ const Optimizer = () => {
               {(
                 [
                   ['File size', 'fileSizeBytes', formatBytes],
-                  ['Triangles', 'triangles', (value: number) => value.toLocaleString()],
-                  ['Vertices', 'vertices', (value: number) => value.toLocaleString()],
-                  ['Meshes', 'meshes', (value: number) => value.toLocaleString()],
-                  ['Primitives', 'primitives', (value: number) => value.toLocaleString()],
-                  ['Materials', 'materials', (value: number) => value.toLocaleString()],
-                  ['Textures', 'textures', (value: number) => value.toLocaleString()],
+                  [
+                    'Triangles',
+                    'triangles',
+                    (value: number) => value.toLocaleString(),
+                  ],
+                  [
+                    'Vertices',
+                    'vertices',
+                    (value: number) => value.toLocaleString(),
+                  ],
+                  [
+                    'Meshes',
+                    'meshes',
+                    (value: number) => value.toLocaleString(),
+                  ],
+                  [
+                    'Primitives',
+                    'primitives',
+                    (value: number) => value.toLocaleString(),
+                  ],
+                  [
+                    'Materials',
+                    'materials',
+                    (value: number) => value.toLocaleString(),
+                  ],
+                  [
+                    'Textures',
+                    'textures',
+                    (value: number) => value.toLocaleString(),
+                  ],
                 ] as const
               ).map(([label, key, format]) => (
                 <tr key={key}>
@@ -153,7 +179,11 @@ const Optimizer = () => {
               ))}
             </tbody>
           </table>
-          <button type='button' onClick={handleDownload} style={{ marginTop: 16 }}>
+          <button
+            type='button'
+            onClick={handleDownload}
+            style={{ marginTop: 16 }}
+          >
             Download optimized GLB
           </button>
         </section>

@@ -29,12 +29,11 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null
 
 const normalizeResourcePath = (path: string): string =>
-  decodeURIComponent(path).replaceAll('\\', '/').replace(/^\.\/+/, '')
+  decodeURIComponent(path)
+    .replaceAll('\\', '/')
+    .replace(/^\.\/+/, '')
 
-const getTriangleCount = (
-  mode: number,
-  elementCount: number,
-): number => {
+const getTriangleCount = (mode: number, elementCount: number): number => {
   if (mode === 4) return Math.floor(elementCount / 3)
   if (mode === 5 || mode === 6) return Math.max(0, elementCount - 2)
   return 0
@@ -42,7 +41,7 @@ const getTriangleCount = (
 
 const getModelStats = (
   document: Awaited<ReturnType<WebIO['readBinary']>>,
-  fileSizeBytes: number,
+  fileSizeBytes: number
 ): ModelStats => {
   const meshes = document.getRoot().listMeshes()
   const primitives = meshes.flatMap((mesh) => mesh.listPrimitives())
@@ -60,7 +59,7 @@ const getModelStats = (
     vertices: primitives.reduce(
       (total, primitive) =>
         total + (primitive.getAttribute('POSITION')?.getCount() ?? 0),
-      0,
+      0
     ),
     meshes: meshes.length,
     primitives: primitives.length,
@@ -72,22 +71,22 @@ const getModelStats = (
 const getExternalResourceFiles = (
   json: JSONDocument['json'],
   modelFile: File,
-  companionFiles: readonly File[],
+  companionFiles: readonly File[]
 ): Map<string, File> => {
   const resourceUris = [
     ...(json.buffers ?? []).flatMap((buffer) =>
-      buffer.uri ? [buffer.uri] : [],
+      buffer.uri ? [buffer.uri] : []
     ),
-    ...(json.images ?? []).flatMap((image) =>
-      image.uri ? [image.uri] : [],
-    ),
+    ...(json.images ?? []).flatMap((image) => (image.uri ? [image.uri] : [])),
   ].filter((uri) => !uri.startsWith('data:'))
 
   const candidates = new Map<string, File[]>()
   for (const file of companionFiles) {
     if (file === modelFile) continue
 
-    const aliases = new Set([file.name, file.webkitRelativePath].filter(Boolean))
+    const aliases = new Set(
+      [file.name, file.webkitRelativePath].filter(Boolean)
+    )
     for (const alias of aliases) {
       const normalizedAlias = normalizeResourcePath(alias)
       const matches = candidates.get(normalizedAlias) ?? []
@@ -113,12 +112,12 @@ const getExternalResourceFiles = (
 
     if (!matches?.length) {
       throw new Error(
-        `Missing glTF resource "${uri}". Select the .gltf file together with its referenced .bin and texture files.`,
+        `Missing glTF resource "${uri}". Select the .gltf file together with its referenced .bin and texture files.`
       )
     }
     if (matches.length > 1) {
       throw new Error(
-        `More than one uploaded file matches "${uri}". Upload the model with its resource folder structure intact.`,
+        `More than one uploaded file matches "${uri}". Upload the model with its resource folder structure intact.`
       )
     }
 
@@ -133,7 +132,7 @@ const getExternalResourceFiles = (
  */
 export const optimizeModel = async (
   modelFile: File,
-  companionFiles: readonly File[] = [modelFile],
+  companionFiles: readonly File[] = [modelFile]
 ): Promise<OptimizationResult> => {
   const extension = modelFile.name.split('.').at(-1)?.toLowerCase()
   if (extension !== 'gltf' && extension !== 'glb') {
@@ -153,7 +152,9 @@ export const optimizeModel = async (
   let inputSizeBytes = modelFile.size
 
   if (extension === 'glb') {
-    document = await io.readBinary(new Uint8Array(await modelFile.arrayBuffer()))
+    document = await io.readBinary(
+      new Uint8Array(await modelFile.arrayBuffer())
+    )
   } else {
     const parsed: unknown = JSON.parse(await modelFile.text())
     if (
@@ -161,22 +162,24 @@ export const optimizeModel = async (
       !isRecord(parsed['asset']) ||
       typeof parsed['asset']['version'] !== 'string'
     ) {
-      throw new Error('The selected .gltf file does not contain valid glTF JSON.')
+      throw new Error(
+        'The selected .gltf file does not contain valid glTF JSON.'
+      )
     }
 
     const json = parsed as unknown as JSONDocument['json']
     const externalFiles = getExternalResourceFiles(
       json,
       modelFile,
-      companionFiles,
+      companionFiles
     )
     const resources = Object.fromEntries(
       await Promise.all(
         [...externalFiles].map(async ([uri, file]) => [
           uri,
           new Uint8Array(await file.arrayBuffer()),
-        ]),
-      ),
+        ])
+      )
     )
     const jsonDocument: JSONDocument = { json, resources }
 
@@ -203,7 +206,9 @@ export const optimizeModel = async (
     after,
     savedBytes,
     reductionPercentage:
-      before.fileSizeBytes === 0 ? 0 : (savedBytes / before.fileSizeBytes) * 100,
+      before.fileSizeBytes === 0
+        ? 0
+        : (savedBytes / before.fileSizeBytes) * 100,
     outputFileName: `${modelFile.name.replace(/\.(gltf|glb)$/i, '')}.optimized.glb`,
     output,
   }

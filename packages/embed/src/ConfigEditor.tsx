@@ -56,7 +56,10 @@ export function ConfigEditor(): ReactElement {
   const displayItems = dragPreview
     ? items.map((item) => (item.id === dragPreview.id ? dragPreview : item))
     : items
-  const violations = useMemo(() => findRuleViolations(items), [items])
+  const violations = useMemo(
+    () => findRuleViolations(displayItems),
+    [displayItems]
+  )
   const violationIds = useMemo(
     () =>
       new Set(violations.flatMap(({ first, second }) => [first.id, second.id])),
@@ -255,7 +258,9 @@ export function ConfigEditor(): ReactElement {
     commitItems([...items, item])
     setSelectedIds(new Set([item.id]))
     setPlacementType(null)
-    setAnnouncement(`${t(EQUIPMENT[type].nameKey)} ${t('saved')}`)
+    setAnnouncement(
+      t('placedAnnouncement', { item: t(EQUIPMENT[type].nameKey) })
+    )
   }
 
   const changePosition = (axis: 'x' | 'z', value: number) => {
@@ -398,7 +403,7 @@ export function ConfigEditor(): ReactElement {
         <div className='ce-top-actions'>
           <span className='ce-save-state'>
             <span />
-            {t('saved')}
+            {t('localDemo')}
           </span>
           <label className='ce-language'>
             <span className='ce-sr-only'>{t('language')}</span>
@@ -849,7 +854,7 @@ export function ConfigEditor(): ReactElement {
                     </td>
                     <td>{EQUIPMENT[row.type].sku}</td>
                     <td>{row.quantity}</td>
-                    <td>{formatPrice(row.unitPrice * row.quantity)}</td>
+                    <td>{formatPrice(row.unitPrice)}</td>
                   </tr>
                 ))}
                 {billOfMaterials.length === 0 ? (

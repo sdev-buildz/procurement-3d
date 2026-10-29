@@ -31,7 +31,8 @@ share the same layout state.
 
 The assistant is intentionally mocked: it streams a locally generated answer
 and shows a proposed move as a ghost item. Accepting the suggestion is a normal
-undoable layout edit.
+undoable layout edit. Layout edits remain in browser memory and reset on
+refresh; this package does not save to a backend.
 
 ### Assistant reply contract
 

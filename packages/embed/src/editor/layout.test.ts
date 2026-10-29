@@ -35,6 +35,9 @@ describe('layout helpers', () => {
       { type: 'cabinet', quantity: 1, unitPrice: 1890 },
       { type: 'panel', quantity: 1, unitPrice: 960 },
     ])
+    expect(
+      createBillOfMaterials([...items, { ...items[0]!, id: 'drive-2' }])[0]
+    ).toEqual({ type: 'drive', quantity: 2, unitPrice: 2480 })
   })
 })
 

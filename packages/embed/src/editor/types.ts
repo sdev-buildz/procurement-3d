@@ -12,7 +12,7 @@ export const ROOM = {
 export const EQUIPMENT = {
   drive: {
     /** Translation key for this equipment label. */
-    nameKey: 'equipment.drive',
+    nameKey: 'drive',
     /** Procurement identifier. */
     sku: 'DRV-240',
     /** Footprint width in meters. */
@@ -28,7 +28,7 @@ export const EQUIPMENT = {
   },
   cabinet: {
     /** Translation key for this equipment label. */
-    nameKey: 'equipment.cabinet',
+    nameKey: 'cabinet',
     /** Procurement identifier. */
     sku: 'CAB-600',
     /** Footprint width in meters. */
@@ -44,7 +44,7 @@ export const EQUIPMENT = {
   },
   panel: {
     /** Translation key for this equipment label. */
-    nameKey: 'equipment.panel',
+    nameKey: 'panel',
     /** Procurement identifier. */
     sku: 'PNL-120',
     /** Footprint width in meters. */

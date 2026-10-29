@@ -86,7 +86,9 @@ function CameraControls({ topDown }: { topDown: boolean }) {
   const { camera, gl } = useThree()
 
   useEffect(() => {
-    camera.up.set(0, 0, topDown ? -1 : 1)
+    camera.up.set(0, topDown ? 0 : 1, topDown ? -1 : 0)
+    if (topDown) camera.position.set(0, 23, 0.01)
+    else camera.position.set(14, 12, 16)
     camera.lookAt(0, 0, 0)
     const controls = new OrbitControls(camera, gl.domElement)
     controls.target.set(0, 0, 0)

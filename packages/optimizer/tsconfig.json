@@ -1,7 +1,10 @@
 {
-  "extends": ["../../tsconfig.dom.base.json"],
+  "extends": ["../../tsconfig.references.base.json"],
   "compilerOptions": {
-    "outDir": "./dist-tsc"
+    "jsx": "react-jsx",
+    "lib": ["ES2025", "DOM", "DOM.Iterable"],
+    "outDir": "./dist-tsc",
+    "rootDir": "./src"
   },
   "include": ["./**/*.tsx", "./**/*.ts"]
 }

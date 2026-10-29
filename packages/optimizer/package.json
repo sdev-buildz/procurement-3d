@@ -2,11 +2,29 @@
   "name": "@packages/optimizer-3d",
   "version": "0.0.0",
   "description": "Accepts gtlf files and optimizes them. Shows before and after states.",
+  "private": true,
+  "exports": {
+    ".": {
+      "default": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run src/optimizer.test.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@gltf-transform/core": "^4.5.1",
+    "@gltf-transform/extensions": "^4.5.1",
+    "meshoptimizer": "^1.3.0"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:"
+  }
 }

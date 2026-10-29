@@ -1,4 +1,5 @@
 /* eslint jsdoc/require-jsdoc: off */
+import type { CSSProperties, ReactElement } from 'react'
 import {
   useCallback,
   useEffect,
@@ -7,22 +8,22 @@ import {
   useRef,
   useState,
 } from 'react'
-import type { CSSProperties, ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
+import './ConfigEditor.css'
+import { AssistantPanel } from './editor/assistant/AssistantPanel'
+import type { AssistantReply } from './editor/assistant/assistantReply'
+import { formatCurrencyFromUSD, type TargetCurrency } from './editor/currency'
+import { createLayoutHistory, layoutHistoryReducer } from './editor/history'
+import { i18n } from './editor/i18n'
 import {
   constrainPosition,
   createBillOfMaterials,
   findRuleViolations,
   initialLayout,
 } from './editor/layout'
-import { createLayoutHistory, layoutHistoryReducer } from './editor/history'
+import { RoomScene } from './editor/scene/RoomScene'
 import type { LayoutItem } from './editor/types'
 import { EQUIPMENT, ROOM } from './editor/types'
-import { RoomScene } from './editor/scene/RoomScene'
-import { AssistantPanel } from './editor/assistant/AssistantPanel'
-import type { AssistantReply } from './editor/assistant/assistantReply'
-import { i18n } from './editor/i18n'
-import './ConfigEditor.css'
 
 type AssistantProposal = {
   ghost: LayoutItem
@@ -382,11 +383,10 @@ export function ConfigEditor(): ReactElement {
   }
 
   const formatPrice = (price: number) =>
-    new Intl.NumberFormat(i18n.language, {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(price)
+    formatCurrencyFromUSD({
+      amountInUSD: price,
+      targetCurrency: t('currency') as TargetCurrency,
+    })
 
   return (
     <main className='ce-shell'>
@@ -408,12 +408,13 @@ export function ConfigEditor(): ReactElement {
           <label className='ce-language'>
             <span className='ce-sr-only'>{t('language')}</span>
             <select
-              value={i18n.language.startsWith('es') ? 'es' : 'en'}
+              value={i18n.language}
               onChange={(event) => void i18n.changeLanguage(event.target.value)}
               aria-label={t('language')}
             >
-              <option value='en'>EN</option>
-              <option value='es'>ES</option>
+              <option value='en'>English</option>
+              <option value='vi'>Vietnamese</option>
+              <option value='zh'>Simplified Chinese</option>
             </select>
           </label>
         </div>

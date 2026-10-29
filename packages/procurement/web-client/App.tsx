@@ -1,8 +1,8 @@
 import { useReactiveVar } from '@apollo/client/react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import { UserRole } from '@types-gen-react-apollo'
 import { ConfigEditor } from '@packages/embed-3d'
+import { UserRole } from '@types-gen-react-apollo'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import { ReviewBids } from './components/Dashboards/ReviewBids'
 import { HomePage } from './components/HomePage/HomePage'
@@ -95,6 +95,7 @@ export function App() {
                 path='/admin'
                 element={<HomePage role={UserRole.Admin} />}
               />
+
               <Route path='*' element={<Navigate to='/' replace />} />
             </Routes>
           </BrowserRouter>

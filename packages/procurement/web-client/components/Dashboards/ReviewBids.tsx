@@ -360,15 +360,28 @@ export const ReviewBids = ({ rfqId }: { rfqId: number }) => {
         </Table>
       </TableContainer>
 
-      <Button
-        type='button'
-        variant={'outlined'}
-        onClick={handleApproveSelections}
-        disabled={approvingBids || Object.keys(selectedApprovals).length === 0}
-        aria-label={`Confirm selected approvals for ${Object.keys(selectedApprovals).length} line items`}
+      <Paper
+        component='footer'
+        elevation={4}
+        sx={{
+          position: 'fixed',
+          right: { xs: 16, sm: 24 },
+          bottom: { xs: 16, sm: 24 },
+          zIndex: 1100,
+          borderRadius: 2,
+        }}
       >
-        {approvingBids ? 'Approving...' : 'Confirm Approvals'}
-      </Button>
+        <Button
+          type='button'
+          variant='contained'
+          onClick={handleApproveSelections}
+          disabled={approvingBids || Object.keys(selectedApprovals).length === 0}
+          aria-label={`Confirm selected approvals for ${Object.keys(selectedApprovals).length} line items`}
+          sx={{ m: 1 }}
+        >
+          {approvingBids ? 'Approving...' : 'Confirm Approvals'}
+        </Button>
+      </Paper>
     </section>
   )
 }

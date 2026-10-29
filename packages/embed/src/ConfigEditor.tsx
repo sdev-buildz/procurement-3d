@@ -475,7 +475,7 @@ export function ConfigEditor(): ReactElement {
         <aside className='ce-palette ce-panel'>
           <div className='ce-panel-heading'>
             <div>
-              <p className='ce-eyebrow'>01 / PLACE</p>
+              <p className='ce-eyebrow'>01 / {t('PLACE')}</p>
               <h2>{t('addEquipment')}</h2>
             </div>
             <span className='ce-step-icon' aria-hidden='true'>
@@ -530,7 +530,7 @@ export function ConfigEditor(): ReactElement {
             <span className='ce-grid-sample' aria-hidden='true' />
             <div>
               <strong>0.5 m</strong>
-              <small>FIXED GRID</small>
+              <small>{t('fixedGrid')}</small>
             </div>
           </div>
         </aside>
@@ -627,7 +627,7 @@ export function ConfigEditor(): ReactElement {
           <section className='ce-panel ce-properties'>
             <div className='ce-panel-heading'>
               <div>
-                <p className='ce-eyebrow'>02 / INSPECT</p>
+                <p className='ce-eyebrow'>02 / {t('INSPECT')}</p>
                 <h2>{t('properties')}</h2>
               </div>
               {selectedItems.length > 1 ? (
@@ -753,7 +753,7 @@ export function ConfigEditor(): ReactElement {
         <div className='ce-panel ce-items-panel'>
           <div className='ce-panel-heading'>
             <div>
-              <p className='ce-eyebrow'>04 / SCENE</p>
+              <p className='ce-eyebrow'>04 / {t('SCENE')}</p>
               <h2>{t('items')}</h2>
             </div>
             <span className='ce-count-pill'>{items.length}</span>
@@ -827,7 +827,7 @@ export function ConfigEditor(): ReactElement {
         <div className='ce-panel ce-bom-panel'>
           <div className='ce-panel-heading'>
             <div>
-              <p className='ce-eyebrow'>05 / PROCUREMENT</p>
+              <p className='ce-eyebrow'>05 / {t('PROCUREMENT')}</p>
               <h2>{t('billOfMaterials')}</h2>
             </div>
             <span className='ce-count-pill'>

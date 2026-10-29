@@ -4,6 +4,12 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      fixedGrid: 'fixed Grid',
+      PLACE: 'PLACE',
+      INSPECT: 'INSPECT',
+      COPILOT: 'COPILOT',
+      SCENE: 'SCENE',
+      PROCUREMENT: 'PROCUREMENT',
       multiSelect: 'To multi-select, hold shift',
       currency: 'USD',
       editor: 'Room designer',
@@ -101,6 +107,12 @@ const resources = {
   },
   vi: {
     translation: {
+      fixedGrid: 'Lưới cố định',
+      PLACE: 'Địa điểm',
+      INSPECT: 'Kiểm tra',
+      COPILOT: 'Phi công phụ',
+      SCENE: 'Cảnh tượng',
+      PROCUREMENT: 'Sự thu mua',
       multiSelect: 'Để chọn nhiều mục, hãy giữ phím Shift.',
       currency: 'VND',
       editor: 'Thiết kế phòng',
@@ -200,6 +212,12 @@ const resources = {
 
   zh: {
     translation: {
+      fixedGrid: ' 固定网格',
+      PLACE: '地点 / 地點',
+      INSPECT: '检查 / 檢查',
+      COPILOT: '驾驶 / 副駕駛',
+      SCENE: '场景 / 場景',
+      PROCUREMENT: '采购 / 採購',
       multiSelect: '若要多选，请按住 Shift 键。',
       currency: 'CNY',
       editor: '房间布局设计器',

@@ -1,6 +1,6 @@
 /* eslint jsdoc/require-jsdoc: off */
-import { useState } from 'react'
 import type { FormEvent, ReactElement } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { LayoutItem, RuleViolation } from '../types'
 import { EQUIPMENT } from '../types'
@@ -111,7 +111,7 @@ export function AssistantPanel({
     <section className='ce-panel ce-assistant'>
       <div className='ce-panel-heading'>
         <div>
-          <p className='ce-eyebrow'>03 / COPILOT</p>
+          <p className='ce-eyebrow'>03 / {t('COPILOT')}</p>
           <h2>
             <span className='ce-assistant-spark' aria-hidden='true'>
               ✳

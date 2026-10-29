@@ -79,13 +79,13 @@ export type LayoutItem = {
   connections?: string[]
 }
 
-/** A pair of equipment whose center points violate the spacing rule. */
+/** A pair of equipment whose footprint boundary clearance violates the spacing rule. */
 export type RuleViolation = {
   /** First item in the violating pair. */
   first: LayoutItem
   /** Second item in the violating pair. */
   second: LayoutItem
-  /** Distance between the two item centers, in meters. */
+  /** Shortest distance between the item footprint boundaries, in meters. */
   distance: number
 }
 

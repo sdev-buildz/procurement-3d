@@ -24,9 +24,44 @@ describe('layout helpers', () => {
     expect(constrainPosition(items[0]!, 20, -20)).toEqual({ x: 9.5, z: -5.5 })
   })
 
-  it('reports each pair closer than 0.6 meters', () => {
-    expect(findRuleViolations(items)).toHaveLength(1)
+  it('reports pairs with less than 0.6 meters between their boundaries', () => {
+    const violations = findRuleViolations(items)
+    expect(violations).toHaveLength(1)
+    expect(violations[0]).toMatchObject({
+      first: items[0],
+      second: items[1],
+      distance: 0,
+    })
     expect(findRuleViolations([items[0]!, items[2]!])).toHaveLength(0)
+
+    const driveAndCabinet = [
+      { ...items[0]!, x: 0, z: 0 },
+      { ...items[1]!, x: 1.5, z: 0 },
+    ]
+    expect(findRuleViolations(driveAndCabinet)[0]?.distance).toBe(0.5)
+    expect(
+      findRuleViolations([
+        driveAndCabinet[0]!,
+        { ...driveAndCabinet[1]!, x: 1.6 },
+      ])
+    ).toHaveLength(0)
+
+    const diagonalPair = [
+      { ...items[0]!, x: 0, z: 0 },
+      { ...items[1]!, x: 1.4, z: 1.2 },
+    ]
+    expect(findRuleViolations(diagonalPair)[0]?.distance).toBeCloseTo(
+      Math.sqrt(0.32)
+    )
+  })
+
+  it('uses the rotated equipment footprints when measuring clearance', () => {
+    const rotatedPair: LayoutItem[] = [
+      { ...items[2]!, x: 0, z: 0, rotation: 0 },
+      { ...items[1]!, x: 0, z: 1.35, rotation: 90 },
+    ]
+
+    expect(findRuleViolations(rotatedPair)[0]?.distance).toBeCloseTo(0.5)
   })
 
   it('counts quantities and prices from the current layout', () => {

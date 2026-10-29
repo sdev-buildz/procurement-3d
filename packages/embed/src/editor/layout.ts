@@ -6,6 +6,8 @@ import type {
   RuleViolation,
 } from './types'
 
+const minimumClearanceMeters = 0.6
+
 /** Small starting layout that demonstrates the three catalog types. */
 export const initialLayout: LayoutItem[] = [
   { id: 'drive-1', type: 'drive', x: -5, z: -1.5, rotation: 0 },
@@ -58,9 +60,9 @@ export function constrainPosition(
 }
 
 /**
- * Finds all item pairs whose center points are less than 0.6 meters apart.
+ * Finds all item pairs with less than 0.6 meters of footprint-to-footprint clearance.
  * @param items - Current room layout.
- * @returns Each violating pair and its measured distance.
+ * @returns Each violating pair and its measured boundary clearance.
  */
 export function findRuleViolations(items: LayoutItem[]): RuleViolation[] {
   const violations: RuleViolation[] = []
@@ -77,8 +79,34 @@ export function findRuleViolations(items: LayoutItem[]): RuleViolation[] {
       const second = items[secondIndex]
       if (!second) continue
 
-      const distance = Math.hypot(first.x - second.x, first.z - second.z)
-      if (distance < 0.6) violations.push({ first, second, distance })
+      const firstEquipment = EQUIPMENT[first.type]
+      const secondEquipment = EQUIPMENT[second.type]
+      const firstRotated = Math.abs(first.rotation % 180) === 90
+      const secondRotated = Math.abs(second.rotation % 180) === 90
+      const firstWidth = firstRotated
+        ? firstEquipment.depth
+        : firstEquipment.width
+      const firstDepth = firstRotated
+        ? firstEquipment.width
+        : firstEquipment.depth
+      const secondWidth = secondRotated
+        ? secondEquipment.depth
+        : secondEquipment.width
+      const secondDepth = secondRotated
+        ? secondEquipment.width
+        : secondEquipment.depth
+      const gapX = Math.max(
+        Math.abs(first.x - second.x) - (firstWidth + secondWidth) / 2,
+        0
+      )
+      const gapZ = Math.max(
+        Math.abs(first.z - second.z) - (firstDepth + secondDepth) / 2,
+        0
+      )
+      const distance = Math.hypot(gapX, gapZ)
+      if (distance < minimumClearanceMeters - 1e-9) {
+        violations.push({ first, second, distance })
+      }
     }
   }
 

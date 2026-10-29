@@ -1,0 +1,8 @@
+{
+  "extends": ["./tsconfig.references.base.json"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2025", "DOM", "DOM.Iterable"]
+  },
+}
+1

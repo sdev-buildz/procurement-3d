@@ -1,0 +1,12 @@
+{
+  "name": "@packages/optimizer-3d",
+  "version": "0.0.0",
+  "description": "Accepts gtlf files and optimizes them. Shows before and after states.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

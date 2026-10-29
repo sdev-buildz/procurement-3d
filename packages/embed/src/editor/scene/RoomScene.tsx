@@ -160,6 +160,35 @@ function EquipmentModel({
           />
         </mesh>
       ) : null}
+      {violation && !ghost ? (
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, 0.035, 0]}
+          renderOrder={2}
+        >
+          <ringGeometry args={[0.78, 0.86, 48]} />
+          <meshBasicMaterial
+            color='#ff6577'
+            transparent
+            opacity={0.96}
+            side={2}
+            depthWrite={false}
+          />
+        </mesh>
+      ) : null}
+      {violation && !ghost ? (
+        <mesh
+          position={[
+            0,
+            Math.max(equipment.height + 0.14, EQUIPMENT.cabinet.height + 0.15),
+            0,
+          ]}
+          renderOrder={3}
+        >
+          <sphereGeometry args={[0.1, 16, 12]} />
+          <meshBasicMaterial color='#ff6577' />
+        </mesh>
+      ) : null}
       {item.type === 'drive' ? (
         <>
           <mesh position={[0, equipment.height * 0.43, 0]} castShadow>

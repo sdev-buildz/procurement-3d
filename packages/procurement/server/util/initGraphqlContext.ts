@@ -25,11 +25,12 @@ export const initGraphqlContext = async (
   context: GraphqlContextType
 ): Promise<CustomGraphqlContextType> => {
   const payload = authenticate(context)
-  let user: Pick<User1, 'id' | 'role'> | undefined | null
+  let user: Pick<User1, 'id' | 'email' | 'role'> | undefined | null
   if (isValidAuthPayload(payload)) {
     user = await prisma.user1.findFirst({
       select: {
         id: true,
+        email: true,
         role: true,
       },
       where: {

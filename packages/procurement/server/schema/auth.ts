@@ -54,6 +54,16 @@ const derivePasswordHash = (password: string, salt: string) =>
     })
   })
 
+builder.queryField('me', (t) =>
+  t.field({
+    type: UserRef,
+    nullable: true,
+    description:
+      'The currently authenticated user, if a valid token is present.',
+    resolve: (_parent, _args, context) => context.currentUser ?? null,
+  })
+)
+
 builder.mutationField('login', (t) =>
   t.field({
     type: LoginResultRef,

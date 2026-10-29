@@ -89,6 +89,9 @@ input PaginationInput {
 type Query {
   """Used by buyers to review bids."""
   bidsOfRfq(filter: FilterInput, rfqId: Int!): Rfq
+
+  """The currently authenticated user, if a valid token is present."""
+  me: LoginUser
 }
 
 """A request for quotation"""

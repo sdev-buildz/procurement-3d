@@ -40,6 +40,9 @@ const config: KnipConfig = {
         './web-client/lib/colors.ts',
       ],
     },
+    'packages/embed': {
+      ...webAppWorkspaceConfig,
+    },
     'packages/db': {
       ignoreDependencies: [
         '@prisma/client',

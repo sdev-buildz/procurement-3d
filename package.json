@@ -7,6 +7,7 @@
     "start-server": "pnpm --filter=./packages/procurement run start-server",
     "start-server:watch": "pnpm --filter=./packages/procurement run start-server:watch",
     "start-react:watch": "pnpm --filter=./packages/procurement run start-react:watch",
+    "start-embed:watch": "pnpm --filter=./packages/embed run start-react:watch",
     "build:react": "pnpm --filter=./packages/procurement run build:react",
     "build:gql-types": "pnpm --filter=./packages/db --filter=./packages/procurement run build:gql-types",
     "check": "turbo turbo-build prettier:check lint type-check coverage:ci knip:ci e2e:ci",

@@ -36,7 +36,7 @@ export const NavBar = () => {
           component='div'
           sx={{ flexGrow: 1, flexWrap: 'nowrap', whiteSpace: 'nowrap' }}
         >
-          Enterprise Procurement Workspace
+          Enterprise Workspacefor Procurement, and Product Configurations in 3D
         </Typography>
 
         <FormControlLabel

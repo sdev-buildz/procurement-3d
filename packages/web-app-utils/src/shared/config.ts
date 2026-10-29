@@ -16,6 +16,7 @@ const apiServerPort: number = Number(
   process.env.PORT ?? (process.env.CI ? 3080 : 443)
 )
 const webClientPort: number = Number(process.env.WEB_CLIENT_PORT ?? 3000)
+const embedClientPort: number = Number(process.env.EMBED_CLIENT_PORT ?? 3001)
 
 /**
  * The host configurations such as host name and port number.
@@ -51,6 +52,16 @@ export const sharedConfig = {
     process.env.WEB_CLIENT_ORIGIN ??
     process.env.ORIGIN ??
     `https://localhost:${webClientPort}`,
+
+  /** The port of the standalone 3D editor iframe app. */
+  embedClientPort,
+
+  /**
+   * The origin of the standalone 3D editor iframe app.
+   * Hosted on a different localhost port than the procurement web client.
+   */
+  embedClientOrigin:
+    process.env.EMBED_CLIENT_ORIGIN ?? `https://localhost:${embedClientPort}`,
 
   /** The port of this server's endpoint */
   environment: (process.env.IS_PRODUCTION === 'true' ? 'PROD' : 'DEV') as

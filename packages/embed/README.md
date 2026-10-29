@@ -1,7 +1,13 @@
 # 3D electrical-room editor
 
-This package exports `ConfigEditor`, a self-contained React editor used by the
-procurement preview route at `/3d-editor`.
+This package exports `ConfigEditor`, a self-contained React editor. Procurement
+hosts it as an iframe on a separate localhost origin (`https://localhost:3001`
+by default) at `/sales/editor`. When the editor is iframed, it requests the
+host auth token over `postMessage`, signs in with the procurement GraphQL `me`
+query, and shows the current user the same way the procurement app does.
+
+Run the iframe app with `pnpm start-embed:watch` (in addition to
+`pnpm start-react:watch` for the procurement host).
 
 ## Structure
 

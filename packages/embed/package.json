@@ -10,16 +10,20 @@
     }
   },
   "scripts": {
-    "test": "vitest run src/editor/layout.test.ts"
+    "start-react:watch": "tsx ./webpack/webpack.dev-server.ts",
+    "test": "vitest run src"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@packages/web-app-utils": "workspace:*",
     "@react-three/a11y": "^3.0.0",
     "@react-three/fiber": "^9.8.2",
     "i18next": "^25.8.13",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "react-i18next": "^16.5.4",
     "three": "^0.186.1"
   },
@@ -30,6 +34,10 @@
   "devDependencies": {
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@types/three": "^0.183.1"
+    "@types/three": "^0.183.1",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "webpack": "catalog:",
+    "webpack-cli": "^6.0.1"
   }
 }

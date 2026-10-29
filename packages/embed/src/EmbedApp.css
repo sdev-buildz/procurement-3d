@@ -1,0 +1,62 @@
+.embed-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #101820;
+  color: #e8eff4;
+  font-family: Inter, 'Roboto', ui-sans-serif, system-ui, sans-serif;
+}
+
+.embed-user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid #2b3a45;
+  background: #111111;
+}
+
+.embed-user-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.embed-user-welcome {
+  margin: 0;
+  color: #6bc3e2;
+  font-size: 0.875rem;
+}
+
+.embed-user-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.embed-user-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #111111;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.embed-status {
+  margin: 2rem auto;
+  max-width: 28rem;
+  text-align: center;
+  color: #91a1ac;
+}
+
+.embed-app .ce-shell {
+  flex-grow: 1;
+  min-height: 0;
+}

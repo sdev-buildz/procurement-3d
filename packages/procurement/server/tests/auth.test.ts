@@ -71,6 +71,72 @@ const executeLogin = (email: string, password: string) =>
     }),
   })
 
+const meQuery = `
+  query Me {
+    me {
+      id
+      email
+      role
+    }
+  }
+`
+
+type MeResponse = {
+  data?: {
+    me: {
+      id: string
+      email: string
+      role: string
+    } | null
+  }
+  errors?: Array<{ message: string }>
+}
+
+describe('me query', () => {
+  it('returns the authenticated user', async () => {
+    const yogaWithUser = createYoga({
+      schema,
+      context: () => ({
+        currentUser: {
+          id: testUser.id,
+          email: testUser.email,
+          role: testUser.role,
+        },
+        reqOrigin: '',
+        pubsub,
+      }),
+    })
+
+    const response = await yogaWithUser.fetch('http://localhost/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: meQuery }),
+    })
+    const result = (await response.json()) as MeResponse
+
+    expect(response.status).toBe(200)
+    expect(result.errors).toBeUndefined()
+    expect(result.data?.me).toEqual({
+      id: '1',
+      email: testUser.email,
+      role: testUser.role,
+    })
+  })
+
+  it('returns null when no user is authenticated', async () => {
+    const response = await yoga.fetch('http://localhost/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: meQuery }),
+    })
+    const result = (await response.json()) as MeResponse
+
+    expect(response.status).toBe(200)
+    expect(result.errors).toBeUndefined()
+    expect(result.data?.me).toBeNull()
+  })
+})
+
 describe('login mutation', () => {
   beforeEach(() => {
     vi.mocked(prisma.user1.findUnique).mockResolvedValue(testUser)

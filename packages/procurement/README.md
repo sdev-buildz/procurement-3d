@@ -9,3 +9,7 @@ flows, dashboards and an AI assistant, in English, Vietnamese and Simplified Chi
 
 The GraphQL endpoint is available at [https://localhost:443/api/graphql](https://localhost:443/api/graphql).
 GraphiQL is hosted at the endpoint.
+
+The 3D editor is hosted as a separate frontend at
+[https://localhost:3001](https://localhost:3001) and embedded from
+`/sales/editor`. Start it with `pnpm start-embed:watch`.

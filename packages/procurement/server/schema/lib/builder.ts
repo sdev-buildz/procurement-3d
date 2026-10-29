@@ -13,7 +13,7 @@ import type { pubsub } from '../../util/pubsub'
  *  The custom objects added to the context.
  */
 export type CustomGraphqlContextType = {
-  currentUser: Pick<User1, 'id' | 'role'> | undefined
+  currentUser: Pick<User1, 'id' | 'email' | 'role'> | undefined
   reqOrigin: string
   pubsub: typeof pubsub
 }

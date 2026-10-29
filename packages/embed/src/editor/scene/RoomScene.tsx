@@ -1,10 +1,10 @@
+import type { ThreeEvent } from '@react-three/fiber'
 import { Canvas, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import type { ThreeEvent } from '@react-three/fiber'
 import { BufferGeometry, Float32BufferAttribute } from 'three'
-import { EQUIPMENT, ROOM } from '../types'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { EquipmentType, LayoutItem } from '../types'
+import { EQUIPMENT, ROOM } from '../types'
 
 type RoomSceneProps = {
   /** Current room equipment. */
@@ -345,6 +345,7 @@ export function RoomScene({
   return (
     <Canvas
       shadows
+      gl={{ localClippingEnabled: true }}
       dpr={[1, 1.5]}
       camera={{
         position: topDown ? [0, 23, 0.01] : [14, 12, 16],

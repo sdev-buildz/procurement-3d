@@ -30,6 +30,9 @@ const userSeeds = [
   { email: 'supplier3@example.test', role: 'SUPPLIER' },
   { email: 'supplier4@example.test', role: 'SUPPLIER' },
   { email: 'supplier5@example.test', role: 'SUPPLIER' },
+  { email: 'supplier6@example.test', role: 'SUPPLIER' },
+  { email: 'supplier7@example.test', role: 'SUPPLIER' },
+  { email: 'supplier8@example.test', role: 'SUPPLIER' },
   { email: 'sales1@example.test', role: 'SALES_ENGINEER' },
   { email: 'sales2@example.test', role: 'SALES_ENGINEER' },
   { email: 'sales3@example.test', role: 'SALES_ENGINEER' },
@@ -80,6 +83,27 @@ const supplierSeeds = [
     taxId: 'SEED-TAX-005',
     country: 'VIETNAM',
     complianceStatus: 'PENDING',
+  },
+  {
+    email: 'supplier6@example.test',
+    companyName: 'Titan Fleet Components',
+    taxId: 'SEED-TAX-006',
+    country: 'INDIA',
+    complianceStatus: 'VERIFIED',
+  },
+  {
+    email: 'supplier7@example.test',
+    companyName: 'Pacific Motion Systems',
+    taxId: 'SEED-TAX-007',
+    country: 'CHINA',
+    complianceStatus: 'VERIFIED',
+  },
+  {
+    email: 'supplier8@example.test',
+    companyName: 'Ironclad Vehicle Supply',
+    taxId: 'SEED-TAX-008',
+    country: 'GLOBAL',
+    complianceStatus: 'VERIFIED',
   },
 ] as const
 
@@ -259,13 +283,13 @@ async function seedVehiclePart(models: VehicleModel[]): Promise<VehiclePart[]> {
 async function seedRfq(buyers: Buyer[]): Promise<Rfq[]> {
   const rfqs: Rfq[] = []
 
-  for (const {
+  for (const [seedIndex, {
     title,
     description,
     buyerEmail,
     bidClosingDate,
     deliveryDeadline,
-  } of rfqSeeds) {
+  }] of rfqSeeds.entries()) {
     const buyerSeed = requireRecord(
       buyerSeeds.find((candidate) => candidate.email === buyerEmail),
       `buyer seed ${buyerEmail}`
@@ -274,7 +298,10 @@ async function seedRfq(buyers: Buyer[]): Promise<Rfq[]> {
       buyers[buyerSeeds.indexOf(buyerSeed)],
       `buyer ${buyerEmail}`
     )
-    const existing = await prisma.rfq.findFirst({ where: { title } })
+    const existing =
+      seedIndex === 0
+        ? await prisma.rfq.findUnique({ where: { id: 1 } })
+        : await prisma.rfq.findFirst({ where: { title } })
     const data = {
       title,
       description,
@@ -287,7 +314,9 @@ async function seedRfq(buyers: Buyer[]): Promise<Rfq[]> {
     rfqs.push(
       existing
         ? await prisma.rfq.update({ where: { id: existing.id }, data })
-        : await prisma.rfq.create({ data })
+        : await prisma.rfq.create({
+            data: seedIndex === 0 ? { ...data, id: 1 } : data,
+          })
     )
   }
 
@@ -320,21 +349,18 @@ async function seedRfqLineItem(
   await prisma.rfqLineItem.deleteMany({ where: { rfqId: { in: rfqIds } } })
 
   const lineItemSeeds = [
-    {
-      rfqTitle: rfqSeeds[0].title,
-      partName: vehiclePartSeeds[0].name,
-      quantity: 120,
-    },
-    {
-      rfqTitle: rfqSeeds[0].title,
-      partName: vehiclePartSeeds[1].name,
-      quantity: 240,
-    },
-    {
-      rfqTitle: rfqSeeds[0].title,
-      partName: vehiclePartSeeds[2].name,
-      quantity: 80,
-    },
+    ...Array.from({ length: 40 }, (_, index) => {
+      const part = vehiclePartSeeds[index % vehiclePartSeeds.length]
+      if (part === undefined) {
+        throw new Error('Vehicle part seed data is empty.')
+      }
+
+      return {
+        rfqTitle: rfqSeeds[0].title,
+        partName: part.name,
+        quantity: 50 + (index % 10) * 20,
+      }
+    }),
     {
       rfqTitle: rfqSeeds[1].title,
       partName: vehiclePartSeeds[6].name,
@@ -372,8 +398,8 @@ async function seedRfqLineItem(
 
 async function seedBid(rfqs: Rfq[], suppliers: Supplier[]): Promise<Bid[]> {
   const bidSeeds = [
-    { rfqTitle: rfqSeeds[0].title, supplierIndexes: [0, 1, 2] },
-    { rfqTitle: rfqSeeds[1].title, supplierIndexes: [2, 3, 4] },
+    { rfqTitle: rfqSeeds[0].title, supplierIndexes: [0, 1, 2, 3, 4, 5, 6, 7] },
+    { rfqTitle: rfqSeeds[1].title, supplierIndexes: [0, 1, 2, 3, 4, 5, 6, 7] },
   ] as const
   const bids: Bid[] = []
 
@@ -425,36 +451,15 @@ function createBidLineSeeds(
   bids: Bid[],
   suppliers: Supplier[]
 ): BidLineSeed[] {
-  const suppliersByRfqAndLine = [
-    [
-      [0, 1],
-      [0, 1, 2],
-      [1, 2],
-    ],
-    [
-      [2, 3, 4],
-      [2, 4],
-      [3, 4],
-    ],
-  ] as const
   const lineSeeds: BidLineSeed[] = []
 
-  rfqs.forEach((rfq, rfqIndex) => {
+  rfqs.forEach((rfq) => {
     const rfqLineItems = lineItems.filter(
       (lineItem) => lineItem.rfqId === rfq.id
     )
 
     rfqLineItems.forEach((lineItem, lineIndex) => {
-      const supplierIndexes = requireRecord(
-        suppliersByRfqAndLine[rfqIndex]?.[lineIndex],
-        `supplier assignments for RFQ ${rfq.title}, line ${lineIndex + 1}`
-      )
-
-      supplierIndexes.forEach((supplierIndex, bidLineIndex) => {
-        const supplier = requireRecord(
-          suppliers[supplierIndex],
-          `supplier ${supplierIndex + 1}`
-        )
+      suppliers.forEach((supplier, bidLineIndex) => {
         const bid = requireRecord(
           bids.find(
             (candidate) =>
@@ -468,7 +473,7 @@ function createBidLineSeeds(
           bidId: bid.id,
           rfqLineItemId: lineItem.id,
           leadTimeWeeks: leadTimes[bidLineIndex % leadTimes.length]!,
-          totalAmount: 12500 + lineIndex * 2750 + supplierIndex * 900,
+          totalAmount: 12500 + lineIndex * 2750 + bidLineIndex * 900,
           technicalNotes: `Sample quote option ${bidLineIndex + 1}.`,
         })
       })
@@ -482,7 +487,7 @@ async function seedBidLineItem(
   bidLineSeeds: BidLineSeed[]
 ): Promise<BidLineItem[]> {
   return Promise.all(
-    bidLineSeeds.map((seed, index) => {
+    bidLineSeeds.map((seed) => {
       return prisma.bidLineItem.create({
         data: {
           leadTimeWeeks: seed.leadTimeWeeks,

@@ -2,6 +2,7 @@ import { useReactiveVar } from '@apollo/client/react'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { UserRole } from '@types-gen-react-apollo'
+import { ConfigEditor } from '@packages/embed-3d'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import { ReviewBids } from './components/Dashboards/ReviewBids'
 import { HomePage } from './components/HomePage/HomePage'
@@ -85,6 +86,7 @@ export function App() {
                 element={<ReviewBids rfqId={1} />}
               />
               <Route path='/supplier' element={<SupplierOnboarding />} />
+              <Route path='/3d-editor' element={<ConfigEditor />} />
               <Route
                 path='/sales-engineer'
                 element={<HomePage role={UserRole.SalesEngineer} />}

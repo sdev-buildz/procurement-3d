@@ -1,0 +1,9 @@
+{
+  "extends": ["../../tsconfig.references.base.json"],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "outDir": "./dist-tsc",
+    "lib": ["ES2025", "DOM", "DOM.Iterable"]
+  },
+  "include": ["./**/*.tsx", "./**/*.ts"]
+}

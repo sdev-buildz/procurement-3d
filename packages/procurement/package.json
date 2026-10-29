@@ -19,6 +19,7 @@
     "@mui/icons-material": "^9.4.0",
     "@mui/material": "^9.4.0",
     "@mui/utils": "^9.4.0",
+    "@packages/embed-3d": "workspace:*",
     "@packages/logger": "workspace:*",
     "@pothos/core": "catalog:",
     "@pothos/plugin-prisma": "^4.14.2",

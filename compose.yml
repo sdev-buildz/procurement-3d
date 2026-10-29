@@ -17,3 +17,19 @@ services:
       interval: 2s
       timeout: 10s
       retries: 5
+
+  minio:
+    image: quay.io/minio/minio
+    container_name: local_object_storage
+    ports:
+      - '9000:9000' # API Port (Your React/Backend connects here)
+      - '9001:9001' # Web Console Port (Log in via your browser)
+    volumes:
+      - minio_data:/data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-rootadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-miniopassword}
+    command: server /data --console-address ":9001"
+
+volumes:
+  minio_data:

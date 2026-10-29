@@ -20,6 +20,7 @@
   "dependencies": {
     "@packages/web-app-utils": "workspace:*",
     "@react-three/a11y": "^3.0.0",
+    "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "i18next": "^25.8.13",
     "react": "catalog:",

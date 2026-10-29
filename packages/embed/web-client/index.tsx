@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { EmbedApp } from '../src/EmbedApp'
 import './index.css'
@@ -11,11 +10,7 @@ const mountApp = () => {
     document.getElementById('root') ?? document.body
   )
 
-  root.render(
-    <StrictMode>
-      <EmbedApp />
-    </StrictMode>
-  )
+  root.render(<EmbedApp />)
 }
 
 mountApp()

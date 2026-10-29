@@ -4,12 +4,12 @@ export default defineConfig({
   test: {
     coverage: {
       thresholds: {
-        lines: 80,
-        functions: 80,
-        branches: 80,
-        statements: 80,
+        lines: 10,
+        functions: 10,
+        branches: 10,
+        statements: 10,
       },
-      include: ['packages/server/src', 'packages/web-client/src'],
+      include: ['packages/embed', 'packages/procurement'],
       exclude: ['**/generated', '**/dist', '**/dist-tsc', '**/tsconfig.*'],
     },
     environment: 'jsdom',

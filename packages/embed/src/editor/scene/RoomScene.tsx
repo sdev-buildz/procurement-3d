@@ -133,6 +133,7 @@ export function RoomScene({
   const wireGeometry = useMemo(() => makeWireGeometry(items), [items])
   const draggingId = useRef<string | null>(null)
   const controlsRef = useRef<OrbitControls | null>(null)
+  const statsParentRef = useRef<HTMLDivElement>(null)
 
   const handleItemDown = (
     item: LayoutItem,
@@ -164,19 +165,23 @@ export function RoomScene({
   return (
     <>
       <A11yAnnouncer />
-      <Canvas
-        shadows
-        gl={{ localClippingEnabled: true }}
-        dpr={[1, 1.5]}
-        camera={{
-          position: topDown ? [0, 23, 0.01] : [14, 12, 16],
-          fov: topDown ? 39 : 42,
-          near: 0.1,
-          far: 100,
-        }}
-        onPointerMissed={onClearSelection}
-      >
-        <Stats />
+      <div ref={statsParentRef} className='ce-room-stats-parent'>
+        <Canvas
+          shadows
+          gl={{ localClippingEnabled: true }}
+          dpr={[1, 1.5]}
+          camera={{
+            position: topDown ? [0, 23, 0.01] : [14, 12, 16],
+            fov: topDown ? 39 : 42,
+            near: 0.1,
+            far: 100,
+          }}
+          onPointerMissed={onClearSelection}
+        >
+          <Stats
+            parent={statsParentRef}
+            className='ce-performance-stats'
+          />
         <color attach='background' args={['#101820']} />
         <ambientLight intensity={1.35} />
         <directionalLight
@@ -265,6 +270,7 @@ export function RoomScene({
           />
         ) : null}
       </Canvas>
+      </div>
     </>
   )
 }

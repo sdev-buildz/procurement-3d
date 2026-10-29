@@ -34,3 +34,71 @@ export const getRoleHomePath = (role: UserRole) => {
 export const isUserRole = (role: unknown): role is UserRole => {
   return typeof role === 'string' && userRoles.includes(role as UserRole)
 }
+
+interface LogoutCacheClient {
+  clearStore: () => Promise<unknown>
+}
+
+export interface LogoutCleanupOptions {
+  cacheClient?: LogoutCacheClient
+  localStorage?: Storage
+  sessionStorage?: Storage
+  cacheStorage?: CacheStorage
+  indexedDatabase?: IDBFactory
+  serviceWorker?: ServiceWorkerContainer
+}
+
+/**
+ * Clears persisted and cached browser state when a user logs out.
+ */
+export const clearLogoutData = async (
+  options: LogoutCleanupOptions = {}
+): Promise<void> => {
+  const browserLocalStorage =
+    options.localStorage ?? (typeof window === 'undefined' ? undefined : window.localStorage)
+  const browserSessionStorage =
+    options.sessionStorage ??
+    (typeof window === 'undefined' ? undefined : window.sessionStorage)
+
+  browserLocalStorage?.clear()
+  browserSessionStorage?.clear()
+
+  if (options.cacheClient) {
+    await options.cacheClient.clearStore()
+  }
+
+  const cacheStorage =
+    options.cacheStorage ?? (typeof caches === 'undefined' ? undefined : caches)
+  if (cacheStorage) {
+    const cacheNames = await cacheStorage.keys()
+    await Promise.all(cacheNames.map((name) => cacheStorage.delete(name)))
+  }
+
+  const indexedDatabase =
+    options.indexedDatabase ??
+    (typeof indexedDB === 'undefined' ? undefined : indexedDB)
+  if (indexedDatabase?.databases) {
+    const databases = await indexedDatabase.databases()
+    await Promise.all(
+      databases.map(
+        (database) =>
+          database.name &&
+          new Promise<void>((resolve, reject) => {
+            const request = indexedDatabase.deleteDatabase(database.name!)
+            request.addEventListener('success', () => resolve())
+            request.addEventListener('error', () =>
+              reject(request.error ?? new Error('Unable to delete browser database'))
+            )
+          })
+      )
+    )
+  }
+
+  const serviceWorker =
+    options.serviceWorker ??
+    (typeof navigator === 'undefined' ? undefined : navigator.serviceWorker)
+  if (serviceWorker) {
+    const registrations = await serviceWorker.getRegistrations()
+    await Promise.all(registrations.map((registration) => registration.unregister()))
+  }
+}

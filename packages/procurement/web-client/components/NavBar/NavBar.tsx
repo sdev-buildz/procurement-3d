@@ -1,4 +1,4 @@
-import { useReactiveVar } from '@apollo/client/react'
+import { useApolloClient, useReactiveVar } from '@apollo/client/react'
 import LogoutIcon from '@mui/icons-material/Logout'
 import AppBar from '@mui/material/AppBar'
 import Avatar from '@mui/material/Avatar'
@@ -11,6 +11,7 @@ import { visuallyHidden } from '@mui/utils'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router'
 import { AppContext } from '../../contexts/AppContext'
+import { clearLogoutData } from '../../util/auth'
 import { ColorModeSwitch } from './ColorModeSwitch'
 
 /**
@@ -20,6 +21,7 @@ export const NavBar = () => {
   const { isLoggedIn, user } = useContext(AppContext)
   const isLoggedInState = useReactiveVar(isLoggedIn)
   const navigate = useNavigate()
+  const apolloClient = useApolloClient()
 
   const { mode, setMode, systemMode } = useColorScheme()
 
@@ -74,11 +76,14 @@ export const NavBar = () => {
           <Button
             color='tertiary'
             variant='outlined'
-            onClick={() => {
-              window.localStorage.removeItem('authToken')
+            onClick={async () => {
               user(null)
               isLoggedIn(false)
-              navigate('/login', { replace: true })
+              try {
+                await clearLogoutData({ cacheClient: apolloClient })
+              } finally {
+                navigate('/login', { replace: true })
+              }
             }}
             startIcon={<LogoutIcon />}
           >

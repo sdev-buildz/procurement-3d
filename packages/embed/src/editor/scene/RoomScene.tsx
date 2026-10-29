@@ -1,4 +1,4 @@
-import { A11y, A11yAnnouncer } from '@react-three/a11y'
+import { A11yAnnouncer } from '@react-three/a11y'
 import { Stats } from '@react-three/drei'
 import type { ThreeEvent } from '@react-three/fiber'
 import { Canvas, useThree } from '@react-three/fiber'
@@ -7,7 +7,7 @@ import { BufferGeometry, Float32BufferAttribute } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { EquipmentType, LayoutItem } from '../types'
 import { ROOM } from '../types'
-import { EquipmentModel } from './EquipmentModel'
+import { EquipmentModel, InstancedEquipmentModels } from './EquipmentModel'
 
 type RoomSceneProps = {
   /** Current room equipment. */
@@ -227,28 +227,15 @@ export function RoomScene({
           <meshStandardMaterial color='#25313a' roughness={0.84} />
         </mesh>
 
-        {items.map((item) => (
-          <A11y
-            role='button'
-            description={`Click to select the ${item.type} with id ${item.id}`}
-            actionCall={() =>
-              console.log(
-                `${item.type} with id ${item.id} is clicked or activated via keyboard.`
-              )
-            }
-          >
-            <EquipmentModel
-              key={item.id}
-              item={item}
-              selected={selectedIds.has(item.id)}
-              violation={violationIds.has(item.id)}
-              onPointerDown={(event) => handleItemDown(item, event)}
-              onPointerMove={(event) => handleItemMove(item, event)}
-              onPointerUp={handleItemUp}
-              onPointerCancel={handleItemUp}
-            />
-          </A11y>
-        ))}
+        <InstancedEquipmentModels
+          items={items}
+          selectedIds={selectedIds}
+          violationIds={violationIds}
+          onPointerDown={(item, event) => handleItemDown(item, event)}
+          onPointerMove={(item, event) => handleItemMove(item, event)}
+          onPointerUp={handleItemUp}
+          onPointerCancel={handleItemUp}
+        />
         {previewItem ? (
           <EquipmentModel
             item={previewItem}

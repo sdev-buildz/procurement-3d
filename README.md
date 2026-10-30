@@ -155,3 +155,17 @@ Username: buyer1@example.test
 Password: oNW-h7W5PHIOF2LK--facbM7
 
 The onboarding page should open automatically.
+
+## GLB Optimization
+
+I took a 11.23 MB GLB file from [Khronos sample GQL files repo](https://github.khronos.org/glTF-Assets/model/CarConcept) and compressed it to 1.47 MB.
+
+| Metric             | Before optimization | After optimization |
+| ------------------ | ------------------: | -----------------: |
+| Size               |            11.23 MB |            1.47 MB |
+| Vertices           |             162,766 |            163,601 |
+| Triangles          |             213,347 |            213,347 |
+| Non-manifold edges |                 317 |                160 |
+| Boundary edges     |              13,889 |             12,075 |
+
+![alt text](./assets/compare-1.png)

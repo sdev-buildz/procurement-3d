@@ -50,7 +50,7 @@ If you have git installed, create a folder for this repository on your local mac
 git clone https://github.com/sdev-buildz/procurement-3d.git .
 ```
 
-If you don't have git installed, you can download the repository as a zip file from the [GitHub repository](https://github.com/sdev-buildz/procurement-3d). Unzip the file and open the folder in your preferred text editor.
+If you don't have git installed, you can download the repository as a [zip file](https://github.com/sdev-buildz/procurement-3d/archive/refs/heads/main.zip) from the GitHub repository. Unzip the file and open the folder in your preferred text editor.
 
 For the next steps, make sure you are in the root folder of the repository.
 

@@ -179,97 +179,96 @@ export function RoomScene({
           onPointerMissed={onClearSelection}
         >
           <Stats
-            parent={statsParentRef}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            parent={statsParentRef as any}
             className='ce-performance-stats'
           />
-        <color attach='background' args={['#101820']} />
-        <ambientLight intensity={1.35} />
-        <directionalLight
-          position={[-5, 12, 7]}
-          intensity={2.2}
-          castShadow
-          shadow-mapSize={[1024, 1024]}
-        />
-        <CameraControls
-          topDown={topDown}
-          onControlsReady={(controls) => {
-            controlsRef.current = controls
-          }}
-        />
-
-        <mesh
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, -0.035, 0]}
-          receiveShadow
-          onPointerDown={(event) => {
-            event.stopPropagation()
-            if (placementType) onPlace(event.point.x, event.point.z)
-            else onClearSelection()
-          }}
-          onPointerMove={(event) => {
-            if (draggingId.current) {
-              onDrag(draggingId.current, event.point.x, event.point.z)
-            }
-          }}
-          onPointerUp={handleItemUp}
-          onPointerCancel={handleItemUp}
-        >
-          <planeGeometry args={[ROOM.width, ROOM.depth]} />
-          <meshStandardMaterial color='#202b34' roughness={0.9} />
-        </mesh>
-        <lineSegments geometry={gridGeometry}>
-          <lineBasicMaterial color='#3a4954' transparent opacity={0.66} />
-        </lineSegments>
-        <lineSegments geometry={wireGeometry}>
-          <lineBasicMaterial color='#75e6d1' transparent opacity={0.9} />
-        </lineSegments>
-        <mesh position={[0, 1.5, -ROOM.depth / 2]} receiveShadow>
-          <boxGeometry args={[ROOM.width, 3, 0.12]} />
-          <meshStandardMaterial color='#28343d' roughness={0.84} />
-        </mesh>
-        <mesh position={[-ROOM.width / 2, 1.5, 0]} receiveShadow>
-          <boxGeometry args={[0.12, 3, ROOM.depth]} />
-          <meshStandardMaterial color='#25313a' roughness={0.84} />
-        </mesh>
-
-        <InstancedEquipmentModels
-          items={items}
-          selectedIds={selectedIds}
-          violationIds={violationIds}
-          onPointerDown={(item, event) => handleItemDown(item, event)}
-          onPointerMove={(item, event) => handleItemMove(item, event)}
-          onPointerUp={handleItemUp}
-          onPointerCancel={handleItemUp}
-        />
-        {items
-          .filter(
-            (item) =>
-              item.type === 'carConcept' ||
-              item.type === 'commercialRefrigerator' ||
-              item.type === 'sheenChair' ||
-              item.type === 'diffuseTransmissionTeacup'
-          )
-          .map((item) => (
-            <EquipmentModel
-              key={item.id}
-              item={item}
-              selected={selectedIds.has(item.id)}
-              violation={violationIds.has(item.id)}
-              onPointerDown={(event) => handleItemDown(item, event)}
-              onPointerMove={(event) => handleItemMove(item, event)}
-              onPointerUp={handleItemUp}
-              onPointerCancel={handleItemUp}
-            />
-          ))}
-        {previewItem ? (
-          <EquipmentModel
-            item={previewItem}
-            selected={false}
-            violation={false}
-            ghost
+          <color attach='background' args={['#101820']} />
+          <ambientLight intensity={1.35} />
+          <directionalLight
+            position={[-5, 12, 7]}
+            intensity={2.2}
+            castShadow
+            shadow-mapSize={[1024, 1024]}
           />
-        ) : null}
-      </Canvas>
+          <CameraControls
+            topDown={topDown}
+            onControlsReady={(controls) => {
+              controlsRef.current = controls
+            }}
+          />
+          <mesh
+            rotation={[-Math.PI / 2, 0, 0]}
+            position={[0, -0.035, 0]}
+            receiveShadow
+            onPointerDown={(event) => {
+              event.stopPropagation()
+              if (placementType) onPlace(event.point.x, event.point.z)
+              else onClearSelection()
+            }}
+            onPointerMove={(event) => {
+              if (draggingId.current) {
+                onDrag(draggingId.current, event.point.x, event.point.z)
+              }
+            }}
+            onPointerUp={handleItemUp}
+            onPointerCancel={handleItemUp}
+          >
+            <planeGeometry args={[ROOM.width, ROOM.depth]} />
+            <meshStandardMaterial color='#202b34' roughness={0.9} />
+          </mesh>
+          <lineSegments geometry={gridGeometry}>
+            <lineBasicMaterial color='#3a4954' transparent opacity={0.66} />
+          </lineSegments>
+          <lineSegments geometry={wireGeometry}>
+            <lineBasicMaterial color='#75e6d1' transparent opacity={0.9} />
+          </lineSegments>
+          <mesh position={[0, 1.5, -ROOM.depth / 2]} receiveShadow>
+            <boxGeometry args={[ROOM.width, 3, 0.12]} />
+            <meshStandardMaterial color='#28343d' roughness={0.84} />
+          </mesh>
+          <mesh position={[-ROOM.width / 2, 1.5, 0]} receiveShadow>
+            <boxGeometry args={[0.12, 3, ROOM.depth]} />
+            <meshStandardMaterial color='#25313a' roughness={0.84} />
+          </mesh>
+          <InstancedEquipmentModels
+            items={items}
+            selectedIds={selectedIds}
+            violationIds={violationIds}
+            onPointerDown={(item, event) => handleItemDown(item, event)}
+            onPointerMove={(item, event) => handleItemMove(item, event)}
+            onPointerUp={handleItemUp}
+            onPointerCancel={handleItemUp}
+          />
+          {items
+            .filter(
+              (item) =>
+                item.type === 'carConcept' ||
+                item.type === 'commercialRefrigerator' ||
+                item.type === 'sheenChair' ||
+                item.type === 'diffuseTransmissionTeacup'
+            )
+            .map((item) => (
+              <EquipmentModel
+                key={item.id}
+                item={item}
+                selected={selectedIds.has(item.id)}
+                violation={violationIds.has(item.id)}
+                onPointerDown={(event) => handleItemDown(item, event)}
+                onPointerMove={(event) => handleItemMove(item, event)}
+                onPointerUp={handleItemUp}
+                onPointerCancel={handleItemUp}
+              />
+            ))}
+          {previewItem ? (
+            <EquipmentModel
+              item={previewItem}
+              selected={false}
+              violation={false}
+              ghost
+            />
+          ) : null}
+        </Canvas>
       </div>
     </>
   )

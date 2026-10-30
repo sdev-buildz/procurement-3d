@@ -8,6 +8,19 @@ When I added 500 objects to the scene, moving or rotating objects causes the fra
 
 ![3d-editor-micro-app-embedded-inside-host](./assets/embedded-iframe-3d-editor-screenshot.png)
 
+### AI Usage
+
+I used AI to create i18n translations, improve docs including README.md, spot hidden bugs, polish UI, generate seed data for testing, and to create the 3D editor micro-app.
+
+I setup guardrails to enforce code quality and security standards using ESLint, Prettier, GitHub CodeQL Acrtion, test cases, AGENTS.md, etc...
+I used git work-trees to allow multiple AI agents and myself to work parallelly in different branches of the same repository without conflicting with each other’s work.
+
+Since the 3D viewer is more closely related to visual features, agents working on it spawned real browser instances and took screenshots to analyse the scenes. I monitored at these circumstances to ensure that the agents don’t use too much credits.
+
+I limiting their workspaces to specific directories and files avoiding unwanted token consumptions. Whenever possible I provided relevant line numbers and file paths, relieving the agents from having to search through the codebase files.
+
+I used agents to summarize huge manuals and API references.
+
 ## Follow the below steps to run the app locally
 
 ## 🖥️ System Requirements & Prerequisites

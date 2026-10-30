@@ -64,7 +64,7 @@ pnpm i
 
 ### 3. Start Database Using Docker
 
-In the folder ./packages/db, add and configure a .env file using ./packages/.env.example as reference.
+In the folder ./packages/db, add and configure a .env file using ./packages/db/.env.example as reference.
 
 The database container requires Docker running in the background.
 
@@ -81,7 +81,7 @@ _(Keep this terminal open to keep the database active.)_
 
 ### 4. Set up the database
 
-In case the database that you configured in the **DATABASE_URL** environment variable in the ./packages/.env does not exist, you can create it using pgadmin. In pgadmin, add a new server and create the database.
+In case the database that you configured in the **DATABASE_URL** environment variable in the ./packages/db/.env does not exist, you can create it using pgadmin. In pgadmin, add a new server and create the database.
 
 Run this command to create the schema in the database.
 

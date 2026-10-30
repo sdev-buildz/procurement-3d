@@ -10,7 +10,7 @@ When I added 500 objects to the scene, moving or rotating objects causes the fra
 
 ### AI Usage
 
-I used AI to create i18n translations, improve docs such as README.md, spot hidden bugs, polish UI, generate seed data for testing, to create the 3D editor micro-app, and to summarize manuals and API references.
+I used AI to create i18n translations, improve docs such as README.md, spot hidden bugs, polish UI, generate seed data for testing, create the 3D editor micro-app, and summarize manuals and API references.
 
 I setup guardrails to enforce code quality and security standards using ESLint, Prettier, GitHub CodeQL Action, test cases, AGENTS.md, etc...
 
@@ -74,7 +74,7 @@ The database container requires Docker running in the background.
 Once Docker is fully active, open a dedicated terminal window/tab and run:
 
 ```shell
-docker compose up
+pnom run docker:compose-up
 ```
 
 _(Keep this terminal open to keep the database active.)_
@@ -83,13 +83,19 @@ _(Keep this terminal open to keep the database active.)_
 
 In case the database that you configured in the **DATABASE_URL** environment variable in the ./packages/db/.env does not exist, you can create it using pgadmin. In pgadmin, add a new server and create the database.
 
-Run this command to create the schema in the database.
+Run the below command to generate TypeScript types for the database schema.
+
+```shell
+pnpm run prisma:generate
+```
+
+Run the below command to create the schema in the database.
 
 ```shell
 pnpm run prisma:migrate-prod
 ```
 
-Run this command to seed the database with sample data.
+Run the below command to seed the database with sample data.
 
 ```shell
 pnpm run prisma:seed
@@ -103,31 +109,31 @@ Open a **new** dedicated terminal window/tab and run:
 pnpm run start-server
 ```
 
-It runs at "https://localhost:443". You can configure the port by setting **API_SERVER_PORT** in ./packages/procurement/.env file.
+The server runs at "https://localhost:443" by default. You can configure the port by setting **API_SERVER_PORT** in ./packages/procurement/.env file.
 
 _(Leave this terminal open to keep the backend server alive.)_
 
 ### 5. Start React Server for the Surface 1 and the host application
 
-Open another **new** dedicated terminal window/tab to start the frontend application:
+In a new terminal, run the below command.
 
 ```shell
 pnpm run start-react:watch
 ```
 
-It runs at "https://localhost:3000". You can configure the port by setting **WEB_CLIENT_PORT** in ./packages/procurement/.env file.
+The server runs at "https://localhost:3000" by default. You can configure the port by setting **WEB_CLIENT_PORT** in ./packages/procurement/.env file.
 
 _(Leave this terminal open. Your default browser should automatically open the app's local interface.)_
 
 ### 6. Start the micro-app server
 
-Open another **new** dedicated terminal window/tab to start the micro=app:
+In a new terminal, run the below command.
 
 ```shell
 pnpm run start-embed:watch
 ```
 
-It runs at "https://localhost:3001". You can configure the port by setting **EMBED_CLIENT_PORT** in ./packages/embed/.env file.
+The server runs at "https://localhost:3001" by default. You can configure the port by setting **EMBED_CLIENT_PORT** in ./packages/embed/.env file.
 
 _(Leave this terminal open. Your default browser should automatically open the app's local interface.)_
 
@@ -144,7 +150,7 @@ Once the login page opens, use these credentials to login.
 Username: sales1@example.test  
 Password: oNW-h7W5PHIOF2LK--facbM7
 
-Click `Browse 3D Layouts` button.
+Once logged in, click `Browse 3D Layouts` button.
 
 Now the micro-app should open automatically.
 
@@ -166,7 +172,7 @@ Click `Logout` at top right corner of the screen. Once the login page opens, use
 Username: buyer1@example.test  
 Password: oNW-h7W5PHIOF2LK--facbM7
 
-The onboarding page should open automatically.
+The RFQ grid should open automatically.
 
 ## GLB Optimization
 

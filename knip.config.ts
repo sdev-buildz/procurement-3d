@@ -38,6 +38,7 @@ const config: KnipConfig = {
       entry: [
         './server/schema/prisma-objects.ts',
         './web-client/lib/colors.ts',
+        './web-client/mount.tsx',
       ],
     },
     'packages/embed': {

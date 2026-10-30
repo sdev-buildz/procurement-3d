@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client'
-import { EmbedApp } from '../src/EmbedApp'
-import './index.css'
+import { EmbedApp } from './EmbedApp'
+import './mount.css'
 
 /**
  * Mounts the standalone 3D editor app into the HTML document.

@@ -49,7 +49,7 @@ export const getWebpackConfig = (
           mode: 'production',
         }),
     entry: {
-      mainApp: './web-client/index.tsx',
+      mainApp: './src/mount.tsx',
     },
     output: {
       publicPath: '/',

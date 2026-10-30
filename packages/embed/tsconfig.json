@@ -3,7 +3,10 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "outDir": "./dist-tsc",
-    "lib": ["ES2025", "DOM", "DOM.Iterable"]
+    "lib": ["ES2025", "DOM", "DOM.Iterable"],
+    "paths": {
+      "@deploy-config": ["./config/deploy.ts"]
+    }
   },
   "include": ["./**/*.tsx", "./**/*.ts"]
 }

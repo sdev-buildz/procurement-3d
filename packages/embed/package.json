@@ -11,7 +11,8 @@
   },
   "scripts": {
     "start-react:watch": "tsx --env-file-if-exists=.env ./webpack/webpack.dev-server.ts",
-    "test": "vitest run src"
+    "test": "vitest run src",
+    "build": "tsx ./webpack/webpack.prod-bundler.ts"
   },
   "keywords": [],
   "author": "",

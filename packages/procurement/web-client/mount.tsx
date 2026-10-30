@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom/client'
 import { App } from './App'
 import { apolloClient } from './contexts/ApolloClient'
 import { HtmlHeadChildren } from './HtmlHeadChildren'
-import './index.css'
+import './mount.css'
 
 /**
  * Mounts the children of the head tag such as Script tags, Link tags, etc...

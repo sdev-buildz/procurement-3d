@@ -10,16 +10,15 @@ When I added 500 objects to the scene, moving or rotating objects causes the fra
 
 ### AI Usage
 
-I used AI to create i18n translations, improve docs including README.md, spot hidden bugs, polish UI, generate seed data for testing, and to create the 3D editor micro-app.
+I used AI to create i18n translations, improve docs such as README.md, spot hidden bugs, polish UI, generate seed data for testing, to create the 3D editor micro-app, and to summarize manuals and API references.
 
-I setup guardrails to enforce code quality and security standards using ESLint, Prettier, GitHub CodeQL Acrtion, test cases, AGENTS.md, etc...
-I used git work-trees to allow multiple AI agents and myself to work parallelly in different branches of the same repository without conflicting with each other’s work.
+I setup guardrails to enforce code quality and security standards using ESLint, Prettier, GitHub CodeQL Action, test cases, AGENTS.md, etc...
 
-Since the 3D viewer is more closely related to visual features, agents working on it spawned real browser instances and took screenshots to analyse the scenes. I monitored at these circumstances to ensure that the agents don’t use too much credits.
+I used git worktrees to allow multiple AI agents and myself to work parallely in different branches of the same repository without conflicting with each other’s work.
 
-I limiting their workspaces to specific directories and files avoiding unwanted token consumptions. Whenever possible I provided relevant line numbers and file paths, relieving the agents from having to search through the codebase files.
+Since the 3D viewer is more closely related to visual features, agents working on it spawned real browser instances and took screenshots to analyse the scenes. I kept monitoring at these circumstances to prevent overuse of tokens. Whenever possible, I did the resource heavy tasks such as browser testing, thus reducing token usage.
 
-I used agents to summarize huge manuals and API references.
+I limited the agents' work areas to specific directories and files to avoid redundant token consumption. Whenever possible, I provided relevant line numbers and file paths, relieving the agents from having to search through the codebase files.
 
 ## Follow the below steps to run the app locally
 

@@ -52,7 +52,7 @@ export const getWebpackConfig = (
       mainApp: './src/mount.tsx',
     },
     output: {
-      publicPath: '/',
+      publicPath: '',
       filename: (pathData) => {
         if (
           pathData.chunk?.name === 'serviceWorker' ||

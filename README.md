@@ -2,6 +2,8 @@
     <h1 align="center">Enterprise Procurement Workspace and a Embedded 3D Configuration Workspace</h1>
 </hgroup>
 
+You can access the micro-app (3D editor) at https://sdev-buildz.github.io/procurement-3d/.
+
 I have a constant 120 FPS when using the micro-app on my laptop. My laptop is Motobook 60 Pro which has an Intel Core Ultra 5 225H 16 Core CPU (1.70 GHz), 16 GB RAM, 512 GB SSD, Intel Arc 130T GPU (8GB) (128 MB), a monitor with 2.8 K resolution, and 120 FPS refresh rate.
 
 When I added 500 objects to the scene, moving or rotating objects causes the frame rate to drop to around 10 to 30 FPS for around 5 -10 seconds. But moving the camera without moving or rotating any objects, maintained a constant 120 FPS.

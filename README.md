@@ -2,6 +2,8 @@
     <h1 align="center">Enterprise Procurement Workspace and a Embedded 3D Configuration Workspace</h1>
 </hgroup>
 
+You can access the micro-app (3D editor) at https://sdev-buildz.github.io/procurement-3d/.
+
 I have a constant 120 FPS when using the micro-app on my laptop. My laptop is Motobook 60 Pro which has an Intel Core Ultra 5 225H 16 Core CPU (1.70 GHz), 16 GB RAM, 512 GB SSD, Intel Arc 130T GPU (8GB) (128 MB), a monitor with 2.8 K resolution, and 120 FPS refresh rate.
 
 When I added 500 objects to the scene, moving or rotating objects causes the frame rate to drop to around 10 to 30 FPS for around 5 -10 seconds. But moving the camera without moving or rotating any objects, maintained a constant 120 FPS.
@@ -28,13 +30,13 @@ Before running the application, ensure you have the following prerequisites inst
 
 ### For Windows 11
 
-- **Node.js & pnpm:** Install via the [Node.js official website](https://nodejs.org) or via terminal: `winget install OpenJS.NodeJS`. Then install pnpm globally: `npm i -g pnpm`.
+- **Node.js (version <= 24) & pnpm (version 11):** Install via the [Node.js official website](https://nodejs.org) or via terminal: `winget install OpenJS.NodeJS --version 24.22.1`. Then install pnpm globally: `npm install --global pnpm@11`.
 - **Docker:** Download and install **Docker Desktop for Windows**. Ensure the WSL 2 backend option is enabled during setup.
 - **Terminal:** Use **PowerShell**, **bash**, or **Windows Terminal** (avoid legacy Command Prompt).
 
 ### For macOS
 
-- **Node.js & pnpm:** Install via [Homebrew](https://brew.sh): `brew install node && npm i -g pnpm`.
+- **Node.js (version <= 24) & pnpm (version 116:** Install via [Homebrew](https://brew.sh): `brew install node@24 && npm install --global pnpm@11`.
 - **Docker:** Download and install **Docker Desktop for Mac** (make sure to select the correct installer for your Mac: Apple Silicon or Intel chip).
 - **Terminal:** Use the native **Terminal app** or **iTerm2**.
 

@@ -28,13 +28,13 @@ Before running the application, ensure you have the following prerequisites inst
 
 ### For Windows 11
 
-- **Node.js & pnpm:** Install via the [Node.js official website](https://nodejs.org) or via terminal: `winget install OpenJS.NodeJS`. Then install pnpm globally: `npm i -g pnpm`.
+- **Node.js (version <= 24) & pnpm (version 11):** Install via the [Node.js official website](https://nodejs.org) or via terminal: `winget install OpenJS.NodeJS --version 24.22.1`. Then install pnpm globally: `npm install --global pnpm@11`.
 - **Docker:** Download and install **Docker Desktop for Windows**. Ensure the WSL 2 backend option is enabled during setup.
 - **Terminal:** Use **PowerShell**, **bash**, or **Windows Terminal** (avoid legacy Command Prompt).
 
 ### For macOS
 
-- **Node.js & pnpm:** Install via [Homebrew](https://brew.sh): `brew install node && npm i -g pnpm`.
+- **Node.js (version <= 24) & pnpm (version 116:** Install via [Homebrew](https://brew.sh): `brew install node@24 && npm install --global pnpm@11`.
 - **Docker:** Download and install **Docker Desktop for Mac** (make sure to select the correct installer for your Mac: Apple Silicon or Intel chip).
 - **Terminal:** Use the native **Terminal app** or **iTerm2**.
 

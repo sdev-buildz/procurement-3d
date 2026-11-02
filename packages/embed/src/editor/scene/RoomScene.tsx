@@ -110,14 +110,23 @@ export function RoomScene({
       <A11yAnnouncer />
       <div ref={statsParentRef} className='ce-room-stats-parent'>
         <Canvas
+          key={topDown ? 'orthographic-camera' : 'perspective-camera'}
           shadows
           gl={{ localClippingEnabled: true }}
           dpr={[1, 1.5]}
+          orthographic={topDown}
           camera={{
-            position: topDown ? [0, 23, 0.01] : [14, 12, 16],
-            fov: topDown ? 39 : 42,
+            position: topDown ? [0, 10, 0.01] : [14, 12, 16],
             near: 0.1,
             far: 100,
+            ...(topDown
+              ? {
+                  left: -12,
+                  right: 12,
+                  top: 10,
+                  bottom: -10,
+                }
+              : { fov: 42 }),
           }}
           onPointerMissed={onClearSelection}
         >

@@ -117,7 +117,8 @@ export const EQUIPMENT: ItemType[] = [
     models: [
       {
         id: 4,
-        url: getAssetUrl('CarConcept'),
+        // url: getAssetUrl('CarConcept'),
+        url: getAssetUrl('output'),
         size: 0,
       },
     ],

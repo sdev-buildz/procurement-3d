@@ -1,7 +1,9 @@
 import { useGLTF } from '@react-three/drei'
+import { useThree } from '@react-three/fiber'
 import { Suspense, useMemo } from 'react'
 import type { Group } from 'three'
 import { Box3, Vector3 } from 'three'
+import { KTX2Loader } from 'three-stdlib'
 import type { ItemType } from '../items'
 
 /**
@@ -38,7 +40,14 @@ const LoadedGlbModel = ({
   modelUrl: string
   ghost: boolean
 }) => {
-  const { scene } = useGLTF(modelUrl)
+  const gl = useThree((state) => state.gl)
+
+  const { scene } = useGLTF(modelUrl, true, true, (loader) => {
+    const ktx2Loader = new KTX2Loader()
+    ktx2Loader.setTranscoderPath('https://jsdelivr.net')
+    ktx2Loader.detectSupport(gl)
+    loader.setKTX2Loader(ktx2Loader)
+  })
 
   /**
    * Scaled down version of the loaded model to fit into our equipment's dimensions.
@@ -67,6 +76,7 @@ const LoadedGlbModel = ({
     const normalizedBounds = new Box3().setFromObject(clonedScene)
     const center = normalizedBounds.getCenter(new Vector3())
     clonedScene.position.set(-center.x, -normalizedBounds.min.y, -center.z)
+
     return clonedScene
   }, [scene, equipment.width, equipment.height, equipment.depth])
 

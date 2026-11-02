@@ -157,10 +157,7 @@ export const getWebpackConfig = (
 
     plugins: [
       new CopyPlugin({
-        patterns: [
-          { from: 'public', to: 'static/assets' },
-          { from: 'assets', to: 'static/assets' },
-        ],
+        patterns: [{ from: 'public', to: 'static/assets' }],
       }),
       new HtmlWebPackPlugin({
         template: './public/index.html',

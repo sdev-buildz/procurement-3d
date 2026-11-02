@@ -40,7 +40,7 @@ export function ConfigEditor(): ReactElement {
 
   const items = historyState.history.present
 
-  const { dragPreview, dragHandlers } = useDrag({
+  const { draggedItem, dragPreview, dragHandlers } = useDrag({
     items,
     onCommit: historyState.commitItems,
     onPositionChange: (item) =>
@@ -295,6 +295,7 @@ export function ConfigEditor(): ReactElement {
           onClearSelection={clearSelection}
           onPlace={(x, z) => placementType && addItem(placementType, x, z)}
           dragHandlers={dragHandlers}
+          draggingId={draggedItem.current?.id}
           proposal={proposal}
           violations={violations}
           placingItemName={placementType}

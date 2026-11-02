@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, type RefObject } from 'react'
 import type { LayoutItem } from '../items'
 import { constrainPosition } from '../layout'
 
@@ -17,6 +17,7 @@ type UseDragProps = {
 
 /** Tracks a constrained drag preview and commits it when the drag ends. */
 export function useDrag({ items, onCommit, onPositionChange }: UseDragProps): {
+  draggedItem: RefObject<LayoutItem | null>
   dragPreview: LayoutItem | null
   dragHandlers: DragHandlers
 } {
@@ -48,6 +49,7 @@ export function useDrag({ items, onCommit, onPositionChange }: UseDragProps): {
   }
 
   return {
+    draggedItem,
     dragPreview,
     dragHandlers: { onStart, onMove, onEnd },
   }

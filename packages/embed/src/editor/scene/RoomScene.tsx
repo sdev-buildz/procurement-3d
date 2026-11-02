@@ -2,14 +2,13 @@ import { A11yAnnouncer } from '@react-three/a11y'
 import { Stats } from '@react-three/drei'
 import type { ThreeEvent } from '@react-three/fiber'
 import { Canvas, useThree } from '@react-three/fiber'
-import { useEffect, useMemo, useRef } from 'react'
-import { BufferGeometry, Float32BufferAttribute } from 'three'
+import { useEffect, useMemo, useRef, type ComponentProps } from 'react'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import type { DragHandlers } from '../hooks/useDrag'
 import type { RuleViolation } from '../hooks/useViolations'
-import { ROOM, type EquipmentName, type LayoutItem } from '../items'
+import { type LayoutItem } from '../items'
 import { EquipmentModel } from './EquipmentModel'
 import { InstancedEquipmentModels } from './InstancedEquipmentModels'
+import { RoomBounds } from './RoomBounds'
 
 type RoomSceneProps = {
   /** Current room equipment. */
@@ -20,68 +19,11 @@ type RoomSceneProps = {
   violations: RuleViolation[]
   /** Suggested item transform rendered as a translucent ghost. */
   previewItem: LayoutItem | null
-  /** Equipment category to place when the floor is clicked. */
-  placementType: EquipmentName | null
   /** Whether to show the synchronized top-down camera. */
   topDown: boolean
   /** Selects an item, optionally extending the current selection. */
   onSelect: (id: string, extend: boolean) => void
-  /** Clears the active selection. */
-  onClearSelection: () => void
-  /** Adds the active palette item at the clicked floor position. */
-  onPlace: (x: number, z: number) => void
-  /** Starts, updates, and commits an item drag. */
-  dragHandlers: DragHandlers
-}
-
-function makeGridGeometry(): BufferGeometry {
-  const points: number[] = []
-  const addLine = (x1: number, z1: number, x2: number, z2: number) => {
-    points.push(x1, 0.015, z1, x2, 0.015, z2)
-  }
-
-  for (let x = -ROOM.width / 2; x <= ROOM.width / 2; x += ROOM.cellSize) {
-    addLine(x, -ROOM.depth / 2, x, ROOM.depth / 2)
-  }
-  for (let z = -ROOM.depth / 2; z <= ROOM.depth / 2; z += ROOM.cellSize) {
-    addLine(-ROOM.width / 2, z, ROOM.width / 2, z)
-  }
-
-  const geometry = new BufferGeometry()
-  geometry.setAttribute(
-    'position',
-    new Float32BufferAttribute(new Float32Array(points), 3)
-  )
-  return geometry
-}
-
-function makeWireGeometry(items: LayoutItem[]): BufferGeometry {
-  const byId = new Map(items.map((item) => [item.id, item]))
-  const points: number[] = []
-
-  for (const item of items) {
-    for (const connectionId of item.connections ?? []) {
-      if (item.id >= connectionId) continue
-      const connectedItem = byId.get(connectionId)
-      if (!connectedItem) continue
-      points.push(
-        item.x,
-        0.035,
-        item.z,
-        connectedItem.x,
-        0.035,
-        connectedItem.z
-      )
-    }
-  }
-
-  const geometry = new BufferGeometry()
-  geometry.setAttribute(
-    'position',
-    new Float32BufferAttribute(new Float32Array(points), 3)
-  )
-  return geometry
-}
+} & Omit<ComponentProps<typeof RoomBounds>, 'handleItemUp'>
 
 function CameraControls({
   topDown,
@@ -118,16 +60,14 @@ export function RoomScene({
   selectedIds,
   violations,
   previewItem,
-  placementType,
   topDown,
   onSelect,
   onClearSelection,
+  placementType,
   onPlace,
   dragHandlers,
+  draggingId,
 }: RoomSceneProps) {
-  const gridGeometry = useMemo(makeGridGeometry, [])
-  const wireGeometry = useMemo(() => makeWireGeometry(items), [items])
-  const draggingId = useRef<string | null>(null)
   const controlsRef = useRef<OrbitControls | null>(null)
   const statsParentRef = useRef<HTMLDivElement>(null)
   const violationIds = useMemo(
@@ -135,6 +75,8 @@ export function RoomScene({
       new Set(violations.flatMap(({ first, second }) => [first.id, second.id])),
     [violations]
   )
+
+  /** Handles pressing mouse button down on an object. */
   const handleItemDown = (
     item: LayoutItem,
     event: ThreeEvent<PointerEvent>
@@ -142,23 +84,24 @@ export function RoomScene({
     event.stopPropagation()
     onSelect(item.id, event.nativeEvent.shiftKey)
     dragHandlers.onStart(item.id)
-    draggingId.current = item.id
     if (controlsRef.current) controlsRef.current.enabled = false
     document.body.style.cursor = 'grabbing'
   }
+
+  /** Handles moving the cursor while holding mouse button down on an object. */
   const handleItemMove = (
     item: LayoutItem,
     event: ThreeEvent<PointerEvent>
   ) => {
     dragHandlers.onMove(item.id, event.point.x, event.point.z)
   }
+
+  /** Handles lifting the mouse button up on an object. */
   const handleItemUp = () => {
-    const activeId = draggingId.current
-    if (activeId) {
-      dragHandlers.onEnd(activeId)
+    if (draggingId) {
+      dragHandlers.onEnd(draggingId)
       if (controlsRef.current) controlsRef.current.enabled = true
     }
-    draggingId.current = null
     document.body.style.cursor = ''
   }
 
@@ -197,44 +140,17 @@ export function RoomScene({
               controlsRef.current = controls
             }}
           />
-          <mesh
-            rotation={[-Math.PI / 2, 0, 0]}
-            position={[0, -0.035, 0]}
-            receiveShadow
-            onPointerDown={(event) => {
-              event.stopPropagation()
-              if (placementType) onPlace(event.point.x, event.point.z)
-              else onClearSelection()
-            }}
-            onPointerMove={(event) => {
-              if (draggingId.current) {
-                dragHandlers.onMove(
-                  draggingId.current,
-                  event.point.x,
-                  event.point.z
-                )
-              }
-            }}
-            onPointerUp={handleItemUp}
-            onPointerCancel={handleItemUp}
-          >
-            <planeGeometry args={[ROOM.width, ROOM.depth]} />
-            <meshStandardMaterial color='#202b34' roughness={0.9} />
-          </mesh>
-          <lineSegments geometry={gridGeometry}>
-            <lineBasicMaterial color='#3a4954' transparent opacity={0.66} />
-          </lineSegments>
-          <lineSegments geometry={wireGeometry}>
-            <lineBasicMaterial color='#75e6d1' transparent opacity={0.9} />
-          </lineSegments>
-          <mesh position={[0, 1.5, -ROOM.depth / 2]} receiveShadow>
-            <boxGeometry args={[ROOM.width, 3, 0.12]} />
-            <meshStandardMaterial color='#28343d' roughness={0.84} />
-          </mesh>
-          <mesh position={[-ROOM.width / 2, 1.5, 0]} receiveShadow>
-            <boxGeometry args={[0.12, 3, ROOM.depth]} />
-            <meshStandardMaterial color='#25313a' roughness={0.84} />
-          </mesh>
+
+          <RoomBounds
+            itemsDisplayed={items}
+            placementType={placementType}
+            onPlace={onPlace}
+            dragHandlers={dragHandlers}
+            onClearSelection={onClearSelection}
+            draggingId={draggingId}
+            handleItemUp={handleItemUp}
+          ></RoomBounds>
+
           <InstancedEquipmentModels
             items={items}
             selectedIds={selectedIds}

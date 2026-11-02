@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import type { useHistory } from '../hooks/useHistory'
 import type { RuleViolation } from '../hooks/useViolations'
 import type { LayoutItem } from '../items'
-import { EQUIPMENT } from '../items'
 import { constrainPosition } from '../layout'
 import type { AssistantProposal, AssistantReply } from './assistantReply'
 import { sampleAssistantConversations } from './assistantReply'
@@ -61,7 +60,7 @@ export function AssistantPanel({
       (conversation) => conversation.id === sampleId
     )
     const itemToMove = sample?.equipmentType
-      ? (items.find((item) => item.type === sample.equipmentType) ??
+      ? (items.find((item) => item.item.id === sample.equipmentType?.id) ??
         firstViolation?.second ??
         items[0])
       : (firstViolation?.second ?? items[0])
@@ -75,7 +74,7 @@ export function AssistantPanel({
       message: t(sample?.messageKey ?? 'assistantAnswer', {
         count: items.length,
         issues: violations.length,
-        item: itemToMove ? t(EQUIPMENT[itemToMove.type].nameKey) : t('items'),
+        item: itemToMove ? t(itemToMove.item.name) : t('items'),
       }),
       proposedChange:
         itemToMove && target
@@ -84,7 +83,7 @@ export function AssistantPanel({
               itemId: itemToMove.id,
               target,
               rationale: t(sample?.rationaleKey ?? 'assistantRationale', {
-                item: t(EQUIPMENT[itemToMove.type].nameKey),
+                item: t(itemToMove.item.name),
               }),
             }
           : null,

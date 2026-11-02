@@ -1,11 +1,11 @@
 import { act, createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { describe, expect, it, vi } from 'vitest'
-import type { LayoutItem } from '../items'
+import { getEquipment, type LayoutItem } from '../items'
 import { useDrag } from './useDrag'
 
 const items: LayoutItem[] = [
-  { id: 'drive-1', type: 'drive', x: 0, z: 0, rotation: 0 },
+  { id: 'drive-1', item: getEquipment('drive'), x: 0, z: 0, rotation: 0 },
 ]
 
 describe('useDrag', () => {

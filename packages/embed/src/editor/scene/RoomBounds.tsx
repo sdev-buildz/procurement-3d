@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { BufferGeometry, Float32BufferAttribute } from 'three'
 import type { DragHandlers } from '../hooks/useDrag'
-import { ROOM, type EquipmentName, type LayoutItem } from '../items'
+import { ROOM, type ItemType, type LayoutItem } from '../items'
 
 function makeGridGeometry(): BufferGeometry {
   const points: number[] = []
@@ -59,7 +59,7 @@ function makeWireGeometry(items: LayoutItem[]): BufferGeometry {
  */
 export const RoomBounds = ({
   itemsDisplayed,
-  placementType,
+  itemPlaced,
   onPlace,
   onClearSelection,
   dragHandlers,
@@ -68,7 +68,7 @@ export const RoomBounds = ({
 }: {
   itemsDisplayed: LayoutItem[]
   /** Equipment category to place when the floor is clicked. */
-  placementType: EquipmentName | null
+  itemPlaced: ItemType | null
   /** Adds the active palette item at the clicked floor position. */
   onPlace: (x: number, z: number) => void
   /** Clears the active selection. */
@@ -94,7 +94,7 @@ export const RoomBounds = ({
         receiveShadow
         onPointerDown={(event) => {
           event.stopPropagation()
-          if (placementType) onPlace(event.point.x, event.point.z)
+          if (itemPlaced) onPlace(event.point.x, event.point.z)
           else onClearSelection()
         }}
         onPointerMove={(event) => {

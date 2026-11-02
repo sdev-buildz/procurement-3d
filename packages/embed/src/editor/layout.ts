@@ -1,11 +1,29 @@
 import type { LayoutItem } from './items'
-import { EQUIPMENT, ROOM } from './items'
+import { getEquipment, ROOM } from './items'
 
 /** Small starting layout that demonstrates the three catalog types. */
 export const initialLayout: LayoutItem[] = [
-  { id: 'drive-1', type: 'drive', x: -5, z: -1.5, rotation: 0 },
-  { id: 'cabinet-1', type: 'cabinet', x: 0, z: -1.5, rotation: 0 },
-  { id: 'panel-1', type: 'panel', x: 5, z: 1.5, rotation: 0 },
+  {
+    id: 'drive-1',
+    item: getEquipment('drive'),
+    x: -5,
+    z: -1.5,
+    rotation: 0,
+  },
+  {
+    id: 'cabinet-1',
+    item: getEquipment('cabinet'),
+    x: 0,
+    z: -1.5,
+    rotation: 0,
+  },
+  {
+    id: 'panel-1',
+    item: getEquipment('panel'),
+    x: 5,
+    z: 1.5,
+    rotation: 0,
+  },
 ]
 
 /**
@@ -32,7 +50,7 @@ export function constrainPosition(
   /** Proposed Z coordinate in meters. */
   z: number
 ): Pick<LayoutItem, 'x' | 'z'> {
-  const { width, depth } = EQUIPMENT[item.type]
+  const { width, depth } = item.item
   const rotated = Math.abs(item.rotation % 180) === 90
   const halfWidth = (rotated ? depth : width) / 2
   const halfDepth = (rotated ? width : depth) / 2

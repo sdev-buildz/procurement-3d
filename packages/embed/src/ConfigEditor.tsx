@@ -8,8 +8,8 @@ import type { AssistantProposal } from './editor/assistant/assistantReply'
 import { useDrag } from './editor/hooks/useDrag'
 import { useHistory } from './editor/hooks/useHistory'
 import { useViolations } from './editor/hooks/useViolations'
-import type { LayoutItem } from './editor/items'
-import { EQUIPMENT, ROOM } from './editor/items'
+import type { ItemType, LayoutItem } from './editor/items'
+import { ROOM } from './editor/items'
 import { constrainPosition } from './editor/layout'
 import { BomPanel } from './editor/panels/BomPanel'
 import { CatalogPanel } from './editor/panels/CatalogPanel'
@@ -19,8 +19,8 @@ import { StageFor3dViewer } from './editor/panels/StageFor3dViewer'
 import { ToolBar } from './editor/panels/ToolBar'
 import { TopBar } from './editor/panels/TopBar'
 
-function makeId(type: LayoutItem['type']): string {
-  return `${type}-${crypto.randomUUID()}`
+function makeId(item: ItemType): string {
+  return `${item.name}-${crypto.randomUUID()}`
 }
 
 /**
@@ -30,9 +30,7 @@ export function ConfigEditor(): ReactElement {
   const { t } = useTranslation()
   const historyState = useHistory()
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const [placementType, setPlacementType] = useState<LayoutItem['type'] | null>(
-    null
-  )
+  const [itemPlaced, setPlacementType] = useState<ItemType | null>(null)
   const [topDown, setTopDown] = useState(false)
   const [copiedItems, setCopiedItems] = useState<LayoutItem[]>([])
   const [proposal, setProposal] = useState<AssistantProposal | null>(null)
@@ -130,7 +128,7 @@ export function ConfigEditor(): ReactElement {
   const pasteSelection = () => {
     if (copiedItems.length === 0) return
     const newIds = new Map(
-      copiedItems.map((item) => [item.id, makeId(item.type)])
+      copiedItems.map((item) => [item.id, makeId(item.item)])
     )
     const pasted = copiedItems.map((item) => {
       const id = newIds.get(item.id)
@@ -189,19 +187,17 @@ export function ConfigEditor(): ReactElement {
     )
   }
 
-  const addItem = (type: LayoutItem['type'], x: number, z: number) => {
-    const item: LayoutItem = {
-      id: makeId(type),
-      type,
-      ...constrainPosition({ id: '', type, x: 0, z: 0, rotation: 0 }, x, z),
+  const addItem = (item: ItemType, x: number, z: number) => {
+    const layoutItem: LayoutItem = {
+      id: makeId(item),
+      item: item,
+      ...constrainPosition({ item, id: '', x: 0, z: 0, rotation: 0 }, x, z),
       rotation: 0,
     }
-    historyState.commitItems([...items, item])
-    setSelectedIds(new Set([item.id]))
+    historyState.commitItems([...items, layoutItem])
+    setSelectedIds(new Set([layoutItem.id]))
     setPlacementType(null)
-    setAnnouncement(
-      t('placedAnnouncement', { item: t(EQUIPMENT[type].nameKey) })
-    )
+    setAnnouncement(t('placedAnnouncement', { item: t(item.name) }))
   }
 
   const changePosition = (axis: 'x' | 'z', value: number) => {
@@ -280,25 +276,26 @@ export function ConfigEditor(): ReactElement {
 
       <div className='ce-workspace'>
         <CatalogPanel
-          equipmentName={placementType}
-          onSelectType={(type) =>
-            setPlacementType((current) => (current === type ? null : type))
+          itemPlaced={itemPlaced}
+          onSelectItem={(item: ItemType) =>
+            setPlacementType((current) =>
+              current?.id === item.id ? null : item
+            )
           }
         />
         <StageFor3dViewer
           itemsDisplayed={itemsDisplayed}
           selectedIds={selectedIds}
           previewItem={proposal?.ghost ?? null}
-          placementType={placementType}
+          itemPlaced={itemPlaced}
           topDown={topDown}
           onSelect={selectItem}
           onClearSelection={clearSelection}
-          onPlace={(x, z) => placementType && addItem(placementType, x, z)}
+          onPlace={(x, z) => itemPlaced && addItem(itemPlaced, x, z)}
           dragHandlers={dragHandlers}
           draggingId={draggedItem.current?.id}
           proposal={proposal}
           violations={violations}
-          placingItemName={placementType}
         />
 
         <aside className='ce-inspector'>

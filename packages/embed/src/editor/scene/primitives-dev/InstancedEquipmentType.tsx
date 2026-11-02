@@ -2,8 +2,8 @@ import type { ThreeEvent } from '@react-three/fiber'
 import { useLayoutEffect, useRef } from 'react'
 import type { InstancedMesh } from 'three'
 import { Matrix4, Quaternion, Vector3 } from 'three'
-import type { LayoutItem } from '../items'
-import { EQUIPMENT } from '../items'
+import type { LayoutItem } from '../../items'
+import { getEquipment } from '../../items'
 
 function worldMatrix(
   item: LayoutItem,
@@ -71,7 +71,7 @@ export function InstancedEquipmentType({
   const selectedRef = useRef<InstancedMesh>(null)
   const violationRef = useRef<InstancedMesh>(null)
   const warningRef = useRef<InstancedMesh>(null)
-  const equipment = EQUIPMENT[type]
+  const equipment = getEquipment(type)
 
   useLayoutEffect(() => {
     // Update all matrices before paint so instances move together without a visible frame of stale transforms.
@@ -202,7 +202,10 @@ export function InstancedEquipmentType({
           worldMatrix(
             item,
             0,
-            Math.max(equipment.height + 0.14, EQUIPMENT.cabinet.height + 0.15),
+            Math.max(
+              equipment.height + 0.14,
+              getEquipment('cabinet').height + 0.15
+            ),
             0
           )
         )

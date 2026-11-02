@@ -1,4 +1,4 @@
-import type { EquipmentName, LayoutItem } from '../items'
+import { getEquipment, type ItemType, type LayoutItem } from '../items'
 
 /**
  * Suggestion from an assistant
@@ -48,7 +48,7 @@ export type SampleAssistantConversation = {
   /** Translation key for the proposed change's rationale. */
   rationaleKey: string
   /** Equipment category to move, or null to use the closest rule violation. */
-  equipmentType: EquipmentName | null
+  equipmentType: ItemType | null
 }
 
 /** Suggested prompts that each produce a previewable scene edit. */
@@ -65,14 +65,14 @@ export const sampleAssistantConversations: SampleAssistantConversation[] = [
     promptKey: 'sampleDrivePrompt',
     messageKey: 'sampleDriveAnswer',
     rationaleKey: 'sampleDriveRationale',
-    equipmentType: 'drive',
+    equipmentType: getEquipment('drive'),
   },
   {
     id: 'cabinet',
     promptKey: 'sampleCabinetPrompt',
     messageKey: 'sampleCabinetAnswer',
     rationaleKey: 'sampleCabinetRationale',
-    equipmentType: 'cabinet',
+    equipmentType: getEquipment('cabinet'),
   },
 ]
 

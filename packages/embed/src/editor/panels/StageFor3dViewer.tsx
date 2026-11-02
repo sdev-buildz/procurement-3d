@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { AssistantProposal } from '../assistant/assistantReply'
 import type { useViolations } from '../hooks/useViolations'
-import { EQUIPMENT, type EquipmentName } from '../items'
+import { type ItemType } from '../items'
 import { RoomScene } from '../scene/RoomScene'
 
 /**
@@ -14,12 +14,12 @@ import { RoomScene } from '../scene/RoomScene'
  */
 export const StageFor3dViewer = ({
   topDown,
-  placingItemName,
+  itemPlaced,
   proposal,
   violations,
   ...roomSceneProps
 }: {
-  placingItemName: EquipmentName | null
+  itemPlaced: ItemType | null
   proposal: AssistantProposal | null
   violations: ReturnType<typeof useViolations>
 } & ComponentProps<typeof RoomScene>) => {
@@ -45,9 +45,10 @@ export const StageFor3dViewer = ({
       </div>
 
       {/* The 3D viewer. It also has floating legends on top (top with respect to z-index). */}
-      <div className={`ce-canvas-wrap ${placingItemName ? 'is-placing' : ''}`}>
+      <div className={`ce-canvas-wrap ${itemPlaced ? 'is-placing' : ''}`}>
         <RoomScene
           {...roomSceneProps}
+          itemPlaced={itemPlaced}
           topDown={topDown}
           violations={violations}
         />
@@ -97,8 +98,8 @@ export const StageFor3dViewer = ({
             violations.map(({ first, second }) => (
               <li key={`${first.id}-${second.id}`}>
                 {t('violation', {
-                  first: t(EQUIPMENT[first.type].nameKey),
-                  second: t(EQUIPMENT[second.type].nameKey),
+                  first: t(first.item.name),
+                  second: t(second.item.name),
                 })}
               </li>
             ))

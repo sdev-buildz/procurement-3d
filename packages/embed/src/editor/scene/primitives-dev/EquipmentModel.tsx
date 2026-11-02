@@ -1,7 +1,7 @@
 import type { ThreeEvent } from '@react-three/fiber'
 import type { MeshStandardMaterialParameters } from 'three'
-import type { LayoutItem } from '../items'
-import { EQUIPMENT } from '../items'
+import type { LayoutItem } from '../../items'
+import { getEquipment } from '../../items'
 import { EquipmentMeshes } from './EquipmentMeshes'
 
 /** Renders one equipment item with its selection and violation indicators. */
@@ -24,7 +24,7 @@ export function EquipmentModel({
   onPointerUp?: (event: ThreeEvent<PointerEvent>) => void
   onPointerCancel?: (event: ThreeEvent<PointerEvent>) => void
 }) {
-  const equipment = EQUIPMENT[item.type]
+  const equipment = item.item
   const color = violation ? '#ff6577' : equipment.color
   const materialProps: MeshStandardMaterialParameters = {
     color,
@@ -92,7 +92,7 @@ export function EquipmentModel({
               0,
               Math.max(
                 equipment.height + 0.14,
-                EQUIPMENT.cabinet.height + 0.15
+                getEquipment('cabinet').height + 0.15
               ),
               0,
             ]}

@@ -2,7 +2,7 @@ import type { CSSProperties, ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { useHistory } from '../hooks/useHistory'
 import type { LayoutItem } from '../items'
-import { EQUIPMENT, ROOM } from '../items'
+import { ROOM } from '../items'
 
 type SelectionInspectorProps = {
   items: LayoutItem[]
@@ -79,10 +79,10 @@ export function SelectionInspector({
         <div className='ce-property-content'>
           <div className='ce-selected-name'>
             <span
-              className={`ce-equipment-icon ce-icon-${selectedItem.type}`}
+              className={`ce-equipment-icon ce-icon-${selectedItem.item.name}`}
               style={
                 {
-                  '--equipment-color': EQUIPMENT[selectedItem.type].color,
+                  '--equipment-color': '#43545e',
                 } as CSSProperties
               }
               aria-hidden='true'
@@ -90,9 +90,9 @@ export function SelectionInspector({
               <span />
             </span>
             <div>
-              <strong>{t(EQUIPMENT[selectedItem.type].nameKey)}</strong>
+              <strong>{t(selectedItem.item.name)}</strong>
               <small>
-                {EQUIPMENT[selectedItem.type].sku} · {selectedItem.id}
+                {selectedItem.item.sku} · {selectedItem.id}
               </small>
             </div>
           </div>

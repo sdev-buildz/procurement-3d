@@ -1,15 +1,15 @@
 import type { CSSProperties, ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { EquipmentName } from '../items'
+import type { ItemType } from '../items'
 import { EQUIPMENT } from '../items'
 
 /** Lists equipment that can be placed in the room. */
 export function CatalogPanel({
-  equipmentName,
-  onSelectType,
+  itemPlaced,
+  onSelectItem,
 }: {
-  equipmentName: EquipmentName | null
-  onSelectType: (type: EquipmentName) => void
+  itemPlaced: ItemType | null
+  onSelectItem: (type: ItemType) => void
 }): ReactElement {
   const { t } = useTranslation()
 
@@ -27,19 +27,18 @@ export function CatalogPanel({
       </div>
 
       <div className='ce-palette-list'>
-        {(Object.keys(EQUIPMENT) as EquipmentName[]).map((type) => {
-          const equipment = EQUIPMENT[type]
+        {EQUIPMENT.map((equipment) => {
           return (
             // An item in the catalog
             <button
               type='button'
-              className={`ce-palette-item ${equipmentName === type ? 'is-selected' : ''}`}
-              key={type}
-              onClick={() => onSelectType(type)}
-              aria-pressed={equipmentName === type}
+              className={`ce-palette-item ${itemPlaced?.id === equipment.id ? 'is-selected' : ''}`}
+              key={equipment.name}
+              onClick={() => onSelectItem(equipment)}
+              aria-pressed={itemPlaced?.id === equipment.id}
             >
               <span
-                className={`ce-equipment-icon ce-icon-${type}`}
+                className={`ce-equipment-icon ce-icon-${equipment.name}`}
                 style={
                   { '--equipment-color': equipment.color } as CSSProperties
                 }
@@ -61,9 +60,9 @@ export function CatalogPanel({
         })}
       </div>
 
-      <div className={`ce-placement-tip ${equipmentName ? 'is-ready' : ''}`}>
+      <div className={`ce-placement-tip ${itemPlaced?.name ? 'is-ready' : ''}`}>
         <span aria-hidden='true'>⌖</span>
-        {equipmentName ? t('clickToPlace') : t('selectToEdit')}
+        {itemPlaced ? t('clickToPlace') : t('selectToEdit')}
       </div>
 
       <div className='ce-grid-note'>

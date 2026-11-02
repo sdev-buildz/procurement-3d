@@ -4,13 +4,12 @@ import {
   formatCurrencyFromUSD,
   type TargetCurrency,
 } from '../../utils/currency'
-import type { EquipmentName, LayoutItem } from '../items'
-import { EQUIPMENT } from '../items'
+import type { ItemType, LayoutItem } from '../items'
 
 /** Aggregated quantity and unit price for one BOM row. */
 type BillOfMaterialsRow = {
   /** Catalog key for the row. */
-  equipmentName: EquipmentName
+  equipment: ItemType
   /** Number of matching pieces in the current layout. */
   quantity: number
   /** Price for one piece in USD. */
@@ -23,17 +22,17 @@ type BillOfMaterialsRow = {
  * @returns One row per category present in the room.
  */
 function createBillOfMaterials(items: LayoutItem[]): BillOfMaterialsRow[] {
-  const rows = new Map<EquipmentName, BillOfMaterialsRow>()
+  const rows: BillOfMaterialsRow[] = []
 
   for (const item of items) {
-    const row = rows.get(item.type)
+    const row = rows.find((row) => row.equipment.id === item.item.id)
     if (row) {
       row.quantity += 1
     } else {
-      rows.set(item.type, {
-        equipmentName: item.type,
+      rows.push({
+        equipment: item.item,
         quantity: 1,
-        unitPrice: EQUIPMENT[item.type].price,
+        unitPrice: item.item.price,
       })
     }
   }
@@ -81,17 +80,17 @@ export function BomPanel({ items }: { items: LayoutItem[] }): ReactElement {
           </thead>
           <tbody>
             {billOfMaterials.map((row) => (
-              <tr key={row.equipmentName}>
+              <tr key={row.equipment.id}>
                 <td>
                   <span
                     className='ce-table-color'
                     style={{
-                      backgroundColor: EQUIPMENT[row.equipmentName].color,
+                      backgroundColor: '#000000',
                     }}
                   />
-                  {t(EQUIPMENT[row.equipmentName].nameKey)}
+                  {t(row.equipment.name)}
                 </td>
-                <td>{EQUIPMENT[row.equipmentName].sku}</td>
+                <td>{row.equipment.sku}</td>
                 <td>{row.quantity}</td>
                 <td>{formatPrice(row.unitPrice)}</td>
               </tr>

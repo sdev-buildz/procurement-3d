@@ -1,5 +1,6 @@
 import type { ThreeEvent } from '@react-three/fiber'
-import type { LayoutItem } from '../items'
+import type { EquipmentName, LayoutItem } from '../../items'
+import { EQUIPMENT } from '../../items'
 import { InstancedEquipmentType } from './InstancedEquipmentType'
 
 /** Renders instanced models for the standard electrical equipment types. */
@@ -20,12 +21,19 @@ export function InstancedEquipmentModels({
   onPointerUp: (event: ThreeEvent<PointerEvent>) => void
   onPointerCancel: (event: ThreeEvent<PointerEvent>) => void
 }) {
-  const types = ['drive', 'cabinet', 'panel'] as const
+  const types = EQUIPMENT.filter(
+    (equipment) => (equipment.models[0]?.url ?? '') === ''
+  )
+    .map((equipment) => equipment.name as EquipmentName)
+    .filter(
+      (type): type is 'drive' | 'cabinet' | 'panel' =>
+        type === 'drive' || type === 'cabinet' || type === 'panel'
+    )
 
   return (
     <>
       {types.map((type) => {
-        const typeItems = items.filter((item) => item.type === type)
+        const typeItems = items.filter((item) => item.item.name === type)
         return typeItems.length ? (
           <InstancedEquipmentType
             key={type}

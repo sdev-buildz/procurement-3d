@@ -1,13 +1,12 @@
 import type { MeshStandardMaterialParameters } from 'three'
-import type { LayoutItem } from '../items'
-import { EQUIPMENT } from '../items'
-import { GlbModel } from './GlbModel'
+import type { ItemType, LayoutItem } from '../../items'
+import { GlbModel } from '../GlbModel'
 
 const PanelModel = ({
   equipment,
   materialProps,
 }: {
-  equipment: (typeof EQUIPMENT)['panel']
+  equipment: ItemType
   materialProps: MeshStandardMaterialParameters
 }) => (
   <>
@@ -47,7 +46,7 @@ const DriveModel = ({
   equipment,
   materialProps,
 }: {
-  equipment: (typeof EQUIPMENT)['drive']
+  equipment: ItemType
   materialProps: MeshStandardMaterialParameters
 }) => (
   <>
@@ -80,7 +79,7 @@ const CabinetModel = ({
   equipment,
   materialProps,
 }: {
-  equipment: (typeof EQUIPMENT)['cabinet']
+  equipment: ItemType
   materialProps: MeshStandardMaterialParameters
 }) => (
   <>
@@ -109,27 +108,6 @@ const CabinetModel = ({
   </>
 )
 
-function getModelUrl(type: LayoutItem['type']): string | null {
-  switch (type) {
-    case 'carConcept':
-      return new URL('../../utils/models/CarConcept.glb', import.meta.url).href
-    case 'commercialRefrigerator':
-      return new URL(
-        '../../utils/models/CommercialRefrigerator.glb',
-        import.meta.url
-      ).href
-    case 'sheenChair':
-      return new URL('../../utils/models/SheenChair.glb', import.meta.url).href
-    case 'diffuseTransmissionTeacup':
-      return new URL(
-        '../../utils/models/DiffuseTransmissionTeacup.glb',
-        import.meta.url
-      ).href
-    default:
-      return null
-  }
-}
-
 /** Renders the equipment item */
 export function EquipmentMeshes({
   item,
@@ -140,29 +118,31 @@ export function EquipmentMeshes({
   ghost: boolean
   materialProps: MeshStandardMaterialParameters
 }) {
-  if (item.type === 'drive') {
-    return (
-      <DriveModel equipment={EQUIPMENT.drive} materialProps={materialProps} />
-    )
-  }
-  if (item.type === 'cabinet') {
-    return (
-      <CabinetModel
-        equipment={EQUIPMENT.cabinet}
-        materialProps={materialProps}
-      />
-    )
-  }
-  if (item.type === 'panel') {
-    return (
-      <PanelModel equipment={EQUIPMENT.panel} materialProps={materialProps} />
-    )
+  const equipment = item.item
+  const modelUrl = equipment.models[0]?.url ?? ''
+
+  if (modelUrl === '') {
+    if (equipment.name === 'drive') {
+      return <DriveModel equipment={equipment} materialProps={materialProps} />
+    }
+    if (equipment.name === 'cabinet') {
+      return (
+        <CabinetModel equipment={equipment} materialProps={materialProps} />
+      )
+    }
+    return <PanelModel equipment={equipment} materialProps={materialProps} />
   }
 
+  const modelFileName = modelUrl.split('/').at(-1)
   return (
     <GlbModel
-      modelUrl={getModelUrl(item.type) ?? ''}
-      equipment={EQUIPMENT[item.type]}
+      modelUrl={
+        modelFileName
+          ? new URL(`../../../utils/models/${modelFileName}`, import.meta.url)
+              .href
+          : ''
+      }
+      equipment={equipment}
       ghost={ghost}
     />
   )

@@ -1,7 +1,6 @@
 import type { ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { LayoutItem } from '../items'
-import { EQUIPMENT } from '../items'
 
 type ItemsInSceneProps = {
   items: LayoutItem[]
@@ -60,9 +59,11 @@ export function ItemsInScene({
                 <td>
                   <span
                     className='ce-table-color'
-                    style={{ backgroundColor: EQUIPMENT[item.type].color }}
+                    style={{
+                      backgroundColor: '#000000',
+                    }}
                   />
-                  {t(EQUIPMENT[item.type].nameKey)}
+                  {t(item.item.name)}
                 </td>
                 <td>
                   {t('itemPosition', {

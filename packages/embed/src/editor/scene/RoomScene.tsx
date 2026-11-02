@@ -6,8 +6,8 @@ import { useEffect, useMemo, useRef, type ComponentProps } from 'react'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { RuleViolation } from '../hooks/useViolations'
 import { type LayoutItem } from '../items'
-import { EquipmentModel } from './EquipmentModel'
-import { InstancedEquipmentModels } from './InstancedEquipmentModels'
+import { EquipmentModel } from './primitives-dev/EquipmentModel'
+import { InstancedEquipmentModels } from './primitives-dev/InstancedEquipmentModels'
 import { RoomBounds } from './RoomBounds'
 
 type RoomSceneProps = {
@@ -63,7 +63,7 @@ export function RoomScene({
   topDown,
   onSelect,
   onClearSelection,
-  placementType,
+  itemPlaced,
   onPlace,
   dragHandlers,
   draggingId,
@@ -143,7 +143,7 @@ export function RoomScene({
 
           <RoomBounds
             itemsDisplayed={items}
-            placementType={placementType}
+            itemPlaced={itemPlaced}
             onPlace={onPlace}
             dragHandlers={dragHandlers}
             onClearSelection={onClearSelection}
@@ -161,13 +161,7 @@ export function RoomScene({
             onPointerCancel={handleItemUp}
           />
           {items
-            .filter(
-              (item) =>
-                item.type === 'carConcept' ||
-                item.type === 'commercialRefrigerator' ||
-                item.type === 'sheenChair' ||
-                item.type === 'diffuseTransmissionTeacup'
-            )
+            .filter((item) => item.item.models[0]?.url)
             .map((item) => (
               <EquipmentModel
                 key={item.id}

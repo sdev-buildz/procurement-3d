@@ -2,7 +2,7 @@ import { useGLTF } from '@react-three/drei'
 import { Suspense, useMemo } from 'react'
 import type { Group } from 'three'
 import { Box3, Vector3 } from 'three'
-import type { EQUIPMENT } from '../items'
+import type { ItemType } from '../items'
 
 /**
  * Wireframe placeholder until the model loads.
@@ -12,10 +12,7 @@ const Placeholder = ({
   equipment,
   ghost,
 }: {
-  equipment: (typeof EQUIPMENT)[Exclude<
-    keyof typeof EQUIPMENT,
-    'drive' | 'cabinet' | 'panel'
-  >]
+  equipment: ItemType
   ghost: boolean
 }) => (
   <mesh position={[0, equipment.height / 2, 0]}>
@@ -37,10 +34,7 @@ const LoadedGlbModel = ({
   modelUrl,
   ghost,
 }: {
-  equipment: (typeof EQUIPMENT)[Exclude<
-    keyof typeof EQUIPMENT,
-    'drive' | 'cabinet' | 'panel'
-  >]
+  equipment: ItemType
   modelUrl: string
   ghost: boolean
 }) => {
@@ -103,10 +97,7 @@ export const GlbModel = ({
   modelUrl,
   ghost = false,
 }: {
-  equipment: (typeof EQUIPMENT)[Exclude<
-    keyof typeof EQUIPMENT,
-    'drive' | 'cabinet' | 'panel'
-  >]
+  equipment: ItemType
   modelUrl: string
   ghost?: boolean
 }) => (

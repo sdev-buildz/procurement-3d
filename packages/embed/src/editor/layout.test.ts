@@ -5,16 +5,19 @@ import {
 } from './assistant/assistantReply'
 import { createLayoutHistory, layoutHistoryReducer } from './hooks/useHistory'
 import { findRuleViolations } from './hooks/useViolations'
-import type { LayoutItem } from './items'
-import { constrainPosition, snapToGrid } from './layout'
-
-const items: LayoutItem[] = [
-  { id: 'drive-1', type: 'drive', x: -0.5, z: 0, rotation: 0 },
-  { id: 'cabinet-1', type: 'cabinet', x: 0, z: 0, rotation: 0 },
-  { id: 'panel-1', type: 'panel', x: 5, z: 0, rotation: 0 },
-]
+import { EQUIPMENT, getEquipment, type LayoutItem } from './items'
+import { constrainPosition, initialLayout as items, snapToGrid } from './layout'
 
 describe('layout helpers', () => {
+  it('uses an empty model url for primitive catalog items', () => {
+    expect(getEquipment('drive').models[0]?.url).toBe('')
+    expect(getEquipment('cabinet').models[0]?.url).toBe('')
+    expect(getEquipment('panel').models[0]?.url).toBe('')
+    expect(EQUIPMENT.filter((item) => item.models[0]?.url === '')).toHaveLength(
+      3
+    )
+  })
+
   it('snaps positions to half-meter cells and keeps equipment inside the room', () => {
     expect(snapToGrid(1.24)).toBe(1)
     expect(constrainPosition(items[0]!, 20, -20)).toEqual({ x: 9.5, z: -5.5 })
@@ -22,13 +25,7 @@ describe('layout helpers', () => {
 
   it('reports pairs with less than 0.6 meters between their boundaries', () => {
     const violations = findRuleViolations(items)
-    expect(violations).toHaveLength(1)
-    expect(violations[0]).toMatchObject({
-      first: items[0],
-      second: items[1],
-      distance: 0,
-    })
-    expect(findRuleViolations([items[0]!, items[2]!])).toHaveLength(0)
+    expect(violations).toHaveLength(0)
 
     const driveAndCabinet = [
       { ...items[0]!, x: 0, z: 0 },
@@ -63,9 +60,15 @@ describe('layout helpers', () => {
 
 describe('layout history', () => {
   it('undoes and redoes edits and clears redo after a new edit', () => {
-    const changed = [
+    const changed: LayoutItem[] = [
       ...items,
-      { id: 'panel-2', type: 'panel' as const, x: 2, z: 2, rotation: 0 },
+      {
+        id: 'panel-2',
+        item: getEquipment('panel'),
+        x: 2,
+        z: 2,
+        rotation: 0,
+      },
     ]
     const committed = layoutHistoryReducer(createLayoutHistory(items), {
       type: 'commit',
@@ -99,6 +102,7 @@ describe('assistant response contract', () => {
       sampleAssistantConversations
         .map(({ equipmentType }) => equipmentType)
         .filter((type) => type !== null)
+        .map((item) => item.name)
     ).toEqual(['drive', 'cabinet'])
   })
 })

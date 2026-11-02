@@ -1,4 +1,4 @@
-import { EQUIPMENT, type LayoutItem } from '../items'
+import { type LayoutItem } from '../items'
 
 const minimumClearanceMeters = 0.6
 
@@ -32,8 +32,8 @@ export function findRuleViolations(items: LayoutItem[]): RuleViolation[] {
       const second = items[secondIndex]
       if (!second) continue
 
-      const firstEquipment = EQUIPMENT[first.type]
-      const secondEquipment = EQUIPMENT[second.type]
+      const firstEquipment = first.item
+      const secondEquipment = second.item
       const firstRotated = Math.abs(first.rotation % 180) === 90
       const secondRotated = Math.abs(second.rotation % 180) === 90
       const firstWidth = firstRotated

@@ -17,4 +17,9 @@ export type {
   AssistantReply,
 } from './editor/assistant/assistantReply'
 export { EQUIPMENT, ROOM } from './editor/items'
-export type { EquipmentName as EquipmentType, LayoutItem } from './editor/items'
+export type {
+  EquipmentName as EquipmentType,
+  ItemType,
+  LayoutItem,
+  ModelType,
+} from './editor/items'

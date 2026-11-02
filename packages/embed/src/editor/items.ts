@@ -8,9 +8,45 @@ export const ROOM = {
   cellSize: 0.5,
 } as const
 
+/** 3D Model */
+export type ModelType = {
+  id: number
+  /** link to GLTF/GLB model file in local or S3. */
+  url: string
+  /** Size in bytes */
+  size: number
+}
+
+/** The items which can be placed in the 3D scene. */
+export type ItemType = {
+  id: number
+  name: string
+  sku: string
+
+  // Bounding box details
+  width: number
+  depth: number
+  height: number
+
+  /** Prize of the item in USD. */
+  price: number
+  /** Accent color for the model and UI. */
+  color: string
+  /** Translation key for the equipment label. */
+  nameKey: string
+
+  /**
+   * The 3D models of this item sorted in descending order of their sizes.
+   * Different sizes are to enable Lazy Loading, and LOD (Level Of Detail).
+   */
+  models: ModelType[]
+}
+
 /** Catalog metadata used by the scene, palette, inspector, and BOM. */
-export const EQUIPMENT = {
-  drive: {
+export const EQUIPMENT: ItemType[] = [
+  {
+    id: 1,
+    name: 'drive',
     /** Translation key for this equipment label. */
     nameKey: 'drive',
     /** Procurement identifier. */
@@ -25,8 +61,11 @@ export const EQUIPMENT = {
     color: '#41c9a2',
     /** Price per unit in USD. */
     price: 2480,
+    models: [{ id: 1, url: '', size: 0 }],
   },
-  cabinet: {
+  {
+    id: 2,
+    name: 'cabinet',
     /** Translation key for this equipment label. */
     nameKey: 'cabinet',
     /** Procurement identifier. */
@@ -41,8 +80,11 @@ export const EQUIPMENT = {
     color: '#7199f8',
     /** Price per unit in USD. */
     price: 1890,
+    models: [{ id: 2, url: '', size: 0 }],
   },
-  panel: {
+  {
+    id: 3,
+    name: 'panel',
     /** Translation key for this equipment label. */
     nameKey: 'panel',
     /** Procurement identifier. */
@@ -57,8 +99,11 @@ export const EQUIPMENT = {
     color: '#f0b65a',
     /** Price per unit in USD. */
     price: 960,
+    models: [{ id: 3, url: '', size: 0 }],
   },
-  carConcept: {
+  {
+    id: 4,
+    name: 'carConcept',
     nameKey: 'carConcept',
     sku: 'MDL-CAR',
     width: 2.8,
@@ -66,9 +111,11 @@ export const EQUIPMENT = {
     height: 1.4,
     color: '#d98d8d',
     price: 3200,
-    model: '../../util/models/CarConcept.glb',
+    models: [{ id: 4, url: '../../utils/models/CarConcept.glb', size: 0 }],
   },
-  commercialRefrigerator: {
+  {
+    id: 5,
+    name: 'commercialRefrigerator',
     nameKey: 'commercialRefrigerator',
     sku: 'MDL-RFG',
     width: 1.2,
@@ -76,9 +123,17 @@ export const EQUIPMENT = {
     height: 2.0,
     color: '#8fc5d8',
     price: 2100,
-    model: '../../util/models/CommercialRefrigerator.glb',
+    models: [
+      {
+        id: 5,
+        url: '../../utils/models/CommercialRefrigerator.glb',
+        size: 0,
+      },
+    ],
   },
-  sheenChair: {
+  {
+    id: 6,
+    name: 'sheenChair',
     nameKey: 'sheenChair',
     sku: 'MDL-CHR',
     width: 0.9,
@@ -86,9 +141,11 @@ export const EQUIPMENT = {
     height: 1.1,
     color: '#d7a6cf',
     price: 780,
-    model: '../../util/models/SheenChair.glb',
+    models: [{ id: 6, url: '../../utils/models/SheenChair.glb', size: 0 }],
   },
-  diffuseTransmissionTeacup: {
+  {
+    id: 7,
+    name: 'diffuseTransmissionTeacup',
     nameKey: 'diffuseTransmissionTeacup',
     sku: 'MDL-TCP',
     width: 0.5,
@@ -96,19 +153,40 @@ export const EQUIPMENT = {
     height: 0.5,
     color: '#d9c89a',
     price: 420,
-    model: '../../util/models/DiffuseTransmissionTeacup.glb',
+    models: [
+      {
+        id: 7,
+        url: '../../utils/models/DiffuseTransmissionTeacup.glb',
+        size: 0,
+      },
+    ],
   },
-} as const
+]
 
 /** Supported equipment categories in the room. */
-export type EquipmentName = keyof typeof EQUIPMENT
+export type EquipmentName =
+  | 'drive'
+  | 'cabinet'
+  | 'panel'
+  | 'carConcept'
+  | 'commercialRefrigerator'
+  | 'sheenChair'
+  | 'diffuseTransmissionTeacup'
+
+/** Returns catalog metadata by stable name. */
+export function getEquipment(name: EquipmentName): ItemType {
+  const equipment = EQUIPMENT.find(
+    (item) => item.name === name || item.nameKey === name
+  )
+  if (!equipment) throw new Error(`Unknown equipment type: ${name}`)
+  return equipment
+}
 
 /** One placed piece of equipment and its transform and wire connections. */
 export type LayoutItem = {
   /** Stable identifier used by selection and connections. */
   id: string
-  /** Catalog key for this equipment. */
-  type: EquipmentName
+  item: ItemType
   /** Center position in meters along the room X axis. */
   x: number
   /** Center position in meters along the room Z axis. */

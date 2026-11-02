@@ -504,6 +504,26 @@
   height: 100%;
 }
 
+.ce-mini-orthographic-view {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  pointer-events: none;
+  border: 1px solid rgba(117, 230, 209, 0.45);
+  border-radius: 6px;
+  background: #101820;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.ce-mini-orthographic-view canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .ce-canvas-legend {
   position: absolute;
   right: 12px;
@@ -630,6 +650,9 @@
   color: #ffb1b8;
   font-size: 0.625rem;
   list-style: none;
+  overflow-y: auto;
+  max-height: 4rem;
+  width: stretch;
 }
 
 .ce-rule-clear {

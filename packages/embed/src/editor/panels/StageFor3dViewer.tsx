@@ -95,8 +95,9 @@ export const StageFor3dViewer = ({
         </div>
         <ul aria-label={t('ruleCheck')}>
           {violations.length ? (
-            violations.map(({ first, second }) => (
+            violations.map(({ first, second }, idx) => (
               <li key={`${first.id}-${second.id}`}>
+                {`${idx + 1} ) `}
                 {t('violation', {
                   first: t(first.item.name),
                   second: t(second.item.name),

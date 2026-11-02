@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      add500: 'Add Instanced 500',
       fixedGrid: 'fixed Grid',
       PLACE: 'CATALOG',
       INSPECT: 'INSPECT',
@@ -111,6 +112,7 @@ const resources = {
   },
   vi: {
     translation: {
+      add500: 'Thêm 500 thực thể (Instanced)',
       fixedGrid: 'Lưới cố định',
       PLACE: 'danhmục',
       INSPECT: 'Kiểm tra',
@@ -216,6 +218,7 @@ const resources = {
 
   zh: {
     translation: {
+      add500: ' 500 个实例化网格 (Instanced)',
       fixedGrid: ' 固定网格',
       PLACE: '目录',
       INSPECT: '检查 / 檢查',

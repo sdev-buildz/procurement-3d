@@ -25,7 +25,6 @@ export const initialLayout: LayoutItem[] = [
     rotation: 0,
   },
 ]
-
 /**
  * Rounds a coordinate to the nearest fixed-grid cell.
  * @param value - Coordinate in meters.

@@ -1,6 +1,6 @@
 /* eslint jsdoc/require-jsdoc: off */
 import type { ReactElement } from 'react'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import './ConfigEditor.css'
 import { AssistantPanel } from './editor/assistant/AssistantPanel'
@@ -9,7 +9,7 @@ import { useDrag } from './editor/hooks/useDrag'
 import { useHistory } from './editor/hooks/useHistory'
 import { useViolations } from './editor/hooks/useViolations'
 import type { ItemType, LayoutItem } from './editor/items'
-import { ROOM } from './editor/items'
+import { getEquipment, ROOM } from './editor/items'
 import { constrainPosition } from './editor/layout'
 import { BomPanel } from './editor/panels/BomPanel'
 import { CatalogPanel } from './editor/panels/CatalogPanel'
@@ -214,6 +214,37 @@ export function ConfigEditor(): ReactElement {
     )
   }
 
+  /**
+   * Adds 500 instanced 3D modals to the scene.
+   *  Used to test perf.
+   */
+  const add500Instanced = useCallback(() => {
+    const minx = -ROOM.width / 2
+    const maxx = ROOM.width / 2
+    const minz = -ROOM.depth / 2
+    let x = minx,
+      z = minz
+
+    const itemsCopy: LayoutItem[] = [...items]
+
+    for (let j = 0; j < 500; j += 1) {
+      if (x < maxx) x += 1 / 2
+      else {
+        x = minx
+        z = z + 1 / 2
+      }
+      itemsCopy.push({
+        id: `drive-${j}`,
+        item: getEquipment('drive'),
+        x,
+        z,
+        rotation: 0,
+      })
+    }
+
+    historyState.commitItems(itemsCopy)
+  }, [items])
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target
@@ -272,7 +303,12 @@ export function ConfigEditor(): ReactElement {
     <main className='ce-shell'>
       <TopBar />
 
-      <ToolBar {...historyState} topDown={topDown} setTopDown={setTopDown} />
+      <ToolBar
+        {...historyState}
+        topDown={topDown}
+        setTopDown={setTopDown}
+        add500Instanced={add500Instanced}
+      />
 
       <div className='ce-workspace'>
         <CatalogPanel

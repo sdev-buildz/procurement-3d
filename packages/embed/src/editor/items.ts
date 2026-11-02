@@ -4,7 +4,7 @@ export const ROOM = {
   width: 20,
   /** Total room depth along the Z axis. */
   depth: 12,
-  /** Distance between adjacent floor-grid cells. */
+  /** width or height of grid cells (squares). */
   cellSize: 0.5,
 } as const
 
@@ -66,7 +66,7 @@ export const EQUIPMENT = {
     height: 1.4,
     color: '#d98d8d',
     price: 3200,
-    model: '../../models/CarConcept.glb',
+    model: '../../util/models/CarConcept.glb',
   },
   commercialRefrigerator: {
     nameKey: 'commercialRefrigerator',
@@ -76,7 +76,7 @@ export const EQUIPMENT = {
     height: 2.0,
     color: '#8fc5d8',
     price: 2100,
-    model: '../../models/CommercialRefrigerator.glb',
+    model: '../../util/models/CommercialRefrigerator.glb',
   },
   sheenChair: {
     nameKey: 'sheenChair',
@@ -86,7 +86,7 @@ export const EQUIPMENT = {
     height: 1.1,
     color: '#d7a6cf',
     price: 780,
-    model: '../../models/SheenChair.glb',
+    model: '../../util/models/SheenChair.glb',
   },
   diffuseTransmissionTeacup: {
     nameKey: 'diffuseTransmissionTeacup',
@@ -96,19 +96,19 @@ export const EQUIPMENT = {
     height: 0.5,
     color: '#d9c89a',
     price: 420,
-    model: '../../models/DiffuseTransmissionTeacup.glb',
+    model: '../../util/models/DiffuseTransmissionTeacup.glb',
   },
 } as const
 
 /** Supported equipment categories in the room. */
-export type EquipmentType = keyof typeof EQUIPMENT
+export type EquipmentName = keyof typeof EQUIPMENT
 
 /** One placed piece of equipment and its transform and wire connections. */
 export type LayoutItem = {
   /** Stable identifier used by selection and connections. */
   id: string
   /** Catalog key for this equipment. */
-  type: EquipmentType
+  type: EquipmentName
   /** Center position in meters along the room X axis. */
   x: number
   /** Center position in meters along the room Z axis. */
@@ -117,24 +117,4 @@ export type LayoutItem = {
   rotation: number
   /** IDs of other equipment connected by visible wires. */
   connections?: string[]
-}
-
-/** A pair of equipment whose footprint boundary clearance violates the spacing rule. */
-export type RuleViolation = {
-  /** First item in the violating pair. */
-  first: LayoutItem
-  /** Second item in the violating pair. */
-  second: LayoutItem
-  /** Shortest distance between the item footprint boundaries, in meters. */
-  distance: number
-}
-
-/** Aggregated quantity and unit price for one BOM row. */
-export type BillOfMaterialsRow = {
-  /** Catalog key for the row. */
-  type: EquipmentType
-  /** Number of matching pieces in the current layout. */
-  quantity: number
-  /** Price for one piece in USD. */
-  unitPrice: number
 }

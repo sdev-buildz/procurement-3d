@@ -9,7 +9,7 @@
 
     "//#build:main": {
       "description": "bundles the web-client.",
-      "outputs": ["./packages/procurement/dist/**"],
+      "outputs": ["./packages/procurement/dist/**", "./packages/embed/dist/**"],
       "inputs": [
         "$TURBO_DEFAULT$",
         "!.github/**",

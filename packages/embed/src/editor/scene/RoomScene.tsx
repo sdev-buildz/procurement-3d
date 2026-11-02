@@ -5,21 +5,23 @@ import { Canvas, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import { BufferGeometry, Float32BufferAttribute } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import type { EquipmentType, LayoutItem } from '../types'
-import { ROOM } from '../types'
-import { EquipmentModel, InstancedEquipmentModels } from './EquipmentModel'
+import type { DragHandlers } from '../hooks/useDrag'
+import type { RuleViolation } from '../hooks/useViolations'
+import { ROOM, type EquipmentName, type LayoutItem } from '../items'
+import { EquipmentModel } from './EquipmentModel'
+import { InstancedEquipmentModels } from './InstancedEquipmentModels'
 
 type RoomSceneProps = {
   /** Current room equipment. */
-  items: LayoutItem[]
+  itemsDisplayed: LayoutItem[]
   /** IDs highlighted as selected in the editor panels. */
   selectedIds: Set<string>
   /** IDs participating in an active spacing violation. */
-  violationIds: Set<string>
+  violations: RuleViolation[]
   /** Suggested item transform rendered as a translucent ghost. */
   previewItem: LayoutItem | null
   /** Equipment category to place when the floor is clicked. */
-  placementType: EquipmentType | null
+  placementType: EquipmentName | null
   /** Whether to show the synchronized top-down camera. */
   topDown: boolean
   /** Selects an item, optionally extending the current selection. */
@@ -28,12 +30,8 @@ type RoomSceneProps = {
   onClearSelection: () => void
   /** Adds the active palette item at the clicked floor position. */
   onPlace: (x: number, z: number) => void
-  /** Starts a pointer drag for one item. */
-  onDragStart: (id: string) => void
-  /** Updates a drag preview using the pointer's world coordinates. */
-  onDrag: (id: string, x: number, z: number) => void
-  /** Commits the final position after a pointer drag. */
-  onDragEnd: (id: string) => void
+  /** Starts, updates, and commits an item drag. */
+  dragHandlers: DragHandlers
 }
 
 function makeGridGeometry(): BufferGeometry {
@@ -116,32 +114,34 @@ function CameraControls({
 
 /** Renders the room, equipment, selection, wire geometry, and preview state. */
 export function RoomScene({
-  items,
+  itemsDisplayed: items,
   selectedIds,
-  violationIds,
+  violations,
   previewItem,
   placementType,
   topDown,
   onSelect,
   onClearSelection,
   onPlace,
-  onDragStart,
-  onDrag,
-  onDragEnd,
+  dragHandlers,
 }: RoomSceneProps) {
   const gridGeometry = useMemo(makeGridGeometry, [])
   const wireGeometry = useMemo(() => makeWireGeometry(items), [items])
   const draggingId = useRef<string | null>(null)
   const controlsRef = useRef<OrbitControls | null>(null)
   const statsParentRef = useRef<HTMLDivElement>(null)
-
+  const violationIds = useMemo(
+    () =>
+      new Set(violations.flatMap(({ first, second }) => [first.id, second.id])),
+    [violations]
+  )
   const handleItemDown = (
     item: LayoutItem,
     event: ThreeEvent<PointerEvent>
   ) => {
     event.stopPropagation()
     onSelect(item.id, event.nativeEvent.shiftKey)
-    onDragStart(item.id)
+    dragHandlers.onStart(item.id)
     draggingId.current = item.id
     if (controlsRef.current) controlsRef.current.enabled = false
     document.body.style.cursor = 'grabbing'
@@ -150,12 +150,12 @@ export function RoomScene({
     item: LayoutItem,
     event: ThreeEvent<PointerEvent>
   ) => {
-    onDrag(item.id, event.point.x, event.point.z)
+    dragHandlers.onMove(item.id, event.point.x, event.point.z)
   }
   const handleItemUp = () => {
     const activeId = draggingId.current
     if (activeId) {
-      onDragEnd(activeId)
+      dragHandlers.onEnd(activeId)
       if (controlsRef.current) controlsRef.current.enabled = true
     }
     draggingId.current = null
@@ -208,7 +208,11 @@ export function RoomScene({
             }}
             onPointerMove={(event) => {
               if (draggingId.current) {
-                onDrag(draggingId.current, event.point.x, event.point.z)
+                dragHandlers.onMove(
+                  draggingId.current,
+                  event.point.x,
+                  event.point.z
+                )
               }
             }}
             onPointerUp={handleItemUp}

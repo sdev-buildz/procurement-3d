@@ -2,9 +2,12 @@
 import type { FormEvent, ReactElement } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { LayoutItem, RuleViolation } from '../types'
-import { EQUIPMENT } from '../types'
-import type { AssistantReply } from './assistantReply'
+import type { useHistory } from '../hooks/useHistory'
+import type { RuleViolation } from '../hooks/useViolations'
+import type { LayoutItem } from '../items'
+import { EQUIPMENT } from '../items'
+import { constrainPosition } from '../layout'
+import type { AssistantProposal, AssistantReply } from './assistantReply'
 import { sampleAssistantConversations } from './assistantReply'
 
 type AssistantPanelProps = {
@@ -14,12 +17,13 @@ type AssistantPanelProps = {
   violations: RuleViolation[]
   /** Whether a suggested edit is currently visible as a scene preview. */
   proposalPending: boolean
-  /** Called after the assistant finishes streaming a structured response. */
-  onReply: (reply: AssistantReply) => void
-  /** Commits the currently previewed suggestion. */
-  onAccept: () => void
   /** Dismisses the currently previewed suggestion without editing the layout. */
   onReject: () => void
+  proposal: AssistantProposal | null
+  setProposal: (newProposal: AssistantProposal | null) => void
+  historyState: ReturnType<typeof useHistory>
+  setAnnouncement: (value: string) => void
+  setSelectedIds: (ids: Set<LayoutItem['id']>) => void
 }
 
 /** Streams a mocked answer and displays actions for a pending scene proposal. */
@@ -27,9 +31,12 @@ export function AssistantPanel({
   items,
   violations,
   proposalPending,
-  onReply,
-  onAccept,
   onReject,
+  proposal,
+  setProposal,
+  historyState,
+  setAnnouncement,
+  setSelectedIds,
 }: AssistantPanelProps): ReactElement {
   const { t } = useTranslation()
   const [question, setQuestion] = useState('')
@@ -90,7 +97,7 @@ export function AssistantPanel({
     }
 
     setStreaming(false)
-    onReply(nextReply)
+    handleAssistantReply(nextReply)
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -105,6 +112,45 @@ export function AssistantPanel({
       (conversation) => conversation.id === sampleId
     )
     if (sample) void sendQuestion(t(sample.promptKey), sample.id)
+  }
+
+  const handleAssistantReply = (reply: AssistantReply) => {
+    const change = reply.proposedChange
+    if (!change) {
+      setProposal(null)
+      return
+    }
+
+    const currentItems = items
+    const currentItem = currentItems.find((item) => item.id === change.itemId)
+    if (!currentItem) {
+      setProposal(null)
+      return
+    }
+
+    setProposal({
+      ghost: {
+        ...currentItem,
+        ...constrainPosition(currentItem, change.target.x, change.target.z),
+      },
+    })
+  }
+
+  const acceptProposal = () => {
+    if (!proposal) return
+    const currentItems = items
+    if (!currentItems.some((item) => item.id === proposal.ghost.id)) {
+      setProposal(null)
+      return
+    }
+    historyState.commitItems(
+      currentItems.map((item) =>
+        item.id === proposal.ghost.id ? proposal.ghost : item
+      )
+    )
+    setSelectedIds(new Set([proposal.ghost.id]))
+    setProposal(null)
+    setAnnouncement(t('accept'))
   }
 
   return (
@@ -162,7 +208,7 @@ export function AssistantPanel({
               <button
                 type='button'
                 className='ce-accept-button'
-                onClick={onAccept}
+                onClick={acceptProposal}
               >
                 {t('accept')}
               </button>

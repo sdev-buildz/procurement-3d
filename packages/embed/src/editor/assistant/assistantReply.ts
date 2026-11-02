@@ -1,4 +1,11 @@
-import type { EquipmentType } from '../types'
+import type { EquipmentName, LayoutItem } from '../items'
+
+/**
+ * Suggestion from an assistant
+ */
+export type AssistantProposal = {
+  ghost: LayoutItem
+}
 
 /** A machine-readable layout edit proposed alongside the assistant's message. */
 export type AssistantProposedChange = {
@@ -41,7 +48,7 @@ export type SampleAssistantConversation = {
   /** Translation key for the proposed change's rationale. */
   rationaleKey: string
   /** Equipment category to move, or null to use the closest rule violation. */
-  equipmentType: EquipmentType | null
+  equipmentType: EquipmentName | null
 }
 
 /** Suggested prompts that each produce a previewable scene edit. */

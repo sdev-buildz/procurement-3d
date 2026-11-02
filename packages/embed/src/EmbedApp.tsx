@@ -17,7 +17,10 @@ type EmbedAuthState =
   | { status: 'signed-in'; user: AuthenticatedUser }
 
 /**
- * Authenticates against the host iframe token, then shows the current user
+ * The micro-app.
+ * Can be embedded in a host application via an iframe.
+ *
+ * Listens to auth-token from the host application, Authenticates against the token, then shows the current user
  * and the 3D editor.
  */
 export function EmbedApp(): ReactElement {

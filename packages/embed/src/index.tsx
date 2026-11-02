@@ -1,5 +1,3 @@
-export { ConfigEditor } from './ConfigEditor'
-export { EmbedApp } from './EmbedApp'
 export {
   AUTH_TOKEN_REQUEST_TYPE,
   AUTH_TOKEN_RESPONSE_TYPE,
@@ -12,15 +10,11 @@ export type {
   AuthTokenRequestMessage,
   AuthTokenResponseMessage,
 } from './auth/messages'
-export { EQUIPMENT, ROOM } from './editor/types'
+export { ConfigEditor } from './ConfigEditor'
 export { assistantReplyExample } from './editor/assistant/assistantReply'
 export type {
   AssistantProposedChange,
   AssistantReply,
 } from './editor/assistant/assistantReply'
-export type {
-  BillOfMaterialsRow,
-  EquipmentType,
-  LayoutItem,
-  RuleViolation,
-} from './editor/types'
+export { EQUIPMENT, ROOM } from './editor/items'
+export type { EquipmentName as EquipmentType, LayoutItem } from './editor/items'

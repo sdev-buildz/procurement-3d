@@ -1,4 +1,6 @@
-import type { LayoutItem } from './types'
+import { useCallback, useReducer } from 'react'
+import type { LayoutItem } from '../items'
+import { initialLayout } from '../layout'
 
 /** Previous, current, and redo-ready room layouts. */
 export type LayoutHistory = {
@@ -71,5 +73,35 @@ export function layoutHistoryReducer(
         future: state.future.slice(1),
       }
     }
+  }
+}
+
+/**
+ * A hook to manage the history of the scene.
+ * Used to implement undo/redo functionality.
+ */
+export const useHistory = () => {
+  const [history, dispatchHistory] = useReducer(
+    layoutHistoryReducer,
+    initialLayout,
+    createLayoutHistory
+  )
+
+  const commitItems = (nextItems: LayoutItem[]) => {
+    dispatchHistory({ type: 'commit', items: nextItems })
+  }
+
+  const undo = useCallback(() => {
+    dispatchHistory({ type: 'undo' })
+  }, [])
+  const redo = useCallback(() => {
+    dispatchHistory({ type: 'redo' })
+  }, [])
+
+  return {
+    history,
+    commitItems,
+    undo,
+    redo,
   }
 }

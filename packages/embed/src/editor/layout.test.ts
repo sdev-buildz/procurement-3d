@@ -1,16 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
-  constrainPosition,
-  createBillOfMaterials,
-  findRuleViolations,
-  snapToGrid,
-} from './layout'
-import { createLayoutHistory, layoutHistoryReducer } from './history'
-import {
   assistantReplyExample,
   sampleAssistantConversations,
 } from './assistant/assistantReply'
-import type { LayoutItem } from './types'
+import { createLayoutHistory, layoutHistoryReducer } from './hooks/useHistory'
+import { findRuleViolations } from './hooks/useViolations'
+import type { LayoutItem } from './items'
+import { constrainPosition, snapToGrid } from './layout'
 
 const items: LayoutItem[] = [
   { id: 'drive-1', type: 'drive', x: -0.5, z: 0, rotation: 0 },
@@ -62,17 +58,6 @@ describe('layout helpers', () => {
     ]
 
     expect(findRuleViolations(rotatedPair)[0]?.distance).toBeCloseTo(0.5)
-  })
-
-  it('counts quantities and prices from the current layout', () => {
-    expect(createBillOfMaterials(items)).toEqual([
-      { type: 'drive', quantity: 1, unitPrice: 2480 },
-      { type: 'cabinet', quantity: 1, unitPrice: 1890 },
-      { type: 'panel', quantity: 1, unitPrice: 960 },
-    ])
-    expect(
-      createBillOfMaterials([...items, { ...items[0]!, id: 'drive-2' }])[0]
-    ).toEqual({ type: 'drive', quantity: 2, unitPrice: 2480 })
   })
 })
 

@@ -5,7 +5,7 @@ const resources = {
   en: {
     translation: {
       fixedGrid: 'fixed Grid',
-      PLACE: 'PLACE',
+      PLACE: 'CATALOG',
       INSPECT: 'INSPECT',
       COPILOT: 'COPILOT',
       SCENE: 'SCENE',
@@ -112,7 +112,7 @@ const resources = {
   vi: {
     translation: {
       fixedGrid: 'Lưới cố định',
-      PLACE: 'Địa điểm',
+      PLACE: 'danhmục',
       INSPECT: 'Kiểm tra',
       COPILOT: 'Phi công phụ',
       SCENE: 'Cảnh tượng',
@@ -217,7 +217,7 @@ const resources = {
   zh: {
     translation: {
       fixedGrid: ' 固定网格',
-      PLACE: '地点 / 地點',
+      PLACE: '目录',
       INSPECT: '检查 / 檢查',
       COPILOT: '驾驶 / 副駕駛',
       SCENE: '场景 / 場景',

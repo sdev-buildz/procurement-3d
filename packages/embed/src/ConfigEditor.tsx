@@ -1,87 +1,73 @@
 /* eslint jsdoc/require-jsdoc: off */
-import type { CSSProperties, ReactElement } from 'react'
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from 'react'
+import type { ReactElement } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import './ConfigEditor.css'
 import { AssistantPanel } from './editor/assistant/AssistantPanel'
-import type { AssistantReply } from './editor/assistant/assistantReply'
-import { formatCurrencyFromUSD, type TargetCurrency } from './editor/currency'
-import { createLayoutHistory, layoutHistoryReducer } from './editor/history'
-import { i18n } from './editor/i18n'
-import {
-  constrainPosition,
-  createBillOfMaterials,
-  findRuleViolations,
-  initialLayout,
-} from './editor/layout'
-import { RoomScene } from './editor/scene/RoomScene'
-import type { LayoutItem } from './editor/types'
-import { EQUIPMENT, ROOM } from './editor/types'
-
-type AssistantProposal = {
-  ghost: LayoutItem
-}
+import type { AssistantProposal } from './editor/assistant/assistantReply'
+import { useDrag } from './editor/hooks/useDrag'
+import { useHistory } from './editor/hooks/useHistory'
+import { useViolations } from './editor/hooks/useViolations'
+import type { LayoutItem } from './editor/items'
+import { EQUIPMENT, ROOM } from './editor/items'
+import { constrainPosition } from './editor/layout'
+import { BomPanel } from './editor/panels/BomPanel'
+import { CatalogPanel } from './editor/panels/CatalogPanel'
+import { ItemsInScene } from './editor/panels/ItemsInScene'
+import { SelectionInspector } from './editor/panels/SelectionInspector'
+import { StageFor3dViewer } from './editor/panels/StageFor3dViewer'
+import { ToolBar } from './editor/panels/ToolBar'
+import { TopBar } from './editor/panels/TopBar'
 
 function makeId(type: LayoutItem['type']): string {
   return `${type}-${crypto.randomUUID()}`
 }
 
-/** Provides the interactive electrical-room editor and its supporting panels. */
+/**
+ * The workspace with 3D view, and other supporting panels.
+ */
 export function ConfigEditor(): ReactElement {
   const { t } = useTranslation()
-  const [history, dispatch] = useReducer(
-    layoutHistoryReducer,
-    initialLayout,
-    createLayoutHistory
-  )
+  const historyState = useHistory()
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [placementType, setPlacementType] = useState<LayoutItem['type'] | null>(
     null
   )
-  const [dragPreview, setDragPreview] = useState<LayoutItem | null>(null)
-  const dragRef = useRef<LayoutItem | null>(null)
   const [topDown, setTopDown] = useState(false)
   const [copiedItems, setCopiedItems] = useState<LayoutItem[]>([])
   const [proposal, setProposal] = useState<AssistantProposal | null>(null)
   const [announcement, setAnnouncement] = useState('')
 
-  const items = history.present
-  const itemsRef = useRef(items)
-  const displayItems = dragPreview
+  const items = historyState.history.present
+
+  const { dragPreview, dragHandlers } = useDrag({
+    items,
+    onCommit: historyState.commitItems,
+    onPositionChange: (item) =>
+      setAnnouncement(`${t('position')} ${item.x}, ${item.z}`),
+  })
+
+  /** It includes preview of item's new position shown when dragging. */
+  const itemsDisplayed: LayoutItem[] = dragPreview
     ? items.map((item) => (item.id === dragPreview.id ? dragPreview : item))
     : items
-  const violations = useMemo(
-    () => findRuleViolations(displayItems),
-    [displayItems]
-  )
-  const violationIds = useMemo(
-    () =>
-      new Set(violations.flatMap(({ first, second }) => [first.id, second.id])),
-    [violations]
-  )
-  const billOfMaterials = useMemo(() => createBillOfMaterials(items), [items])
-  const selectedItems = items.filter((item) => selectedIds.has(item.id))
-  const selectedItem = selectedItems.length === 1 ? selectedItems[0] : null
-  const selectionWired =
-    selectedItems.length > 1 &&
-    selectedItems
-      .slice(1)
-      .every((item) => selectedItems[0]?.connections?.includes(item.id))
-  const total = billOfMaterials.reduce(
-    (sum, row) => sum + row.quantity * row.unitPrice,
-    0
-  )
 
-  const commitItems = (nextItems: LayoutItem[]) => {
-    dispatch({ type: 'commit', items: nextItems })
-  }
+  const violations = useViolations(itemsDisplayed)
+
+  /**
+   * The currently selected items. Users can select items by clicking on them.
+   * Multi-selection is supported by holding down the Shift key while clicking on items.
+   */
+  const selectedItems = items.filter((item) => selectedIds.has(item.id))
+  /** The currently selected item, if there is only one selected. */
+  const selectedItem =
+    selectedItems.length === 1 ? (selectedItems[0] ?? null) : null
+
+  /**
+   * @param id - the id of the item to select
+   * @param extend - if true (holding Shift while clicking), the selection is extended to include the item,
+   *  otherwise the selection is replaced with the item
+   */
   const selectItem = (id: string, extend: boolean) => {
     setSelectedIds((current) => {
       if (!extend) return new Set([id])
@@ -94,9 +80,14 @@ export function ConfigEditor(): ReactElement {
   }
   const clearSelection = () => setSelectedIds(new Set())
 
+  /**
+   * Applies the provided callback to every selected item.
+   * The callback can update an item's position, rotation, etc....
+   * @param update - the callback
+   */
   const updateSelected = (update: (item: LayoutItem) => LayoutItem) => {
     if (selectedIds.size === 0) return
-    commitItems(
+    historyState.commitItems(
       items.map((item) => (selectedIds.has(item.id) ? update(item) : item))
     )
   }
@@ -110,7 +101,7 @@ export function ConfigEditor(): ReactElement {
 
   const removeSelection = () => {
     if (selectedIds.size === 0) return
-    commitItems(
+    historyState.commitItems(
       items
         .filter((item) => !selectedIds.has(item.id))
         .map((item) => {
@@ -160,41 +151,15 @@ export function ConfigEditor(): ReactElement {
         ),
       }
     })
-    commitItems([...items, ...pasted])
+    historyState.commitItems([...items, ...pasted])
     setSelectedIds(new Set(pasted.map(({ id }) => id)))
     setAnnouncement(t('paste'))
-  }
-
-  const toggleWires = () => {
-    if (selectedItems.length < 2) return
-    const anchor = selectedItems[0]
-    if (!anchor) return
-    const otherIds = selectedItems.slice(1).map(({ id }) => id)
-    const disconnect = otherIds.every((id) => anchor.connections?.includes(id))
-    const selected = new Set([anchor.id, ...otherIds])
-
-    commitItems(
-      items.map((item) => {
-        if (!selected.has(item.id)) return item
-        const connections = new Set(item.connections ?? [])
-        for (const otherId of otherIds) {
-          if (item.id === anchor.id) {
-            if (disconnect) connections.delete(otherId)
-            else connections.add(otherId)
-          } else if (item.id === otherId) {
-            if (disconnect) connections.delete(anchor.id)
-            else connections.add(anchor.id)
-          }
-        }
-        return { ...item, connections: [...connections] }
-      })
-    )
   }
 
   const alignSelection = () => {
     if (selectedItems.length < 2) return
     const leftmost = Math.min(...selectedItems.map(({ x }) => x))
-    commitItems(
+    historyState.commitItems(
       items.map((item) =>
         selectedIds.has(item.id)
           ? { ...item, ...constrainPosition(item, leftmost, item.z) }
@@ -216,37 +181,12 @@ export function ConfigEditor(): ReactElement {
         constrainPosition(item, first.x + spacing * index, item.z).x,
       ])
     )
-    commitItems(
+    historyState.commitItems(
       items.map((item) => {
         const x = positions.get(item.id)
         return x === undefined ? item : { ...item, x }
       })
     )
-  }
-
-  const beginDrag = (id: string) => {
-    const item = items.find((candidate) => candidate.id === id)
-    if (item) dragRef.current = item
-  }
-
-  const updateDrag = (id: string, x: number, z: number) => {
-    const item = dragRef.current
-    if (!item || item.id !== id) return
-    const next = { ...item, ...constrainPosition(item, x, z) }
-    dragRef.current = next
-    setDragPreview(next)
-  }
-
-  const finishDrag = (id: string) => {
-    const moved = dragRef.current
-    dragRef.current = null
-    setDragPreview(null)
-    if (!moved || moved.id !== id) return
-    const original = items.find((item) => item.id === id)
-    if (original && (original.x !== moved.x || original.z !== moved.z)) {
-      commitItems(items.map((item) => (item.id === id ? moved : item)))
-      setAnnouncement(`${t('position')} ${moved.x}, ${moved.z}`)
-    }
   }
 
   const addItem = (type: LayoutItem['type'], x: number, z: number) => {
@@ -256,7 +196,7 @@ export function ConfigEditor(): ReactElement {
       ...constrainPosition({ id: '', type, x: 0, z: 0, rotation: 0 }, x, z),
       rotation: 0,
     }
-    commitItems([...items, item])
+    historyState.commitItems([...items, item])
     setSelectedIds(new Set([item.id]))
     setPlacementType(null)
     setAnnouncement(
@@ -271,23 +211,12 @@ export function ConfigEditor(): ReactElement {
       axis === 'x' ? value : selectedItem.x,
       axis === 'z' ? value : selectedItem.z
     )
-    commitItems(
+    historyState.commitItems(
       items.map((item) =>
         item.id === selectedItem.id ? { ...item, ...position } : item
       )
     )
   }
-
-  const undo = useCallback(() => {
-    dispatch({ type: 'undo' })
-  }, [])
-  const redo = useCallback(() => {
-    dispatch({ type: 'redo' })
-  }, [])
-
-  useEffect(() => {
-    itemsRef.current = items
-  }, [items])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -303,11 +232,11 @@ export function ConfigEditor(): ReactElement {
       const modifier = event.ctrlKey || event.metaKey
       if (modifier && event.key.toLowerCase() === 'z') {
         event.preventDefault()
-        if (event.shiftKey) redo()
-        else undo()
+        if (event.shiftKey) historyState.redo()
+        else historyState.undo()
       } else if (modifier && event.key.toLowerCase() === 'y') {
         event.preventDefault()
-        redo()
+        historyState.redo()
       } else if (modifier && event.key.toLowerCase() === 'c') {
         event.preventDefault()
         copySelection()
@@ -338,548 +267,76 @@ export function ConfigEditor(): ReactElement {
     copySelection,
     moveSelection,
     pasteSelection,
-    redo,
+    historyState.redo,
     removeSelection,
-    undo,
+    historyState.undo,
   ])
-
-  const handleAssistantReply = (reply: AssistantReply) => {
-    const change = reply.proposedChange
-    if (!change) {
-      setProposal(null)
-      return
-    }
-
-    const currentItems = itemsRef.current
-    const currentItem = currentItems.find((item) => item.id === change.itemId)
-    if (!currentItem) {
-      setProposal(null)
-      return
-    }
-
-    setProposal({
-      ghost: {
-        ...currentItem,
-        ...constrainPosition(currentItem, change.target.x, change.target.z),
-      },
-    })
-  }
-
-  const acceptProposal = () => {
-    if (!proposal) return
-    const currentItems = itemsRef.current
-    if (!currentItems.some((item) => item.id === proposal.ghost.id)) {
-      setProposal(null)
-      return
-    }
-    commitItems(
-      currentItems.map((item) =>
-        item.id === proposal.ghost.id ? proposal.ghost : item
-      )
-    )
-    setSelectedIds(new Set([proposal.ghost.id]))
-    setProposal(null)
-    setAnnouncement(t('accept'))
-  }
-
-  const formatPrice = (price: number) =>
-    formatCurrencyFromUSD({
-      amountInUSD: price,
-      targetCurrency: t('currency') as TargetCurrency,
-    })
 
   return (
     <main className='ce-shell'>
-      <header className='ce-topbar'>
-        <div className='ce-brand'>
-          <div className='ce-brand-mark' aria-hidden='true'>
-            ⌂
-          </div>
-          <div>
-            <p className='ce-eyebrow'>{t('project')}</p>
-            <h1>{t('editor')}</h1>
-          </div>
-        </div>
-        <div className='ce-top-actions'>
-          <span className='ce-save-state'>
-            <span />
-            {t('localDemo')}
-          </span>
-          <span className='ce-save-state'>{t('multiSelect')}</span>
+      <TopBar />
 
-          <label className='ce-language'>
-            <span className='ce-sr-only'>{t('language')}</span>
-            <select
-              value={i18n.language}
-              onChange={(event) => void i18n.changeLanguage(event.target.value)}
-              aria-label={t('language')}
-            >
-              <option value='en'>English</option>
-              <option value='vi'>Vietnamese</option>
-              <option value='zh'>Simplified Chinese</option>
-            </select>
-          </label>
-        </div>
-      </header>
-
-      <section className='ce-toolbar' aria-label={t('editor')}>
-        <div className='ce-room-title'>
-          <span className='ce-room-dot' />
-          <strong>{t('room')}</strong>
-          <span className='ce-room-size'>20 × 12 m</span>
-        </div>
-        <div className='ce-toolbar-actions'>
-          <button
-            type='button'
-            className='ce-tool-button'
-            onClick={undo}
-            disabled={history.past.length === 0}
-            title={`${t('undo')} · Ctrl/Cmd+Z`}
-          >
-            <span aria-hidden='true'>↶</span>
-            {t('undo')}
-          </button>
-          <button
-            type='button'
-            className='ce-tool-button'
-            onClick={redo}
-            disabled={history.future.length === 0}
-            title={`${t('redo')} · Ctrl/Cmd+Y`}
-          >
-            <span aria-hidden='true'>↷</span>
-            {t('redo')}
-          </button>
-          <span className='ce-toolbar-divider' />
-          <button
-            type='button'
-            className={`ce-tool-button ${topDown ? '' : 'is-active'}`}
-            onClick={() => setTopDown(false)}
-            aria-pressed={!topDown}
-          >
-            <span aria-hidden='true'>◇</span>
-            {t('view3d')}
-          </button>
-          <button
-            type='button'
-            className={`ce-tool-button ${topDown ? 'is-active' : ''}`}
-            onClick={() => setTopDown(true)}
-            aria-pressed={topDown}
-          >
-            <span aria-hidden='true'>▦</span>
-            {t('plan')}
-          </button>
-        </div>
-      </section>
+      <ToolBar {...historyState} topDown={topDown} setTopDown={setTopDown} />
 
       <div className='ce-workspace'>
-        <aside className='ce-palette ce-panel'>
-          <div className='ce-panel-heading'>
-            <div>
-              <p className='ce-eyebrow'>01 / {t('PLACE')}</p>
-              <h2>{t('addEquipment')}</h2>
-            </div>
-            <span className='ce-step-icon' aria-hidden='true'>
-              ＋
-            </span>
-          </div>
-          <div className='ce-palette-list'>
-            {(Object.keys(EQUIPMENT) as LayoutItem['type'][]).map((type) => {
-              const equipment = EQUIPMENT[type]
-              return (
-                <button
-                  type='button'
-                  className={`ce-palette-item ${placementType === type ? 'is-selected' : ''}`}
-                  key={type}
-                  onClick={() =>
-                    setPlacementType((current) =>
-                      current === type ? null : type
-                    )
-                  }
-                  aria-pressed={placementType === type}
-                >
-                  <span
-                    className={`ce-equipment-icon ce-icon-${type}`}
-                    style={
-                      { '--equipment-color': equipment.color } as CSSProperties
-                    }
-                    aria-hidden='true'
-                  >
-                    <span />
-                  </span>
-                  <span className='ce-palette-copy'>
-                    <strong>{t(equipment.nameKey)}</strong>
-                    <small>
-                      {equipment.width} × {equipment.depth} × {equipment.height}{' '}
-                      m
-                    </small>
-                  </span>
-                  <span className='ce-add-mark' aria-hidden='true'>
-                    ＋
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-          <div
-            className={`ce-placement-tip ${placementType ? 'is-ready' : ''}`}
-          >
-            <span aria-hidden='true'>⌖</span>
-            {placementType ? t('clickToPlace') : t('selectToEdit')}
-          </div>
-          <div className='ce-grid-note'>
-            <span className='ce-grid-sample' aria-hidden='true' />
-            <div>
-              <strong>0.5 m</strong>
-              <small>{t('fixedGrid')}</small>
-            </div>
-          </div>
-        </aside>
-
-        <section className='ce-stage ce-panel' aria-label={t('room')}>
-          <div className='ce-stage-heading'>
-            <div>
-              <span className='ce-live-dot' />
-              <strong>{topDown ? t('plan') : t('liveScene')}</strong>
-              <span className='ce-stage-subtitle'>
-                20 m × 12 m <span>·</span> {t('stageGrid')}
-              </span>
-            </div>
-            <span className='ce-stage-count'>
-              {t('itemsCount', {
-                displayCount: items.length.toString().padStart(2, '0'),
-              })}
-            </span>
-          </div>
-          <div
-            className={`ce-canvas-wrap ${placementType ? 'is-placing' : ''}`}
-          >
-            <RoomScene
-              items={displayItems}
-              selectedIds={selectedIds}
-              violationIds={violationIds}
-              previewItem={proposal?.ghost ?? null}
-              placementType={placementType}
-              topDown={topDown}
-              onSelect={selectItem}
-              onClearSelection={clearSelection}
-              onPlace={(x, z) => placementType && addItem(placementType, x, z)}
-              onDragStart={beginDrag}
-              onDrag={updateDrag}
-              onDragEnd={finishDrag}
-            />
-            {proposal ? (
-              <div className='ce-preview-banner'>
-                <span className='ce-preview-swatch' />
-                <span>{t('previewing')}</span>
-              </div>
-            ) : null}
-            <div className='ce-canvas-legend'>
-              <span>
-                <i className='ce-legend-normal' /> {t('equipmentLegend')}
-              </span>
-              <span>
-                <i className='ce-legend-warning' /> {t('issueLegend')}
-              </span>
-              {proposal ? (
-                <span>
-                  <i className='ce-legend-preview' /> {t('previewLegend')}
-                </span>
-              ) : null}
-            </div>
-          </div>
-          <div className='ce-rule-bar'>
-            <div className='ce-rule-heading'>
-              <span
-                className={
-                  violations.length ? 'ce-rule-icon is-warning' : 'ce-rule-icon'
-                }
-                aria-hidden='true'
-              >
-                {violations.length ? '!' : '✓'}
-              </span>
-              <div>
-                <strong>{t('ruleCheck')}</strong>
-                <small>
-                  {violations.length
-                    ? t('issueCount', { count: violations.length })
-                    : t('allClear')}
-                </small>
-              </div>
-            </div>
-            <ul aria-label={t('ruleCheck')}>
-              {violations.length ? (
-                violations.map(({ first, second }) => (
-                  <li key={`${first.id}-${second.id}`}>
-                    {t('violation', {
-                      first: t(EQUIPMENT[first.type].nameKey),
-                      second: t(EQUIPMENT[second.type].nameKey),
-                    })}
-                  </li>
-                ))
-              ) : (
-                <li className='ce-rule-clear'>{t('noViolations')}</li>
-              )}
-            </ul>
-          </div>
-        </section>
+        <CatalogPanel
+          equipmentName={placementType}
+          onSelectType={(type) =>
+            setPlacementType((current) => (current === type ? null : type))
+          }
+        />
+        <StageFor3dViewer
+          itemsDisplayed={itemsDisplayed}
+          selectedIds={selectedIds}
+          previewItem={proposal?.ghost ?? null}
+          placementType={placementType}
+          topDown={topDown}
+          onSelect={selectItem}
+          onClearSelection={clearSelection}
+          onPlace={(x, z) => placementType && addItem(placementType, x, z)}
+          dragHandlers={dragHandlers}
+          proposal={proposal}
+          violations={violations}
+          placingItemName={placementType}
+        />
 
         <aside className='ce-inspector'>
-          <section className='ce-panel ce-properties'>
-            <div className='ce-panel-heading'>
-              <div>
-                <p className='ce-eyebrow'>02 / {t('INSPECT')}</p>
-                <h2>{t('properties')}</h2>
-              </div>
-              {selectedItems.length > 1 ? (
-                <span className='ce-selection-count'>
-                  {t('selectedCount', { count: selectedItems.length })}
-                </span>
-              ) : null}
-            </div>
-
-            {selectedItem ? (
-              <div className='ce-property-content'>
-                <div className='ce-selected-name'>
-                  <span
-                    className={`ce-equipment-icon ce-icon-${selectedItem.type}`}
-                    style={
-                      {
-                        '--equipment-color': EQUIPMENT[selectedItem.type].color,
-                      } as CSSProperties
-                    }
-                    aria-hidden='true'
-                  >
-                    <span />
-                  </span>
-                  <div>
-                    <strong>{t(EQUIPMENT[selectedItem.type].nameKey)}</strong>
-                    <small>
-                      {EQUIPMENT[selectedItem.type].sku} · {selectedItem.id}
-                    </small>
-                  </div>
-                </div>
-                <label className='ce-field-label'>{t('position')}</label>
-                <div className='ce-position-fields'>
-                  <label>
-                    <span>X</span>
-                    <input
-                      type='number'
-                      step={ROOM.cellSize}
-                      value={selectedItem.x}
-                      onChange={(event) =>
-                        changePosition('x', Number(event.target.value))
-                      }
-                      aria-label={t('xPosition')}
-                    />
-                  </label>
-                  <label>
-                    <span>Z</span>
-                    <input
-                      type='number'
-                      step={ROOM.cellSize}
-                      value={selectedItem.z}
-                      onChange={(event) =>
-                        changePosition('z', Number(event.target.value))
-                      }
-                      aria-label={t('zPosition')}
-                    />
-                  </label>
-                  <span className='ce-unit'>m</span>
-                </div>
-                <div className='ce-rotation-row'>
-                  <span>{t('rotation')}</span>
-                  <strong>{selectedItem.rotation}°</strong>
-                  <button type='button' onClick={rotateSelection}>
-                    {t('rotate')}
-                  </button>
-                </div>
-                <button
-                  type='button'
-                  className='ce-danger-button'
-                  onClick={removeSelection}
-                >
-                  <span aria-hidden='true'>×</span>
-                  {t('delete')}
-                </button>
-              </div>
-            ) : selectedItems.length > 1 ? (
-              <div className='ce-multi-tools'>
-                <p>{t('arrangeSelection')}</p>
-                <button type='button' onClick={alignSelection}>
-                  {t('alignLeft')}
-                </button>
-                <button
-                  type='button'
-                  onClick={distributeSelection}
-                  disabled={selectedItems.length < 3}
-                >
-                  {t('distribute')}
-                </button>
-                <button type='button' onClick={rotateSelection}>
-                  {t('rotate')}
-                </button>
-                <button type='button' onClick={toggleWires}>
-                  {t(selectionWired ? 'disconnect' : 'connect')}
-                </button>
-                <button
-                  type='button'
-                  className='ce-danger-button'
-                  onClick={removeSelection}
-                >
-                  {t('delete')}
-                </button>
-              </div>
-            ) : (
-              <div className='ce-empty-inspector'>
-                <span aria-hidden='true'>⌖</span>
-                <p>{t('nothingSelected')}</p>
-                <small>{t('emptyInspectorHelp')}</small>
-              </div>
-            )}
-          </section>
+          <SelectionInspector
+            items={items}
+            selectedItems={selectedItems}
+            selectedItem={selectedItem}
+            onPositionChange={changePosition}
+            onRotate={rotateSelection}
+            onDelete={removeSelection}
+            onAlign={alignSelection}
+            onDistribute={distributeSelection}
+            commitItems={historyState.commitItems}
+          />
 
           <AssistantPanel
             items={items}
             violations={violations}
             proposalPending={proposal !== null}
-            onReply={handleAssistantReply}
-            onAccept={acceptProposal}
             onReject={() => setProposal(null)}
+            proposal={proposal}
+            setProposal={setProposal}
+            historyState={historyState}
+            setSelectedIds={setSelectedIds}
+            setAnnouncement={setAnnouncement}
           />
         </aside>
       </div>
-
-      <section className='ce-bottom-grid'>
-        <div className='ce-panel ce-items-panel'>
-          <div className='ce-panel-heading'>
-            <div>
-              <p className='ce-eyebrow'>04 / {t('SCENE')}</p>
-              <h2>{t('items')}</h2>
-            </div>
-            <span className='ce-count-pill'>{items.length}</span>
-          </div>
-          <div className='ce-table-scroll'>
-            <table className='ce-table'>
-              <thead>
-                <tr>
-                  <th>{t('item')}</th>
-                  <th>{t('position')}</th>
-                  <th>{t('rotation')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => (
-                  <tr
-                    key={item.id}
-                    className={selectedIds.has(item.id) ? 'is-selected' : ''}
-                    onClick={(event) => selectItem(item.id, event.shiftKey)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ')
-                        selectItem(item.id, event.shiftKey)
-                    }}
-                    tabIndex={0}
-                    aria-selected={selectedIds.has(item.id)}
-                  >
-                    <td>
-                      <span
-                        className='ce-table-color'
-                        style={{ backgroundColor: EQUIPMENT[item.type].color }}
-                      />
-                      {t(EQUIPMENT[item.type].nameKey)}
-                    </td>
-                    <td>
-                      {t('itemPosition', {
-                        x: item.x.toFixed(1),
-                        z: item.z.toFixed(1),
-                      })}
-                    </td>
-                    <td>{item.rotation}°</td>
-                  </tr>
-                ))}
-                {items.length === 0 ? (
-                  <tr>
-                    <td className='ce-empty-row' colSpan={3}>
-                      {t('placeToStart')}
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </div>
-          <div className='ce-list-actions'>
-            <button
-              type='button'
-              onClick={copySelection}
-              disabled={selectedItems.length === 0}
-            >
-              {t('copy')}
-            </button>
-            <button
-              type='button'
-              onClick={pasteSelection}
-              disabled={copiedItems.length === 0}
-            >
-              {t('paste')}
-            </button>
-          </div>
-        </div>
-
-        <div className='ce-panel ce-bom-panel'>
-          <div className='ce-panel-heading'>
-            <div>
-              <p className='ce-eyebrow'>05 / {t('PROCUREMENT')}</p>
-              <h2>{t('billOfMaterials')}</h2>
-            </div>
-            <span className='ce-count-pill'>
-              {billOfMaterials.reduce((sum, row) => sum + row.quantity, 0)}{' '}
-              {t('items').toLowerCase()}
-            </span>
-          </div>
-          <div className='ce-table-scroll'>
-            <table className='ce-table ce-bom-table'>
-              <thead>
-                <tr>
-                  <th>{t('item')}</th>
-                  <th>{t('sku')}</th>
-                  <th>{t('quantity')}</th>
-                  <th>{t('unitPrice')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {billOfMaterials.map((row) => (
-                  <tr key={row.type}>
-                    <td>
-                      <span
-                        className='ce-table-color'
-                        style={{ backgroundColor: EQUIPMENT[row.type].color }}
-                      />
-                      {t(EQUIPMENT[row.type].nameKey)}
-                    </td>
-                    <td>{EQUIPMENT[row.type].sku}</td>
-                    <td>{row.quantity}</td>
-                    <td>{formatPrice(row.unitPrice)}</td>
-                  </tr>
-                ))}
-                {billOfMaterials.length === 0 ? (
-                  <tr>
-                    <td className='ce-empty-row' colSpan={4}>
-                      {t('emptyBom')}
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-              {billOfMaterials.length ? (
-                <tfoot>
-                  <tr>
-                    <td colSpan={3}>{t('total')}</td>
-                    <td>{formatPrice(total)}</td>
-                  </tr>
-                </tfoot>
-              ) : null}
-            </table>
-          </div>
-        </div>
-      </section>
+      <div className='ce-bottom-grid'>
+        <ItemsInScene
+          items={items}
+          selectedIds={selectedIds}
+          copiedItemsCount={copiedItems.length}
+          onSelectItem={selectItem}
+          onCopy={copySelection}
+          onPaste={pasteSelection}
+        />
+        <BomPanel items={items} />
+      </div>
 
       <footer className='ce-footer'>
         <span>{t('keyboardHelp')}</span>

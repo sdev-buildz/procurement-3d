@@ -1,12 +1,5 @@
-import { EQUIPMENT, ROOM } from './types'
-import type {
-  BillOfMaterialsRow,
-  EquipmentType,
-  LayoutItem,
-  RuleViolation,
-} from './types'
-
-const minimumClearanceMeters = 0.6
+import type { LayoutItem } from './items'
+import { EQUIPMENT, ROOM } from './items'
 
 /** Small starting layout that demonstrates the three catalog types. */
 export const initialLayout: LayoutItem[] = [
@@ -57,84 +50,4 @@ export function constrainPosition(
       Math.min(maxZ, Math.max(minZ, Math.round(z / ROOM.cellSize))) *
       ROOM.cellSize,
   }
-}
-
-/**
- * Finds all item pairs with less than 0.6 meters of footprint-to-footprint clearance.
- * @param items - Current room layout.
- * @returns Each violating pair and its measured boundary clearance.
- */
-export function findRuleViolations(items: LayoutItem[]): RuleViolation[] {
-  const violations: RuleViolation[] = []
-
-  for (let firstIndex = 0; firstIndex < items.length; firstIndex += 1) {
-    const first = items[firstIndex]
-    if (!first) continue
-
-    for (
-      let secondIndex = firstIndex + 1;
-      secondIndex < items.length;
-      secondIndex += 1
-    ) {
-      const second = items[secondIndex]
-      if (!second) continue
-
-      const firstEquipment = EQUIPMENT[first.type]
-      const secondEquipment = EQUIPMENT[second.type]
-      const firstRotated = Math.abs(first.rotation % 180) === 90
-      const secondRotated = Math.abs(second.rotation % 180) === 90
-      const firstWidth = firstRotated
-        ? firstEquipment.depth
-        : firstEquipment.width
-      const firstDepth = firstRotated
-        ? firstEquipment.width
-        : firstEquipment.depth
-      const secondWidth = secondRotated
-        ? secondEquipment.depth
-        : secondEquipment.width
-      const secondDepth = secondRotated
-        ? secondEquipment.width
-        : secondEquipment.depth
-      const gapX = Math.max(
-        Math.abs(first.x - second.x) - (firstWidth + secondWidth) / 2,
-        0
-      )
-      const gapZ = Math.max(
-        Math.abs(first.z - second.z) - (firstDepth + secondDepth) / 2,
-        0
-      )
-      const distance = Math.hypot(gapX, gapZ)
-      if (distance < minimumClearanceMeters - 1e-9) {
-        violations.push({ first, second, distance })
-      }
-    }
-  }
-
-  return violations
-}
-
-/**
- * Counts each equipment category for the procurement bill of materials.
- * @param items - Current room layout.
- * @returns One row per category present in the room.
- */
-export function createBillOfMaterials(
-  items: LayoutItem[]
-): BillOfMaterialsRow[] {
-  const rows = new Map<EquipmentType, BillOfMaterialsRow>()
-
-  for (const item of items) {
-    const row = rows.get(item.type)
-    if (row) {
-      row.quantity += 1
-    } else {
-      rows.set(item.type, {
-        type: item.type,
-        quantity: 1,
-        unitPrice: EQUIPMENT[item.type].price,
-      })
-    }
-  }
-
-  return [...rows.values()]
 }

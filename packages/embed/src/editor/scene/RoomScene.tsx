@@ -1,7 +1,7 @@
 import { A11yAnnouncer } from '@react-three/a11y'
-import { Stats } from '@react-three/drei'
 import type { ThreeEvent } from '@react-three/fiber'
 import { Canvas, useThree } from '@react-three/fiber'
+import { Perf } from 'r3f-perf'
 import { useEffect, useMemo, useRef, type ComponentProps } from 'react'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { RuleViolation } from '../hooks/useViolations'
@@ -121,11 +121,7 @@ export function RoomScene({
           }}
           onPointerMissed={onClearSelection}
         >
-          <Stats
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            parent={statsParentRef as any}
-            className='ce-performance-stats'
-          />
+          <Perf />
           <color attach='background' args={['#101820']} />
           <ambientLight intensity={1.35} />
           <directionalLight

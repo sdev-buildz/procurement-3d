@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, type ComponentProps } from 'react'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { RuleViolation } from '../hooks/useViolations'
 import { type LayoutItem } from '../items'
-import { EquipmentModel } from './primitives-dev/EquipmentModel'
+import { EquipmentModel } from './EquipmentModel'
 import { InstancedEquipmentModels } from './primitives-dev/InstancedEquipmentModels'
 import { RoomBounds } from './RoomBounds'
 

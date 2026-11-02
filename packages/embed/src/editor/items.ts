@@ -42,6 +42,9 @@ export type ItemType = {
   models: ModelType[]
 }
 
+const getAssetUrl = (modelFileName: string): string =>
+  new URL(`./static/assets/${modelFileName}.glb`, window.location.origin).href
+
 /** Catalog metadata used by the scene, palette, inspector, and BOM. */
 export const EQUIPMENT: ItemType[] = [
   {
@@ -111,7 +114,13 @@ export const EQUIPMENT: ItemType[] = [
     height: 1.4,
     color: '#d98d8d',
     price: 3200,
-    models: [{ id: 4, url: '../../utils/models/CarConcept.glb', size: 0 }],
+    models: [
+      {
+        id: 4,
+        url: getAssetUrl('CarConcept'),
+        size: 0,
+      },
+    ],
   },
   {
     id: 5,
@@ -126,7 +135,7 @@ export const EQUIPMENT: ItemType[] = [
     models: [
       {
         id: 5,
-        url: '../../utils/models/CommercialRefrigerator.glb',
+        url: getAssetUrl('CommercialRefrigerator'),
         size: 0,
       },
     ],
@@ -141,7 +150,7 @@ export const EQUIPMENT: ItemType[] = [
     height: 1.1,
     color: '#d7a6cf',
     price: 780,
-    models: [{ id: 6, url: '../../utils/models/SheenChair.glb', size: 0 }],
+    models: [{ id: 6, url: getAssetUrl('SheenChair'), size: 0 }],
   },
   {
     id: 7,
@@ -156,7 +165,7 @@ export const EQUIPMENT: ItemType[] = [
     models: [
       {
         id: 7,
-        url: '../../utils/models/DiffuseTransmissionTeacup.glb',
+        url: getAssetUrl('DiffuseTransmissionTeacup'),
         size: 0,
       },
     ],

@@ -1,7 +1,7 @@
 import type { ThreeEvent } from '@react-three/fiber'
 import type { MeshStandardMaterialParameters } from 'three'
-import type { LayoutItem } from '../../items'
-import { getEquipment } from '../../items'
+import type { LayoutItem } from '../items'
+import { getEquipment } from '../items'
 import { EquipmentMeshes } from './EquipmentMeshes'
 
 /** Renders one equipment item with its selection and violation indicators. */

@@ -1,6 +1,6 @@
 import type { MeshStandardMaterialParameters } from 'three'
-import type { ItemType, LayoutItem } from '../../items'
-import { GlbModel } from '../GlbModel'
+import type { ItemType, LayoutItem } from '../items'
+import { GlbModel } from './GlbModel'
 
 const PanelModel = ({
   equipment,
@@ -133,17 +133,5 @@ export function EquipmentMeshes({
     return <PanelModel equipment={equipment} materialProps={materialProps} />
   }
 
-  const modelFileName = modelUrl.split('/').at(-1)
-  return (
-    <GlbModel
-      modelUrl={
-        modelFileName
-          ? new URL(`../../../utils/models/${modelFileName}`, import.meta.url)
-              .href
-          : ''
-      }
-      equipment={equipment}
-      ghost={ghost}
-    />
-  )
+  return <GlbModel modelUrl={modelUrl} equipment={equipment} ghost={ghost} />
 }

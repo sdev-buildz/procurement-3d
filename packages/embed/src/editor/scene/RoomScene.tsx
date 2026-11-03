@@ -9,6 +9,7 @@ import type { RuleViolation } from '../hooks/useViolations'
 import { EQUIPMENT, type LayoutItem } from '../items'
 import { EquipmentModel } from './EquipmentModel'
 import { InstancedPotAndCoals } from './InstancedExample'
+import { InstancedMeshIndicators } from './InstancedMeshIndicators'
 import { InstancedMeshGroup } from './InstancedMeshComp'
 import { InstancedEquipmentModels } from './primitives-dev/InstancedEquipmentModels'
 import { RoomBounds } from './RoomBounds'
@@ -186,6 +187,11 @@ export function RoomScene({
               />
             )
           )}
+          <InstancedMeshIndicators
+            items={items.filter((item) => item.item.models[0]?.url)}
+            selectedIds={selectedIds}
+            violationIds={violationIds}
+          />
           {/* {items
             .filter((item) => item.item.models[0]?.url)
             .map((item) => (

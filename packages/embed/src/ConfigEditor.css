@@ -243,7 +243,8 @@
   user-select: none;
 }
 
-.ce-performance details > summary::-webkit-details-marker {
+.ce-performance details > summary::-webkit-details-marker,
+.ce-properties details > summary::-webkit-details-marker {
   display: none;
 }
 
@@ -259,6 +260,31 @@
 }
 
 .ce-performance details[open] > summary::after {
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.ce-properties details > summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.ce-properties details[open] > summary {
+  margin-bottom: 13px;
+}
+
+.ce-properties details > summary::after {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-right: 1.5px solid #8ba0ac;
+  border-bottom: 1.5px solid #8ba0ac;
+  content: '';
+  transform: rotate(-45deg);
+  transition: transform 140ms ease;
+}
+
+.ce-properties details[open] > summary::after {
   transform: rotate(45deg) translate(-1px, -1px);
 }
 
@@ -1050,6 +1076,46 @@
   flex-direction: column;
 }
 
+.ce-assistant > details {
+  display: flex;
+  min-height: 0;
+  height: 100%;
+  flex-direction: column;
+}
+
+.ce-assistant > details > summary {
+  display: flex;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.ce-assistant > details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.ce-assistant > details > summary::after {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-right: 1.5px solid #8ba0ac;
+  border-bottom: 1.5px solid #8ba0ac;
+  content: '';
+  transform: rotate(-45deg);
+  transition: transform 140ms ease;
+}
+
+.ce-assistant > details[open] > summary::after {
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.ce-assistant-content {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
 .ce-assistant .ce-panel-heading {
   margin-bottom: 3px;
 }
@@ -1395,6 +1461,31 @@
   flex: 0 0 auto;
   font-size: 0.5rem;
   letter-spacing: 0.7px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #405763 #18232c;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #18232c;
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #405763;
+  border: 2px solid #18232c;
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #526c79;
 }
 
 .ce-sr-only {

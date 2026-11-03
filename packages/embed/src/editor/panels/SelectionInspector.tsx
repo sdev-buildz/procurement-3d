@@ -13,6 +13,8 @@ type SelectionInspectorProps = {
   onDelete: () => void
   onAlign: () => void
   onDistribute: () => void
+  isPerfPanelOpen: boolean
+  setIsPerfPanelOpen: (open: boolean) => void
 } & Pick<ReturnType<typeof useHistory>, 'commitItems'>
 
 /**
@@ -29,6 +31,8 @@ export function SelectionInspector({
   onAlign,
   onDistribute,
   commitItems,
+  isPerfPanelOpen,
+  setIsPerfPanelOpen,
 }: SelectionInspectorProps): ReactElement {
   const { t } = useTranslation()
   const selectionWired =
@@ -63,123 +67,138 @@ export function SelectionInspector({
   }
   return (
     <section className='ce-panel ce-properties'>
-      <div className='ce-panel-heading'>
-        <div>
-          <p className='ce-eyebrow'>02 / {t('INSPECT')}</p>
-          <h2>{t('properties')}</h2>
-        </div>
-        {selectedItems.length > 1 ? (
-          <span className='ce-selection-count'>
-            {t('selectedCount', { count: selectedItems.length })}
-          </span>
-        ) : null}
-      </div>
-      {selectedItem ? (
-        // Single item selected.
-        <div className='ce-property-content'>
-          <div className='ce-selected-name'>
-            <span
-              className={`ce-equipment-icon ce-icon-${selectedItem.item.name}`}
-              style={
-                {
-                  '--equipment-color': '#43545e',
-                } as CSSProperties
-              }
-              aria-hidden='true'
-            >
-              <span />
+      <details
+        {...(isPerfPanelOpen ? { open: false } : {})}
+        onToggle={(event) => {
+          if (event.currentTarget.open) setIsPerfPanelOpen(false)
+        }}
+      >
+        <summary className='ce-panel-heading'>
+          <div>
+            <p className='ce-eyebrow'>02 / {t('INSPECT')}</p>
+            <h2>{t('properties')}</h2>
+          </div>
+          {selectedItems.length > 1 ? (
+            <span className='ce-selection-count'>
+              {t('selectedCount', { count: selectedItems.length })}
             </span>
-            <div>
-              <strong>{t(selectedItem.item.name)}</strong>
-              <small>
-                {selectedItem.item.sku} · {selectedItem.id}
-              </small>
+          ) : null}
+        </summary>
+        {selectedItem ? (
+          // Single item selected.
+          <div className='ce-property-content'>
+            <div className='ce-selected-name'>
+              <span
+                className={`ce-equipment-icon ce-icon-${selectedItem.item.name}`}
+                style={
+                  {
+                    '--equipment-color': '#43545e',
+                  } as CSSProperties
+                }
+                aria-hidden='true'
+              >
+                <span />
+              </span>
+              <div>
+                <strong>{t(selectedItem.item.name)}</strong>
+                <small>
+                  {selectedItem.item.sku} · {selectedItem.id}
+                </small>
+              </div>
             </div>
-          </div>
-          <label className='ce-field-label'>{t('position')}</label>
+            <label className='ce-field-label'>{t('position')}</label>
 
-          {/* Edit Position */}
-          <div className='ce-position-fields'>
-            {/* Along x-axis */}
-            <label>
-              <span>X</span>
-              <input
-                type='number'
-                step={ROOM.cellSize}
-                value={selectedItem.x}
-                onChange={(event) =>
-                  onPositionChange('x', Number(event.target.value))
-                }
-                aria-label={t('xPosition')}
-              />
-            </label>
-            <label>
-              {/* Along z-axis */}
-              <span>Z</span>
-              <input
-                type='number'
-                step={ROOM.cellSize}
-                value={selectedItem.z}
-                onChange={(event) =>
-                  onPositionChange('z', Number(event.target.value))
-                }
-                aria-label={t('zPosition')}
-              />
-            </label>
-            <span className='ce-unit'>m</span>
-          </div>
+            {/* Edit Position */}
+            <div className='ce-position-fields'>
+              {/* Along x-axis */}
+              <label>
+                <span>X</span>
+                <input
+                  type='number'
+                  step={ROOM.cellSize}
+                  value={selectedItem.x}
+                  onChange={(event) =>
+                    onPositionChange('x', Number(event.target.value))
+                  }
+                  aria-label={t('xPosition')}
+                />
+              </label>
+              <label>
+                {/* Along z-axis */}
+                <span>Z</span>
+                <input
+                  type='number'
+                  step={ROOM.cellSize}
+                  value={selectedItem.z}
+                  onChange={(event) =>
+                    onPositionChange('z', Number(event.target.value))
+                  }
+                  aria-label={t('zPosition')}
+                />
+              </label>
+              <span className='ce-unit'>m</span>
+            </div>
 
-          {/* Edit Rotation */}
-          <div className='ce-rotation-row'>
-            <span>{t('rotation')}</span>
-            <strong>{selectedItem.rotation}°</strong>
+            {/* Edit Rotation */}
+            <div className='ce-rotation-row'>
+              <span>{t('rotation')}</span>
+              <strong>{selectedItem.rotation}°</strong>
+              <button type='button' onClick={onRotate}>
+                {t('rotate')}
+              </button>
+            </div>
+
+            {/* Delete and remove the selected item from the scene. */}
+            <button
+              type='button'
+              className='ce-danger-button'
+              onClick={onDelete}
+            >
+              <span aria-hidden='true'>×</span>
+              {t('delete')}
+            </button>
+          </div>
+        ) : selectedItems.length > 1 ? (
+          // Multiple items selected.
+          <div className='ce-multi-tools'>
+            <p>{t('arrangeSelection')}</p>
+            <button type='button' onClick={onAlign}>
+              {t('alignLeft')}
+            </button>
+            <button
+              type='button'
+              onClick={onDistribute}
+              disabled={selectedItems.length < 3}
+            >
+              {t('distribute')}
+            </button>
             <button type='button' onClick={onRotate}>
               {t('rotate')}
             </button>
+
+            {/* Connect the selections with wires. If already wired, unwire. */}
+            <button type='button' onClick={toggleWires}>
+              {t(selectionWired ? 'disconnect' : 'connect')}
+            </button>
+
+            {/* Delete all the selected items. */}
+            <button
+              type='button'
+              className='ce-danger-button'
+              onClick={onDelete}
+            >
+              {t('delete')}
+            </button>
           </div>
-
-          {/* Delete and remove the selected item from the scene. */}
-          <button type='button' className='ce-danger-button' onClick={onDelete}>
-            <span aria-hidden='true'>×</span>
-            {t('delete')}
-          </button>
-        </div>
-      ) : selectedItems.length > 1 ? (
-        // Multiple items selected.
-        <div className='ce-multi-tools'>
-          <p>{t('arrangeSelection')}</p>
-          <button type='button' onClick={onAlign}>
-            {t('alignLeft')}
-          </button>
-          <button
-            type='button'
-            onClick={onDistribute}
-            disabled={selectedItems.length < 3}
-          >
-            {t('distribute')}
-          </button>
-          <button type='button' onClick={onRotate}>
-            {t('rotate')}
-          </button>
-
-          {/* Connect the selections with wires. If already wired, unwire. */}
-          <button type='button' onClick={toggleWires}>
-            {t(selectionWired ? 'disconnect' : 'connect')}
-          </button>
-
-          {/* Delete all the selected items. */}
-          <button type='button' className='ce-danger-button' onClick={onDelete}>
-            {t('delete')}
-          </button>
-        </div>
-      ) : (
-        // No items selected.
-        <div className='ce-empty-inspector'>
-          <span aria-hidden='true'>⌖</span>
-          <p>{t('nothingSelected')}</p>
-          <small>{t('emptyInspectorHelp')}</small>
-        </div>
-      )}
+        ) : (
+          // No items selected.
+          <div className='ce-empty-inspector'>
+            <span aria-hidden='true'>⌖</span>
+            <p>{t('nothingSelected')}</p>
+            <small>{t('emptyInspectorHelp')}</small>
+          </div>
+        )}
+      </details>
     </section>
   )
 }

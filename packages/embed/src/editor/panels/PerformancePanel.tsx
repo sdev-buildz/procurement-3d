@@ -8,6 +8,8 @@ type PerformancePanelProps = {
   items: LayoutItem[]
   dpr: Dpr
   setDpr: (dpr: Dpr) => void
+  open: boolean
+  setIsOpen: (open: boolean) => void
 } & Pick<ReturnType<typeof useHistory>, 'commitItems'>
 
 const shadingModes = [
@@ -27,6 +29,8 @@ export function PerformancePanel({
   commitItems,
   dpr,
   setDpr,
+  open,
+  setIsOpen,
 }: PerformancePanelProps): ReactElement {
   const { t } = useTranslation()
   const [perfMonitorEnabled, setPerfMonitorEnabled] = useState(true)
@@ -79,7 +83,12 @@ export function PerformancePanel({
 
   return (
     <section className='ce-panel ce-performance'>
-      <details>
+      <details
+        open={open}
+        onToggle={(event) => {
+          setIsOpen(event.currentTarget.open)
+        }}
+      >
         <summary className='ce-panel-heading'>
           <hgroup>
             <p className='ce-eyebrow'>06 / {t('INSPECT')}</p>

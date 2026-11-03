@@ -37,6 +37,7 @@ export function ConfigEditor(): ReactElement {
   const [copiedItems, setCopiedItems] = useState<LayoutItem[]>([])
   const [proposal, setProposal] = useState<AssistantProposal | null>(null)
   const [announcement, setAnnouncement] = useState('')
+  const [isPerfPanelOpen, setIsPerfPanelOpen] = useState<boolean>(false)
 
   const [dpr, setDpr] = useState<Dpr>([1, 1.5])
 
@@ -309,11 +310,15 @@ export function ConfigEditor(): ReactElement {
             items={items}
             dpr={dpr}
             setDpr={setDpr}
+            open={isPerfPanelOpen}
+            setIsOpen={setIsPerfPanelOpen}
           />
           <SelectionInspector
             items={items}
             selectedItems={selectedItems}
             selectedItem={selectedItem}
+            isPerfPanelOpen={isPerfPanelOpen}
+            setIsPerfPanelOpen={setIsPerfPanelOpen}
             onPositionChange={changePosition}
             onRotate={rotateSelection}
             onDelete={removeSelection}
@@ -332,6 +337,8 @@ export function ConfigEditor(): ReactElement {
             historyState={historyState}
             setSelectedIds={setSelectedIds}
             setAnnouncement={setAnnouncement}
+            isPerfPanelOpen={isPerfPanelOpen}
+            setIsPerfPanelOpen={setIsPerfPanelOpen}
           />
         </aside>
       </div>

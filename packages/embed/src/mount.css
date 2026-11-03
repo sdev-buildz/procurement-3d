@@ -16,3 +16,18 @@ body {
   max-height: 100vh;
   overflow: hidden;
 }
+
+@media (max-width: 1000px) {
+  html,
+  body,
+  #root {
+    height: auto;
+    min-height: 100%;
+  }
+
+  body {
+    max-height: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}

@@ -23,6 +23,8 @@ type AssistantPanelProps = {
   historyState: ReturnType<typeof useHistory>
   setAnnouncement: (value: string) => void
   setSelectedIds: (ids: Set<LayoutItem['id']>) => void
+  isPerfPanelOpen: boolean
+  setIsPerfPanelOpen: (open: boolean) => void
 }
 
 /** Streams a mocked answer and displays actions for a pending scene proposal. */
@@ -36,6 +38,8 @@ export function AssistantPanel({
   historyState,
   setAnnouncement,
   setSelectedIds,
+  isPerfPanelOpen,
+  setIsPerfPanelOpen,
 }: AssistantPanelProps): ReactElement {
   const { t } = useTranslation()
   const [question, setQuestion] = useState('')
@@ -43,6 +47,7 @@ export function AssistantPanel({
   const [reply, setReply] = useState<AssistantReply | null>(null)
   const [streamedMessage, setStreamedMessage] = useState('')
   const [streaming, setStreaming] = useState(false)
+  const [assistantPanelOpen, setAssistantPanelOpen] = useState(true)
 
   const sendQuestion = async (
     submittedQuestion: string,
@@ -154,90 +159,101 @@ export function AssistantPanel({
 
   return (
     <section className='ce-panel ce-assistant'>
-      <div className='ce-panel-heading'>
-        <div>
-          <p className='ce-eyebrow'>03 / {t('COPILOT')}</p>
-          <h2>
-            <span className='ce-assistant-spark' aria-hidden='true'>
-              ✳
-            </span>
-            {t('assistant')}
-          </h2>
+      <details
+        open={isPerfPanelOpen ? false : assistantPanelOpen}
+        onToggle={(event) => {
+          const open = event.currentTarget.open
+          setAssistantPanelOpen(open)
+          if (open) setIsPerfPanelOpen(false)
+        }}
+      >
+        <summary className='ce-panel-heading'>
+          <div>
+            <p className='ce-eyebrow'>03 / {t('COPILOT')}</p>
+            <h2>
+              <span className='ce-assistant-spark' aria-hidden='true'>
+                ✳
+              </span>
+              {t('assistant')}
+            </h2>
+          </div>
+          <span className='ce-beta-tag'>MOCK</span>
+        </summary>
+        <div className='ce-assistant-content'>
+          <p className='ce-assistant-note'>{t('assistantNote')}</p>
+          <div className='ce-chat-window' aria-live='polite'>
+            {assistantQuestion ? (
+              <p className='ce-chat-user'>{assistantQuestion}</p>
+            ) : null}
+            {reply ? (
+              <p className='ce-chat-reply'>
+                <span className='ce-reply-mark' aria-hidden='true'>
+                  ✳
+                </span>
+                {streamedMessage}
+                {streaming ? <span className='ce-stream-cursor' /> : null}
+              </p>
+            ) : (
+              <div className='ce-chat-starters'>
+                <p className='ce-chat-empty'>{t('askAssistantHint')}</p>
+              </div>
+            )}
+            {!streaming && !proposalPending ? (
+              <div className='ce-sample-conversations'>
+                {sampleAssistantConversations.map((sample) => (
+                  <button
+                    type='button'
+                    key={sample.id}
+                    onClick={() => handleSampleClick(sample.id)}
+                  >
+                    <span aria-hidden='true'>✳</span>
+                    {t(sample.promptKey)}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            {proposalPending && reply?.proposedChange ? (
+              <>
+                <p className='ce-proposal-rationale'>
+                  {reply.proposedChange.rationale}
+                </p>
+                <div className='ce-proposal-actions'>
+                  <button
+                    type='button'
+                    className='ce-accept-button'
+                    onClick={acceptProposal}
+                  >
+                    {t('accept')}
+                  </button>
+                  <button
+                    type='button'
+                    className='ce-reject-button'
+                    onClick={onReject}
+                  >
+                    {t('reject')}
+                  </button>
+                </div>
+              </>
+            ) : null}
+          </div>
+          <form className='ce-chat-form' onSubmit={handleSubmit}>
+            <input
+              value={question}
+              onChange={(event) => setQuestion(event.target.value)}
+              placeholder={t('assistantPlaceholder')}
+              aria-label={t('assistantPlaceholder')}
+              disabled={streaming}
+            />
+            <button
+              type='submit'
+              disabled={streaming || !question.trim()}
+              aria-label={t('send')}
+            >
+              <span aria-hidden='true'>↑</span>
+            </button>
+          </form>
         </div>
-        <span className='ce-beta-tag'>MOCK</span>
-      </div>
-      <p className='ce-assistant-note'>{t('assistantNote')}</p>
-      <div className='ce-chat-window' aria-live='polite'>
-        {assistantQuestion ? (
-          <p className='ce-chat-user'>{assistantQuestion}</p>
-        ) : null}
-        {reply ? (
-          <p className='ce-chat-reply'>
-            <span className='ce-reply-mark' aria-hidden='true'>
-              ✳
-            </span>
-            {streamedMessage}
-            {streaming ? <span className='ce-stream-cursor' /> : null}
-          </p>
-        ) : (
-          <div className='ce-chat-starters'>
-            <p className='ce-chat-empty'>{t('askAssistantHint')}</p>
-          </div>
-        )}
-        {!streaming && !proposalPending ? (
-          <div className='ce-sample-conversations'>
-            {sampleAssistantConversations.map((sample) => (
-              <button
-                type='button'
-                key={sample.id}
-                onClick={() => handleSampleClick(sample.id)}
-              >
-                <span aria-hidden='true'>✳</span>
-                {t(sample.promptKey)}
-              </button>
-            ))}
-          </div>
-        ) : null}
-        {proposalPending && reply?.proposedChange ? (
-          <>
-            <p className='ce-proposal-rationale'>
-              {reply.proposedChange.rationale}
-            </p>
-            <div className='ce-proposal-actions'>
-              <button
-                type='button'
-                className='ce-accept-button'
-                onClick={acceptProposal}
-              >
-                {t('accept')}
-              </button>
-              <button
-                type='button'
-                className='ce-reject-button'
-                onClick={onReject}
-              >
-                {t('reject')}
-              </button>
-            </div>
-          </>
-        ) : null}
-      </div>
-      <form className='ce-chat-form' onSubmit={handleSubmit}>
-        <input
-          value={question}
-          onChange={(event) => setQuestion(event.target.value)}
-          placeholder={t('assistantPlaceholder')}
-          aria-label={t('assistantPlaceholder')}
-          disabled={streaming}
-        />
-        <button
-          type='submit'
-          disabled={streaming || !question.trim()}
-          aria-label={t('send')}
-        >
-          <span aria-hidden='true'>↑</span>
-        </button>
-      </form>
+      </details>
     </section>
   )
 }

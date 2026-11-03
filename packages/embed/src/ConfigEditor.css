@@ -8,7 +8,12 @@
   --ce-accent: #69d7bd;
   box-sizing: border-box;
   width: 100%;
-  min-height: calc(100vh - 64px);
+  height: 100%;
+  max-height: 100vh;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   padding: 18px 22px 10px;
   color: var(--ce-text);
   background:
@@ -45,6 +50,7 @@
 
 .ce-topbar {
   min-height: 56px;
+  flex: 0 0 auto;
   justify-content: space-between;
   padding: 0 2px 14px;
 }
@@ -117,6 +123,7 @@
 
 .ce-toolbar {
   min-height: 48px;
+  flex: 0 0 auto;
   justify-content: space-between;
   margin-bottom: 12px;
   padding: 0 12px;
@@ -192,7 +199,8 @@
 
 .ce-workspace {
   display: grid;
-  min-height: 610px;
+  min-height: 0;
+  flex: 1 1 610px;
   grid-template-columns: 218px minmax(360px, 1fr) 306px;
   gap: 12px;
 }
@@ -633,7 +641,7 @@
 
 .ce-canvas-wrap {
   position: relative;
-  min-height: 350px;
+  min-height: 0;
   flex: 1;
   overflow: hidden;
   background: radial-gradient(ellipse at 50% 43%, #1b2932 0%, #131d25 75%);
@@ -814,14 +822,17 @@
 .ce-right-panels {
   display: grid;
   min-height: 0;
+  height: 100%;
   gap: 12px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   & > * {
-    flex: 1 0 auto;
+    min-height: 0;
+    flex: 1 1 auto;
     padding: 15px 14px;
-    overflow: auto;
+    overflow-y: auto;
   }
 }
 
@@ -1264,6 +1275,7 @@
 
 .ce-bottom-grid {
   display: grid;
+  flex: 0 0 auto;
   grid-template-columns: minmax(0, 0.93fr) minmax(0, 1.07fr);
   gap: 12px;
   margin-top: 12px;
@@ -1366,6 +1378,7 @@
 
 .ce-footer {
   min-height: 27px;
+  flex: 0 0 auto;
   justify-content: space-between;
   gap: 14px;
   color: #778994;
@@ -1402,8 +1415,16 @@
 }
 
 @media (max-width: 1000px) {
+  .ce-shell {
+    height: auto;
+    max-height: none;
+    min-height: 100vh;
+    overflow-y: visible;
+  }
+
   .ce-workspace {
     grid-template-columns: 190px minmax(0, 1fr);
+    flex: none;
   }
 
   .ce-right-panels {

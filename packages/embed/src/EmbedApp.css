@@ -1,7 +1,9 @@
 .embed-app {
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   background: #101820;
   color: #e8eff4;
   font-family: Inter, 'Roboto', ui-sans-serif, system-ui, sans-serif;
@@ -59,4 +61,13 @@
 .embed-app .ce-shell {
   flex-grow: 1;
   min-height: 0;
+}
+
+@media (max-width: 1000px) {
+  .embed-app {
+    height: auto;
+    min-height: 100vh;
+    max-height: none;
+    overflow: visible;
+  }
 }

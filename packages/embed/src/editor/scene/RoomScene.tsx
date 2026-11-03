@@ -1,5 +1,4 @@
 import { A11yAnnouncer } from '@react-three/a11y'
-import { useProgress } from '@react-three/drei'
 import type { Dpr, ThreeEvent } from '@react-three/fiber'
 import { Canvas, useThree } from '@react-three/fiber'
 import { Perf } from 'r3f-perf'
@@ -9,8 +8,8 @@ import type { RuleViolation } from '../hooks/useViolations'
 import { EQUIPMENT, type LayoutItem } from '../items'
 import { EquipmentModel } from './EquipmentModel'
 import { InstancedPotAndCoals } from './InstancedExample'
-import { InstancedMeshIndicators } from './InstancedMeshIndicators'
 import { InstancedMeshGroup } from './InstancedMeshComp'
+import { InstancedMeshIndicators } from './InstancedMeshIndicators'
 import { InstancedEquipmentModels } from './primitives-dev/InstancedEquipmentModels'
 import { RoomBounds } from './RoomBounds'
 
@@ -81,8 +80,6 @@ export function RoomScene({
       new Set(violations.flatMap(({ first, second }) => [first.id, second.id])),
     [violations]
   )
-  const progress = useProgress()
-  console.log(progress)
   /** Handles pressing mouse button down on an object. */
   const handleItemDown = (
     item: LayoutItem,
@@ -192,21 +189,6 @@ export function RoomScene({
             selectedIds={selectedIds}
             violationIds={violationIds}
           />
-          {/* {items
-            .filter((item) => item.item.models[0]?.url)
-            .map((item) => (
-              <EquipmentModel
-                key={item.id}
-                item={item}
-                selected={selectedIds.has(item.id)}
-                violation={violationIds.has(item.id)}
-                onPointerDown={(event) => handleItemDown(item, event)}
-                onPointerMove={(event) => handleItemMove(item, event)}
-                onPointerUp={handleItemUp}
-                onPointerCancel={handleItemUp}
-              />
-            ))} */}
-
           <InstancedPotAndCoals count={500} />
           {previewItem ? (
             <EquipmentModel

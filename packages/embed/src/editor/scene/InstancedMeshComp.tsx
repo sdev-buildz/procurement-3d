@@ -26,7 +26,6 @@ export function InstancedMeshGroup({
   onPointerUp?: (item: LayoutItem, event: ThreeEvent<PointerEvent>) => void
   onPointerCancel?: (item: LayoutItem, event: ThreeEvent<PointerEvent>) => void
 }) {
-  console.log('inside InstancedMeshComp ', itemType)
   const gl = useThree((state) => state.gl)
 
   // 1. Destructure the exact nodes and materials from your file
@@ -110,10 +109,7 @@ export function InstancedMeshGroup({
   )
 }
 
-/**
- * v
- */
-export const InstancedMeshComp = ({
+const InstancedMeshComp = ({
   items: itemsToInstance,
   modelScale,
   modelMatrix,

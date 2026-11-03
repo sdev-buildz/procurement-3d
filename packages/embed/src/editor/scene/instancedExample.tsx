@@ -15,7 +15,7 @@ export function InstancedPotAndCoals({ count = 500 }) {
   // 2. Create independent refs for each instancedMesh
   const coalsRef = useRef<THREE.InstancedMesh>(null!)
   const potRef = useRef<THREE.InstancedMesh>(null!)
-  console.log('inside InstancedPotAndCoals')
+
   useEffect(() => {
     if (!coalsRef.current || !potRef.current) return
 

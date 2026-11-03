@@ -6,9 +6,10 @@ import { Perf } from 'r3f-perf'
 import { useEffect, useMemo, useRef, type ComponentProps } from 'react'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { RuleViolation } from '../hooks/useViolations'
-import { type LayoutItem } from '../items'
+import { EQUIPMENT, type LayoutItem } from '../items'
 import { EquipmentModel } from './EquipmentModel'
-import { InstancedPotAndCoals } from './instancedExample'
+import { InstancedPotAndCoals } from './InstancedExample'
+import { InstancedMeshGroup } from './InstancedMeshComp'
 import { InstancedEquipmentModels } from './primitives-dev/InstancedEquipmentModels'
 import { RoomBounds } from './RoomBounds'
 
@@ -170,7 +171,22 @@ export function RoomScene({
             onPointerUp={handleItemUp}
             onPointerCancel={handleItemUp}
           />
-          {items
+          {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
+            (itemType) => (
+              <InstancedMeshGroup
+                itemType={itemType}
+                itemsToInstance={items.filter(
+                  (item) => item.item.id === itemType.id
+                )}
+                key={itemType.id}
+                onPointerDown={(item, event) => handleItemDown(item, event)}
+                onPointerMove={(item, event) => handleItemMove(item, event)}
+                onPointerUp={handleItemUp}
+                onPointerCancel={handleItemUp}
+              />
+            )
+          )}
+          {/* {items
             .filter((item) => item.item.models[0]?.url)
             .map((item) => (
               <EquipmentModel
@@ -183,7 +199,8 @@ export function RoomScene({
                 onPointerUp={handleItemUp}
                 onPointerCancel={handleItemUp}
               />
-            ))}
+            ))} */}
+
           {/* {(() => {
             const minx = -ROOM.width / 2
             const maxx = ROOM.width / 2

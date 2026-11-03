@@ -8,6 +8,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { RuleViolation } from '../hooks/useViolations'
 import { type LayoutItem } from '../items'
 import { EquipmentModel } from './EquipmentModel'
+import { InstancedPotAndCoals } from './instancedExample'
 import { InstancedEquipmentModels } from './primitives-dev/InstancedEquipmentModels'
 import { RoomBounds } from './RoomBounds'
 
@@ -183,6 +184,35 @@ export function RoomScene({
                 onPointerCancel={handleItemUp}
               />
             ))}
+          {/* {(() => {
+            const minx = -ROOM.width / 2
+            const maxx = ROOM.width / 2
+            const minz = -ROOM.depth / 2
+            let x = minx,
+              z = minz
+
+            const itemsCopy: LayoutItem[] = [...items]
+
+            for (let j = 0; j < 500; j += 1) {
+              if (x < maxx) x += 1 / 2
+              else {
+                x = minx
+                z = z + 1 / 2
+              }
+              itemsCopy.push({
+                id: `drive-${j}`,
+                item: getEquipment('drive'),
+                x,
+                z,
+                rotation: 0,
+              })
+            }
+            const { scene, nodes, materials } = useGLTF(
+              getEquipment('potOfCoals').models[0]!.url
+            )
+            return <></>
+          })()} */}
+          <InstancedPotAndCoals count={500} />
           {previewItem ? (
             <EquipmentModel
               item={previewItem}

@@ -184,7 +184,8 @@ export const EQUIPMENT: ItemType[] = [
     models: [
       {
         id: 8,
-        url: getAssetUrl('PotOfCoals'),
+        // url: getAssetUrl('PotOfCoals'),
+        url: getAssetUrl('PotOfCoals-instanced'),
         size: 4587,
       },
       {

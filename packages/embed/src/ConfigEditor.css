@@ -1354,7 +1354,9 @@
 
 .ce-items-panel,
 .ce-bom-panel {
-  min-height: 198px;
+  min-height: 160px;
+  max-height: 160px;
+  overflow-y: auto;
   padding: 13px 14px 10px;
 }
 

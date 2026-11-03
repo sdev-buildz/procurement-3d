@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { useThree, type ThreeEvent } from '@react-three/fiber'
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { KTX2Loader } from 'three-stdlib'
 import { typedObjectEntries } from 'ts-strict-utils'
@@ -30,7 +30,7 @@ export function InstancedMeshGroup({
   const gl = useThree((state) => state.gl)
 
   // 1. Destructure the exact nodes and materials from your file
-  const { nodes, materials } = useGLTF(
+  const { scene, nodes, materials } = useGLTF(
     itemType.models[0]!.url,
     true,
     true,
@@ -42,6 +42,21 @@ export function InstancedMeshGroup({
     }
     // getEquipment('potOfCoals').models[0]!.url
   )
+
+  const modelScale = useMemo(() => {
+    scene.updateWorldMatrix(true, true)
+    const bounds = new THREE.Box3().setFromObject(scene)
+    const size = bounds.getSize(new THREE.Vector3())
+    const dimensions = [
+      itemType.width / Math.max(size.x, 0.001),
+      itemType.height / Math.max(size.y, 0.001),
+      itemType.depth / Math.max(size.z, 0.001),
+    ]
+
+    return dimensions.every((dimension) => Number.isFinite(dimension))
+      ? Math.min(...dimensions)
+      : 5
+  }, [scene, itemType.width, itemType.height, itemType.depth])
 
   const argsArr = useRef<Array<ArgsType>>([])
 
@@ -65,6 +80,8 @@ export function InstancedMeshGroup({
               key={`${itemType.id} ${args.nodeName}`}
               args={args}
               items={itemsToInstance}
+              modelScale={modelScale}
+              modelMatrix={args.mesh.matrixWorld}
               {...(onPointerDown
                 ? {
                     onPointerDown: (item, event) => onPointerDown(item, event),
@@ -98,6 +115,8 @@ export function InstancedMeshGroup({
  */
 export const InstancedMeshComp = ({
   items: itemsToInstance,
+  modelScale,
+  modelMatrix,
   args,
   onPointerCancel,
   onPointerDown,
@@ -105,6 +124,8 @@ export const InstancedMeshComp = ({
   onPointerUp,
 }: {
   items: LayoutItem[]
+  modelScale: number
+  modelMatrix: THREE.Matrix4
   args: ArgsType
   onPointerDown?: (item: LayoutItem, event: ThreeEvent<PointerEvent>) => void
   onPointerMove?: (item: LayoutItem, event: ThreeEvent<PointerEvent>) => void
@@ -116,8 +137,6 @@ export const InstancedMeshComp = ({
 
   useEffect(() => {
     const dummy = new THREE.Object3D()
-    dummy.scale.set(5, 5, 5)
-    dummy.rotateX(-Math.PI / 2)
 
     for (let j = 0; j < count; j += 1) {
       const item = itemsToInstance[j]!
@@ -125,15 +144,18 @@ export const InstancedMeshComp = ({
       // const x = (Math.random() - 0.5) * 15
 
       dummy.position.set(item.x, 0, item.z)
+      dummy.scale.setScalar(modelScale)
+
       dummy.updateMatrix()
 
-      meshRef.current.setMatrixAt(j, dummy.matrix)
+      const instanceMatrix = dummy.matrix.clone().multiply(modelMatrix)
+      meshRef.current.setMatrixAt(j, instanceMatrix)
     }
 
     meshRef.current.computeBoundingBox()
     meshRef.current.computeBoundingSphere()
     meshRef.current.instanceMatrix.needsUpdate = true
-  }, [count, itemsToInstance])
+  }, [count, itemsToInstance, modelMatrix, modelScale])
 
   return (
     <instancedMesh

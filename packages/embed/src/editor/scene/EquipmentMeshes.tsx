@@ -133,5 +133,12 @@ export function EquipmentMeshes({
     return <PanelModel equipment={equipment} materialProps={materialProps} />
   }
 
-  return <GlbModel modelUrl={modelUrl} equipment={equipment} ghost={ghost} />
+  return (
+    <GlbModel
+      models={equipment.models}
+      equipment={equipment}
+      isRoot={true}
+      ghost={ghost}
+    />
+  )
 }

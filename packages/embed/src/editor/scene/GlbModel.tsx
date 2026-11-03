@@ -4,7 +4,7 @@ import { Suspense, useMemo } from 'react'
 import type { Group } from 'three'
 import { Box3, Vector3 } from 'three'
 import { KTX2Loader } from 'three-stdlib'
-import type { ItemType } from '../items'
+import { type ItemType, type ModelType } from '../items'
 
 /**
  * Wireframe placeholder until the model loads.
@@ -101,17 +101,73 @@ const LoadedGlbModel = ({
 
 /**
  * Loads and renders a GLB model.
+ * Supports nested loading.
  */
 export const GlbModel = ({
   equipment,
-  modelUrl,
+  models,
+  isRoot = false,
   ghost = false,
 }: {
   equipment: ItemType
-  modelUrl: string
+  models: ModelType[]
   ghost?: boolean
-}) => (
-  <Suspense fallback={<Placeholder equipment={equipment} ghost={ghost} />}>
-    <LoadedGlbModel equipment={equipment} modelUrl={modelUrl} ghost={ghost} />
-  </Suspense>
-)
+  isRoot: boolean
+}) => {
+  if (!models?.length) {
+    console.warn('No model url is provided to load.')
+    return <></>
+  }
+
+  models = models?.sort((a, b) => a.size - b.size)
+
+  if (isRoot) {
+    // Display the wireframe bounding box placeholder as the initial placeholder
+    return (
+      // Suspense displays wireframe placeholder.
+      <Suspense fallback={<Placeholder equipment={equipment} ghost={ghost} />}>
+        <GlbModel
+          equipment={equipment}
+          models={models}
+          isRoot={false}
+          ghost={ghost}
+        />
+      </Suspense>
+    )
+  }
+
+  // It is already nested. So display the lowest size model as placeholder, while loading higher size models inside the suspense.
+  if (models.length === 1) {
+    // Leaf node. only one model to load.
+    return (
+      <LoadedGlbModel
+        equipment={equipment}
+        modelUrl={models![0]!.url}
+        ghost={ghost}
+      />
+    )
+  }
+
+  if (models.length > 1) {
+    // Not leaf node.
+    return (
+      <Suspense
+        fallback={
+          <GlbModel
+            equipment={equipment}
+            models={[models![0]!]}
+            isRoot={false}
+            ghost={ghost}
+          />
+        }
+      >
+        <GlbModel
+          equipment={equipment}
+          models={models.slice(1)}
+          isRoot={false}
+          ghost={ghost}
+        />
+      </Suspense>
+    )
+  }
+}

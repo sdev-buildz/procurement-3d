@@ -1,4 +1,5 @@
 import { A11yAnnouncer } from '@react-three/a11y'
+import { useProgress } from '@react-three/drei'
 import type { Dpr, ThreeEvent } from '@react-three/fiber'
 import { Canvas, useThree } from '@react-three/fiber'
 import { Perf } from 'r3f-perf'
@@ -77,7 +78,8 @@ export function RoomScene({
       new Set(violations.flatMap(({ first, second }) => [first.id, second.id])),
     [violations]
   )
-
+  const progress = useProgress()
+  console.log(progress)
   /** Handles pressing mouse button down on an object. */
   const handleItemDown = (
     item: LayoutItem,

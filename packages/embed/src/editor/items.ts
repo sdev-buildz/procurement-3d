@@ -171,6 +171,34 @@ export const EQUIPMENT: ItemType[] = [
       },
     ],
   },
+  {
+    id: 8,
+    name: 'potOfCoals',
+    nameKey: 'potOfCoals',
+    sku: 'MDL-POC',
+    width: 0.5,
+    depth: 0.5,
+    height: 0.5,
+    color: '#d9c89a',
+    price: 250,
+    models: [
+      {
+        id: 8,
+        url: getAssetUrl('PotOfCoals'),
+        size: 4587,
+      },
+      {
+        id: 9,
+        url: getAssetUrl('PotOfCoals-lossless'),
+        size: 2487,
+      },
+      {
+        id: 10,
+        url: getAssetUrl('PotOfCoals-placeholder'),
+        size: 71,
+      },
+    ],
+  },
 ]
 
 /** Supported equipment categories in the room. */
@@ -182,6 +210,7 @@ export type EquipmentName =
   | 'commercialRefrigerator'
   | 'sheenChair'
   | 'diffuseTransmissionTeacup'
+  | 'potOfCoals'
 
 /** Returns catalog metadata by stable name. */
 export function getEquipment(name: EquipmentName): ItemType {

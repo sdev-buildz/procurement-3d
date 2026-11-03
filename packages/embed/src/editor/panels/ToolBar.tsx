@@ -10,11 +10,9 @@ export const ToolBar = ({
   redo,
   topDown,
   setTopDown,
-  add500Instanced,
 }: Pick<ReturnType<typeof useHistory>, 'history' | 'undo' | 'redo'> & {
   topDown: boolean
   setTopDown: (topDown: boolean) => void
-  add500Instanced: () => void
 }) => {
   const { t } = useTranslation()
   return (
@@ -49,16 +47,6 @@ export const ToolBar = ({
           {t('redo')}
         </button>
         <span className='ce-toolbar-divider' />
-
-        {/* Switch to 3D view  */}
-        <button
-          type='button'
-          className={`ce-tool-button`}
-          onClick={() => add500Instanced()}
-        >
-          <span aria-hidden='true'>O</span>
-          {t('add500')}
-        </button>
 
         {/* Toggle between 3D and 2D-topdown view */}
 

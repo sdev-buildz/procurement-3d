@@ -4,6 +4,11 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      PERFORMANCE: 'PERFORMANCE',
+      merging: 'merging',
+      wireframe: 'wireframe',
+      toonShading: 'toon',
+      dpr: 'dpr',
       add500: 'Add Instanced 500',
       fixedGrid: 'fixed Grid',
       PLACE: 'CATALOG',
@@ -112,7 +117,12 @@ const resources = {
   },
   vi: {
     translation: {
-      add500: 'Thêm 500 thực thể (Instanced)',
+      PERFORMANCE: 'HIỆU NĂNG',
+      merging: 'hợp nhất',
+      wireframe: 'khung dây',
+      toonShading: 'đổ bóng hoạt hình',
+      dpr: 'dpr',
+      add500: 'Thêm 500 bản sao (Instanced)',
       fixedGrid: 'Lưới cố định',
       PLACE: 'danhmục',
       INSPECT: 'Kiểm tra',
@@ -218,7 +228,12 @@ const resources = {
 
   zh: {
     translation: {
-      add500: ' 500 个实例化网格 (Instanced)',
+      PERFORMANCE: '性能',
+      merging: '合并',
+      wireframe: '线框',
+      toonShading: '卡通渲染',
+      dpr: 'dpr',
+      add500: '添加 500 个实例化对象',
       fixedGrid: ' 固定网格',
       PLACE: '目录',
       INSPECT: '检查 / 檢查',

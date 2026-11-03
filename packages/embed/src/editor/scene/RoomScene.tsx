@@ -1,5 +1,5 @@
 import { A11yAnnouncer } from '@react-three/a11y'
-import type { ThreeEvent } from '@react-three/fiber'
+import type { Dpr, ThreeEvent } from '@react-three/fiber'
 import { Canvas, useThree } from '@react-three/fiber'
 import { Perf } from 'r3f-perf'
 import { useEffect, useMemo, useRef, type ComponentProps } from 'react'
@@ -23,6 +23,7 @@ type RoomSceneProps = {
   topDown: boolean
   /** Selects an item, optionally extending the current selection. */
   onSelect: (id: string, extend: boolean) => void
+  dpr: Dpr
 } & Omit<ComponentProps<typeof RoomBounds>, 'handleItemUp'>
 
 function CameraControls({
@@ -67,6 +68,7 @@ export function RoomScene({
   onPlace,
   dragHandlers,
   draggingId,
+  dpr,
 }: RoomSceneProps) {
   const controlsRef = useRef<OrbitControls | null>(null)
   const statsParentRef = useRef<HTMLDivElement>(null)
@@ -113,7 +115,7 @@ export function RoomScene({
           key={topDown ? 'orthographic-camera' : 'perspective-camera'}
           shadows
           gl={{ localClippingEnabled: true }}
-          dpr={[1, 1.5]}
+          dpr={dpr}
           orthographic={topDown}
           camera={{
             position: topDown ? [0, 10, 0.01] : [14, 12, 16],

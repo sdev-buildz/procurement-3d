@@ -1,6 +1,7 @@
 /* eslint jsdoc/require-jsdoc: off */
+import type { Dpr } from '@react-three/fiber'
 import type { ReactElement } from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import './ConfigEditor.css'
 import { AssistantPanel } from './editor/assistant/AssistantPanel'
@@ -9,11 +10,12 @@ import { useDrag } from './editor/hooks/useDrag'
 import { useHistory } from './editor/hooks/useHistory'
 import { useViolations } from './editor/hooks/useViolations'
 import type { ItemType, LayoutItem } from './editor/items'
-import { getEquipment, ROOM } from './editor/items'
+import { ROOM } from './editor/items'
 import { constrainPosition } from './editor/layout'
 import { BomPanel } from './editor/panels/BomPanel'
 import { CatalogPanel } from './editor/panels/CatalogPanel'
 import { ItemsInScene } from './editor/panels/ItemsInScene'
+import { PerformancePanel } from './editor/panels/PerformancePanel'
 import { SelectionInspector } from './editor/panels/SelectionInspector'
 import { StageFor3dViewer } from './editor/panels/StageFor3dViewer'
 import { ToolBar } from './editor/panels/ToolBar'
@@ -35,6 +37,8 @@ export function ConfigEditor(): ReactElement {
   const [copiedItems, setCopiedItems] = useState<LayoutItem[]>([])
   const [proposal, setProposal] = useState<AssistantProposal | null>(null)
   const [announcement, setAnnouncement] = useState('')
+
+  const [dpr, setDpr] = useState<Dpr>([1, 1.5])
 
   const items = historyState.history.present
 
@@ -214,37 +218,6 @@ export function ConfigEditor(): ReactElement {
     )
   }
 
-  /**
-   * Adds 500 instanced 3D modals to the scene.
-   *  Used to test perf.
-   */
-  const add500Instanced = useCallback(() => {
-    const minx = -ROOM.width / 2
-    const maxx = ROOM.width / 2
-    const minz = -ROOM.depth / 2
-    let x = minx,
-      z = minz
-
-    const itemsCopy: LayoutItem[] = [...items]
-
-    for (let j = 0; j < 500; j += 1) {
-      if (x < maxx) x += 1 / 2
-      else {
-        x = minx
-        z = z + 1 / 2
-      }
-      itemsCopy.push({
-        id: `drive-${j}`,
-        item: getEquipment('drive'),
-        x,
-        z,
-        rotation: 0,
-      })
-    }
-
-    historyState.commitItems(itemsCopy)
-  }, [items])
-
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       const target = event.target
@@ -303,12 +276,7 @@ export function ConfigEditor(): ReactElement {
     <main className='ce-shell'>
       <TopBar />
 
-      <ToolBar
-        {...historyState}
-        topDown={topDown}
-        setTopDown={setTopDown}
-        add500Instanced={add500Instanced}
-      />
+      <ToolBar {...historyState} topDown={topDown} setTopDown={setTopDown} />
 
       <div className='ce-workspace'>
         <CatalogPanel
@@ -332,9 +300,16 @@ export function ConfigEditor(): ReactElement {
           draggingId={draggedItem.current?.id}
           proposal={proposal}
           violations={violations}
+          dpr={dpr}
         />
 
         <aside className='ce-right-panels'>
+          <PerformancePanel
+            commitItems={historyState.commitItems}
+            items={items}
+            dpr={dpr}
+            setDpr={setDpr}
+          />
           <SelectionInspector
             items={items}
             selectedItems={selectedItems}

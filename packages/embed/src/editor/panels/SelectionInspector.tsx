@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactElement } from 'react'
+import { useState, type CSSProperties, type ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { useHistory } from '../hooks/useHistory'
 import type { LayoutItem } from '../items'
@@ -35,6 +35,8 @@ export function SelectionInspector({
   setIsPerfPanelOpen,
 }: SelectionInspectorProps): ReactElement {
   const { t } = useTranslation()
+  const [isPropertiesPanelOpen, setIsPropertiesPanelOpen] = useState(true)
+
   const selectionWired =
     selectedItems.length > 1 &&
     selectedItems
@@ -68,8 +70,9 @@ export function SelectionInspector({
   return (
     <section className='ce-panel ce-properties'>
       <details
-        {...(isPerfPanelOpen ? { open: false } : {})}
+        open={isPerfPanelOpen ? false : isPropertiesPanelOpen}
         onToggle={(event) => {
+          setIsPropertiesPanelOpen(event.currentTarget.open)
           if (event.currentTarget.open) setIsPerfPanelOpen(false)
         }}
       >

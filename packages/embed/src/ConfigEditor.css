@@ -202,6 +202,7 @@
   min-height: 0;
   flex: 1 1 610px;
   grid-template-columns: 218px minmax(360px, 1fr) 306px;
+  grid-template-rows: minmax(0, 1fr);
   gap: 12px;
 }
 
@@ -216,6 +217,7 @@
 .ce-palette {
   display: flex;
   flex-direction: column;
+  min-height: 0;
   padding: 17px 13px 13px;
 }
 
@@ -425,8 +427,11 @@
 
 .ce-palette-list {
   display: grid;
+  min-height: 0;
+  flex: 1 1 0;
   gap: 8px;
   margin-top: 21px;
+  overflow-y: auto;
 }
 
 .ce-palette-item {

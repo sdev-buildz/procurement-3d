@@ -334,7 +334,7 @@ export function ConfigEditor(): ReactElement {
           violations={violations}
         />
 
-        <aside className='ce-inspector'>
+        <aside className='ce-right-panels'>
           <SelectionInspector
             items={items}
             selectedItems={selectedItems}

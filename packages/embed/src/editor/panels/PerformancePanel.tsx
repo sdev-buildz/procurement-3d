@@ -10,6 +10,14 @@ type PerformancePanelProps = {
   setDpr: (dpr: Dpr) => void
 } & Pick<ReturnType<typeof useHistory>, 'commitItems'>
 
+const shadingModes = [
+  'original',
+  'lambert',
+  'phong',
+  'standard',
+  'wireframe',
+] as const
+
 /**
  * Displays editable properties and arrangement actions for the selection.
  * The side panel that shows properties for the currently selected equipment(s).
@@ -25,7 +33,8 @@ export function PerformancePanel({
   const [mergeEnabled, setMergeEnabled] = useState(false)
   const [minDpr, setMinDpr] = useState(1)
   const [maxDpr, setMaxDpr] = useState(1.5)
-  const [shading, setShading] = useState('standard')
+  const [shading, setShading] =
+    useState<(typeof shadingModes)[number]>('original')
 
   const updateDpr = useCallback(
     (nextMin: number, nextMax: number) => {
@@ -157,36 +166,20 @@ export function PerformancePanel({
             {/* Toggle shading mode. */}
             <legend>Shading</legend>
             <div className='ce-radio-options'>
-              <label>
-                <input
-                  type='radio'
-                  name='shading'
-                  value='standard'
-                  checked={shading === 'standard'}
-                  onChange={(event) => setShading(event.currentTarget.value)}
-                />
-                <span>Standard</span>
-              </label>
-              <label>
-                <input
-                  type='radio'
-                  name='shading'
-                  value='wireframe'
-                  checked={shading === 'wireframe'}
-                  onChange={(event) => setShading(event.currentTarget.value)}
-                />
-                <span>{t('wireframe')}</span>
-              </label>
-              <label>
-                <input
-                  type='radio'
-                  name='shading'
-                  value='toon'
-                  checked={shading === 'toon'}
-                  onChange={(event) => setShading(event.currentTarget.value)}
-                />
-                <span>{t('toonShading')}</span>
-              </label>
+              {shadingModes.map((mode) => (
+                <label>
+                  <input
+                    type='radio'
+                    name='shading'
+                    value={mode}
+                    checked={shading === mode}
+                    onChange={(event) =>
+                      event.target.checked && setShading(mode)
+                    }
+                  />
+                  <span>{mode}</span>
+                </label>
+              ))}
             </div>
           </fieldset>
 

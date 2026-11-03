@@ -662,15 +662,15 @@
 .ce-right-panels {
   display: grid;
   min-height: 0;
-  grid-template-rows: minmax(240px, 1fr) minmax(260px, 1.08fr);
   gap: 12px;
-}
+  display: flex;
+  flex-direction: column;
 
-.ce-properties,
-.ce-assistant {
-  min-height: 0;
-  padding: 15px 14px;
-  overflow: auto;
+  & > * {
+    flex: 1 0 auto;
+    padding: 15px 14px;
+    overflow: auto;
+  }
 }
 
 .ce-properties > .ce-panel-heading,

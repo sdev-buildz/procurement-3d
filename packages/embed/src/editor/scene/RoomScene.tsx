@@ -8,7 +8,6 @@ import type { RuleViolation } from '../hooks/useViolations'
 import { EQUIPMENT, type LayoutItem } from '../items'
 import { EquipmentModel } from './EquipmentModel'
 import { InstancedMeshIndicators } from './InstancedMeshIndicators'
-import { ModelInScene } from './ModelInScene'
 import { NestedInstances } from './NestedInstances'
 import { InstancedEquipmentModels } from './primitives-dev/InstancedEquipmentModels'
 import { RoomBounds } from './RoomBounds'
@@ -195,7 +194,7 @@ export function RoomScene({
                 )
               })
             })} */}
-          <ModelInScene
+          {/* <ModelInScene
             items={items}
             // itemType={itemType}
             // itemsToInstance={instancesInScene}
@@ -204,7 +203,7 @@ export function RoomScene({
             onPointerMove={(item, event) => handleItemMove(item, event)}
             onPointerUp={handleItemUp}
             onPointerCancel={handleItemUp}
-          />
+          /> */}
           {/* {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
             (itemType) => {
               const instancesInScene = items.filter(
@@ -236,6 +235,7 @@ export function RoomScene({
                   itemType={itemType}
                   itemsToInstance={instancesInScene}
                   key={itemType.id}
+                  isRoot={true}
                   // isRoot={true}
                   onPointerDown={(item, event) => handleItemDown(item, event)}
                   onPointerMove={(item, event) => handleItemMove(item, event)}

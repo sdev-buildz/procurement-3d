@@ -1,6 +1,6 @@
 import { useGLTF } from '@react-three/drei'
 import { useThree, type ThreeEvent } from '@react-three/fiber'
-import { useEffect, useMemo, useRef } from 'react'
+import { useLayoutEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { KTX2Loader } from 'three-stdlib'
 import { typedObjectEntries } from 'ts-strict-utils'
@@ -62,23 +62,28 @@ export function InstancedMeshGroup({
       : 5
   }, [scene, itemType.width, itemType.height, itemType.depth])
 
-  const argsArr = useRef<Array<ArgsType>>([])
+  const argsArr = useMemo<Array<ArgsType>>(() => {
+    if (!nodes || !materials) return []
 
-  useEffect(() => {
-    if (!nodes || !materials) return
-    typedObjectEntries(nodes).forEach(([nodeName, node]) => {
-      argsArr.current.push({
-        nodeName,
-        mesh: node as THREE.Mesh,
-        material: materials[nodeName] ?? new THREE.MeshBasicMaterial(),
+    return typedObjectEntries(nodes)
+      .filter((entry): entry is [string, THREE.Mesh] => {
+        const node = entry[1]
+        return 'geometry' in node && 'material' in node
       })
-    })
+      .map(([nodeName, node]) => ({
+        nodeName,
+        mesh: node,
+        material:
+          node.material instanceof THREE.Material
+            ? node.material
+            : (materials[nodeName] ?? new THREE.MeshBasicMaterial()),
+      }))
   }, [nodes, materials])
 
   return (
     <group>
       {(() =>
-        argsArr.current.map((args, idx) => {
+        argsArr.map((args) => {
           return (
             <InstancedMeshComp
               key={`${itemType.id} ${args.nodeName}`}
@@ -136,8 +141,10 @@ const InstancedMeshComp = ({
   const count = itemsToInstance.length
   const meshRef = useRef<THREE.InstancedMesh>(null!)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const dummy = new THREE.Object3D()
+    const mesh = meshRef.current
+    if (!mesh) return
 
     for (let j = 0; j < count; j += 1) {
       const item = itemsToInstance[j]!
@@ -145,17 +152,18 @@ const InstancedMeshComp = ({
       // const x = (Math.random() - 0.5) * 15
 
       dummy.position.set(item.x, 0, item.z)
+      dummy.rotation.set(0, (item.rotation * Math.PI) / 180, 0)
       dummy.scale.setScalar(modelScale)
 
       dummy.updateMatrix()
 
       const instanceMatrix = dummy.matrix.clone().multiply(modelMatrix)
-      meshRef.current.setMatrixAt(j, instanceMatrix)
+      mesh.setMatrixAt(j, instanceMatrix)
     }
 
-    meshRef.current.computeBoundingBox()
-    meshRef.current.computeBoundingSphere()
-    meshRef.current.instanceMatrix.needsUpdate = true
+    mesh.computeBoundingBox()
+    mesh.computeBoundingSphere()
+    mesh.instanceMatrix.needsUpdate = true
   }, [count, itemsToInstance, modelMatrix, modelScale])
 
   return (

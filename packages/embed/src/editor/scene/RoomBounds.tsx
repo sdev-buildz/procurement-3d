@@ -91,7 +91,6 @@ export const RoomBounds = ({
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, -0.035, 0]}
-        receiveShadow
         onPointerDown={(event) => {
           event.stopPropagation()
           if (itemPlaced) onPlace(event.point.x, event.point.z)
@@ -118,11 +117,11 @@ export const RoomBounds = ({
       </lineSegments>
 
       {/* Room walls */}
-      <mesh position={[0, 1.5, -ROOM.depth / 2]} receiveShadow>
+      <mesh position={[0, 1.5, -ROOM.depth / 2]}>
         <boxGeometry args={[ROOM.width, 3, 0.12]} />
         <meshStandardMaterial color='#28343d' roughness={0.84} />
       </mesh>
-      <mesh position={[-ROOM.width / 2, 1.5, 0]} receiveShadow>
+      <mesh position={[-ROOM.width / 2, 1.5, 0]}>
         <boxGeometry args={[0.12, 3, ROOM.depth]} />
         <meshStandardMaterial color='#25313a' roughness={0.84} />
       </mesh>

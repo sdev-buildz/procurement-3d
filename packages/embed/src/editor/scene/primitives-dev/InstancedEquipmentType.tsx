@@ -263,7 +263,6 @@ export function InstancedEquipmentType({
             ref={bodyRef}
             args={[undefined, undefined, normalCount]}
             frustumCulled
-            castShadow
             {...normalPointerProps}
           >
             <boxGeometry
@@ -281,7 +280,6 @@ export function InstancedEquipmentType({
             ref={violationBodyRef}
             args={[undefined, undefined, violatingCount]}
             frustumCulled
-            castShadow
             {...violationPointerProps}
           >
             <boxGeometry
@@ -365,7 +363,6 @@ export function InstancedEquipmentType({
             ref={bodyRef}
             args={[undefined, undefined, normalCount]}
             frustumCulled
-            castShadow
             {...normalPointerProps}
           >
             <boxGeometry
@@ -387,7 +384,6 @@ export function InstancedEquipmentType({
             ref={violationBodyRef}
             args={[undefined, undefined, violatingCount]}
             frustumCulled
-            castShadow
             {...violationPointerProps}
           >
             <boxGeometry
@@ -476,7 +472,6 @@ export function InstancedEquipmentType({
           ref={bodyRef}
           args={[undefined, undefined, normalCount]}
           frustumCulled
-          castShadow
           {...normalPointerProps}
         >
           <boxGeometry
@@ -494,7 +489,6 @@ export function InstancedEquipmentType({
           ref={violationBodyRef}
           args={[undefined, undefined, violatingCount]}
           frustumCulled
-          castShadow
           {...violationPointerProps}
         >
           <boxGeometry

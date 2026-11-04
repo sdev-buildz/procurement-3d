@@ -55,12 +55,6 @@ const LoadedGlbModel = ({
    */
   const normalizedScene = useMemo(() => {
     const clonedScene = (scene as Group).clone(true)
-    clonedScene.traverse((object) => {
-      if ('isMesh' in object) {
-        object.castShadow = true
-        object.receiveShadow = true
-      }
-    })
 
     const bounds = new Box3().setFromObject(clonedScene)
     const size = bounds.getSize(new Vector3())

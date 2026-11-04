@@ -168,62 +168,7 @@ export function RoomScene({
             onPointerUp={handleItemUp}
             onPointerCancel={handleItemUp}
           />
-          {/* {items
-            .filter((item) => !item.item.models[0]?.url)
-            .map((item, idx) => {
-              console.log('in the loop', item)
-              if (idx > 0) return <></>
-              return EQUIPMENT.filter(
-                (itemType) => itemType.models[0]?.url
-              ).map((itemType) => {
-                const instancesInScene = items.filter(
-                  (item) => item.item.id === itemType.id
-                )
-                if (!instancesInScene.length) return <></>
-                return (
-                  <NestedInstances
-                    itemType={itemType}
-                    itemsToInstance={instancesInScene}
-                    key={itemType.id}
-                    // isRoot={true}
-                    onPointerDown={(item, event) => handleItemDown(item, event)}
-                    onPointerMove={(item, event) => handleItemMove(item, event)}
-                    onPointerUp={handleItemUp}
-                    onPointerCancel={handleItemUp}
-                  />
-                )
-              })
-            })} */}
-          {/* <ModelInScene
-            items={items}
-            // itemType={itemType}
-            // itemsToInstance={instancesInScene}
-            // isRoot={true}
-            onPointerDown={(item, event) => handleItemDown(item, event)}
-            onPointerMove={(item, event) => handleItemMove(item, event)}
-            onPointerUp={handleItemUp}
-            onPointerCancel={handleItemUp}
-          /> */}
-          {/* {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
-            (itemType) => {
-              const instancesInScene = items.filter(
-                (item) => item.item.id === itemType.id
-              )
-              return (
-                <ModelInScene
-                  items={items}
-                  // itemType={itemType}
-                  // itemsToInstance={instancesInScene}
-                  key={itemType.id}
-                  // isRoot={true}
-                  onPointerDown={(item, event) => handleItemDown(item, event)}
-                  onPointerMove={(item, event) => handleItemMove(item, event)}
-                  onPointerUp={handleItemUp}
-                  onPointerCancel={handleItemUp}
-                />
-              )
-            }
-          )} */}
+
           {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
             (itemType) => {
               const instancesInScene = items.filter(

@@ -11,7 +11,7 @@ const PanelModel = ({
   materialProps: MeshStandardMaterialParameters
 }) => (
   <>
-    <mesh position={[0, equipment.height / 2, 0]} castShadow>
+    <mesh position={[0, equipment.height / 2, 0]}>
       <boxGeometry
         args={[equipment.width, equipment.height, equipment.depth]}
       />
@@ -51,7 +51,7 @@ const DriveModel = ({
   materialProps: MeshStandardMaterialParameters
 }) => (
   <>
-    <mesh position={[0, equipment.height * 0.43, 0]} castShadow>
+    <mesh position={[0, equipment.height * 0.43, 0]}>
       <boxGeometry
         args={[
           equipment.width * 0.76,
@@ -84,7 +84,7 @@ const CabinetModel = ({
   materialProps: MeshStandardMaterialParameters
 }) => (
   <>
-    <mesh position={[0, equipment.height / 2, 0]} castShadow>
+    <mesh position={[0, equipment.height / 2, 0]}>
       <boxGeometry
         args={[equipment.width, equipment.height, equipment.depth]}
       />

@@ -14,11 +14,14 @@ type ArgsType = { nodeName: string; mesh: THREE.Mesh; material: THREE.Material }
 export function InstancedMeshGroup({
   itemsToInstance,
   itemType,
+  sizeIdx = 0,
   onPointerDown,
   onPointerMove,
   onPointerUp,
   onPointerCancel,
 }: {
+  ghost?: boolean
+  sizeIdx?: number
   itemsToInstance: LayoutItem[]
   itemType: ItemType
   onPointerDown?: (item: LayoutItem, event: ThreeEvent<PointerEvent>) => void
@@ -28,9 +31,11 @@ export function InstancedMeshGroup({
 }) {
   const gl = useThree((state) => state.gl)
 
+  const models = itemType.models.sort((a, b) => a.size - b.size)
+
   // 1. Destructure the exact nodes and materials from your file
   const { scene, nodes, materials } = useGLTF(
-    itemType.models[0]!.url,
+    models[sizeIdx]!.url,
     true,
     true,
     (loader) => {

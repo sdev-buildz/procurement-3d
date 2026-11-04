@@ -8,8 +8,9 @@ import type { RuleViolation } from '../hooks/useViolations'
 import { EQUIPMENT, type LayoutItem } from '../items'
 import { EquipmentModel } from './EquipmentModel'
 import { InstancedPotAndCoals } from './InstancedExample'
-import { InstancedMeshGroup } from './InstancedMeshComp'
 import { InstancedMeshIndicators } from './InstancedMeshIndicators'
+import { ModelInScene } from './ModelInScene'
+import { NestedInstances } from './NestedInstances'
 import { InstancedEquipmentModels } from './primitives-dev/InstancedEquipmentModels'
 import { RoomBounds } from './RoomBounds'
 
@@ -169,20 +170,71 @@ export function RoomScene({
             onPointerUp={handleItemUp}
             onPointerCancel={handleItemUp}
           />
-          {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
-            (itemType) => (
-              <InstancedMeshGroup
-                itemType={itemType}
-                itemsToInstance={items.filter(
+          {/* {items
+            .filter((item) => !item.item.models[0]?.url)
+            .map((item, idx) => {
+              console.log('in the loop', item)
+              if (idx > 0) return <></>
+              return EQUIPMENT.filter(
+                (itemType) => itemType.models[0]?.url
+              ).map((itemType) => {
+                const instancesInScene = items.filter(
                   (item) => item.item.id === itemType.id
-                )}
-                key={itemType.id}
-                onPointerDown={(item, event) => handleItemDown(item, event)}
-                onPointerMove={(item, event) => handleItemMove(item, event)}
-                onPointerUp={handleItemUp}
-                onPointerCancel={handleItemUp}
-              />
-            )
+                )
+                if (!instancesInScene.length) return <></>
+                return (
+                  <NestedInstances
+                    itemType={itemType}
+                    itemsToInstance={instancesInScene}
+                    key={itemType.id}
+                    // isRoot={true}
+                    onPointerDown={(item, event) => handleItemDown(item, event)}
+                    onPointerMove={(item, event) => handleItemMove(item, event)}
+                    onPointerUp={handleItemUp}
+                    onPointerCancel={handleItemUp}
+                  />
+                )
+              })
+            })} */}
+          {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
+            (itemType) => {
+              const instancesInScene = items.filter(
+                (item) => item.item.id === itemType.id
+              )
+              return (
+                <ModelInScene
+                  items={items}
+                  itemType={itemType}
+                  itemsToInstance={instancesInScene}
+                  key={itemType.id}
+                  // isRoot={true}
+                  onPointerDown={(item, event) => handleItemDown(item, event)}
+                  onPointerMove={(item, event) => handleItemMove(item, event)}
+                  onPointerUp={handleItemUp}
+                  onPointerCancel={handleItemUp}
+                />
+              )
+            }
+          )}
+          {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
+            (itemType) => {
+              const instancesInScene = items.filter(
+                (item) => item.item.id === itemType.id
+              )
+              if (!instancesInScene.length) return <></>
+              return (
+                <NestedInstances
+                  itemType={itemType}
+                  itemsToInstance={instancesInScene}
+                  key={itemType.id}
+                  // isRoot={true}
+                  onPointerDown={(item, event) => handleItemDown(item, event)}
+                  onPointerMove={(item, event) => handleItemMove(item, event)}
+                  onPointerUp={handleItemUp}
+                  onPointerCancel={handleItemUp}
+                />
+              )
+            }
           )}
           <InstancedMeshIndicators
             items={items.filter((item) => item.item.models[0]?.url)}

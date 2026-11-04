@@ -105,7 +105,7 @@ export const RoomBounds = ({
         onPointerCancel={handleItemUp}
       >
         <planeGeometry args={[ROOM.width, ROOM.depth]} />
-        <meshLambertMaterial color='#202b34' />
+        <meshBasicMaterial color='#202b34' />
       </mesh>
 
       {/* Grid on the floor */}
@@ -119,11 +119,11 @@ export const RoomBounds = ({
       {/* Room walls */}
       <mesh position={[0, 1.5, -ROOM.depth / 2]}>
         <boxGeometry args={[ROOM.width, 3, 0.12]} />
-        <meshLambertMaterial color='#28343d' />
+        <meshBasicMaterial color='#232c34' />
       </mesh>
       <mesh position={[-ROOM.width / 2, 1.5, 0]}>
         <boxGeometry args={[0.12, 3, ROOM.depth]} />
-        <meshLambertMaterial color='#25313a' />
+        <meshBasicMaterial color='#181d22' />
       </mesh>
     </>
   )

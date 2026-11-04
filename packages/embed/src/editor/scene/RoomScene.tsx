@@ -7,7 +7,6 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { RuleViolation } from '../hooks/useViolations'
 import { EQUIPMENT, type LayoutItem } from '../items'
 import { EquipmentModel } from './EquipmentModel'
-import { InstancedPotAndCoals } from './InstancedExample'
 import { InstancedMeshIndicators } from './InstancedMeshIndicators'
 import { ModelInScene } from './ModelInScene'
 import { NestedInstances } from './NestedInstances'
@@ -196,7 +195,17 @@ export function RoomScene({
                 )
               })
             })} */}
-          {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
+          <ModelInScene
+            items={items}
+            // itemType={itemType}
+            // itemsToInstance={instancesInScene}
+            // isRoot={true}
+            onPointerDown={(item, event) => handleItemDown(item, event)}
+            onPointerMove={(item, event) => handleItemMove(item, event)}
+            onPointerUp={handleItemUp}
+            onPointerCancel={handleItemUp}
+          />
+          {/* {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
             (itemType) => {
               const instancesInScene = items.filter(
                 (item) => item.item.id === itemType.id
@@ -204,8 +213,8 @@ export function RoomScene({
               return (
                 <ModelInScene
                   items={items}
-                  itemType={itemType}
-                  itemsToInstance={instancesInScene}
+                  // itemType={itemType}
+                  // itemsToInstance={instancesInScene}
                   key={itemType.id}
                   // isRoot={true}
                   onPointerDown={(item, event) => handleItemDown(item, event)}
@@ -215,7 +224,7 @@ export function RoomScene({
                 />
               )
             }
-          )}
+          )} */}
           {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
             (itemType) => {
               const instancesInScene = items.filter(
@@ -241,7 +250,7 @@ export function RoomScene({
             selectedIds={selectedIds}
             violationIds={violationIds}
           />
-          <InstancedPotAndCoals count={500} />
+          {/* <InstancedPotAndCoals count={500} /> */}
           {previewItem ? (
             <EquipmentModel
               item={previewItem}

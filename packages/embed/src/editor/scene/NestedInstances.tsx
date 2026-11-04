@@ -21,6 +21,7 @@ export function NestedInstances(
   models = models?.sort((a, b) => a.size - b.size)
 
   if (isRoot) {
+    console.log('isRoot suspense')
     // Display the wireframe bounding box placeholder as the initial placeholder
     return (
       // Suspense displays wireframe placeholder.
@@ -39,6 +40,7 @@ export function NestedInstances(
   }
 
   if (sizeIdx < models.length - 1) {
+    console.log(sizeIdx)
     // Not leaf node.
     return (
       <Suspense fallback={<InstancedMeshGroup {...props} sizeIdx={sizeIdx} />}>

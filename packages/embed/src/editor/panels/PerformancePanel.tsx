@@ -2,7 +2,7 @@ import type { Dpr } from '@react-three/fiber'
 import { useCallback, useState, type ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { useHistory } from '../hooks/useHistory'
-import { getEquipment, ROOM, type LayoutItem } from '../items'
+import { getEquipment, ROOM, type ItemType, type LayoutItem } from '../items'
 
 type PerformancePanelProps = {
   items: LayoutItem[]
@@ -10,6 +10,7 @@ type PerformancePanelProps = {
   setDpr: (dpr: Dpr) => void
   open: boolean
   setIsOpen: (open: boolean) => void
+  itemPlaced: ItemType | null
 } & Pick<ReturnType<typeof useHistory>, 'commitItems'>
 
 const shadingModes = [
@@ -31,6 +32,7 @@ export function PerformancePanel({
   setDpr,
   open,
   setIsOpen,
+  itemPlaced,
 }: PerformancePanelProps): ReactElement {
   const { t } = useTranslation()
   const [perfMonitorEnabled, setPerfMonitorEnabled] = useState(true)
@@ -61,6 +63,8 @@ export function PerformancePanel({
     let x = minx,
       z = minz
 
+    const itemType = itemPlaced ?? getEquipment('potOfCoals')
+
     const itemsCopy: LayoutItem[] = [...items]
 
     for (let j = 0; j < 500; j += 1) {
@@ -70,8 +74,8 @@ export function PerformancePanel({
         z = z + 1 / 2
       }
       itemsCopy.push({
-        id: `drive-${j}`,
-        item: getEquipment('drive'),
+        id: `${itemType}-${j}`,
+        item: itemType,
         x,
         z,
         rotation: 0,
@@ -79,7 +83,7 @@ export function PerformancePanel({
     }
 
     commitItems(itemsCopy)
-  }, [commitItems, items])
+  }, [commitItems, items, itemPlaced])
 
   return (
     <section className='ce-panel ce-performance'>

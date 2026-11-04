@@ -312,6 +312,7 @@ export function ConfigEditor(): ReactElement {
             setDpr={setDpr}
             open={isPerfPanelOpen}
             setIsOpen={setIsPerfPanelOpen}
+            itemPlaced={itemPlaced}
           />
           <SelectionInspector
             items={items}

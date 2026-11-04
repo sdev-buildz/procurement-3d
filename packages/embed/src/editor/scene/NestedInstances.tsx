@@ -1,6 +1,6 @@
 import { Suspense, type ComponentProps } from 'react'
-import { Placeholder } from './GlbModel'
 import { InstancedMeshGroup } from './InstancedMeshComp'
+import { InstancedPlaceholderBox } from './InstancedPlaceholderBox'
 
 /**
  *  Nested loaders with instanced models.
@@ -26,7 +26,13 @@ export function NestedInstances(
     return (
       // Suspense displays wireframe placeholder.
       <Suspense
-        fallback={<Placeholder equipment={itemType} ghost={ghost ?? false} />}
+        fallback={
+          <InstancedPlaceholderBox
+            items={props.itemsToInstance}
+            itemType={itemType}
+            ghost={ghost ?? false}
+          />
+        }
       >
         <NestedInstances {...props} isRoot={false} />
       </Suspense>

@@ -10,7 +10,7 @@ import { type ItemType, type ModelType } from '../items'
  * Wireframe placeholder until the model loads.
  * In nested loaders, it can be displayed before the lowest quality model is loaded.
  */
-export const Placeholder = ({
+const Placeholder = ({
   equipment,
   ghost,
 }: {

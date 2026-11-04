@@ -137,7 +137,12 @@ export const EQUIPMENT: ItemType[] = [
       {
         id: 5,
         url: getAssetUrl('CommercialRefrigerator'),
-        size: 0,
+        size: 5000,
+      },
+      {
+        id: 11,
+        url: getAssetUrl('PotOfCoals-placeholder'),
+        size: 71,
       },
     ],
   },

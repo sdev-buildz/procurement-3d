@@ -1,15 +1,15 @@
 /* eslint jsdoc/require-jsdoc: off */
-import type { FormEvent, ReactElement } from 'react'
+import type { ReactElement, SubmitEventHandler } from 'react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { useHistory } from '../hooks/useHistory'
 import type { RuleViolation } from '../hooks/useViolations'
 import type { LayoutItem } from '../items'
-import { constrainPosition } from '../layout'
-import type { AssistantProposal, AssistantReply } from './assistantReply'
+import type { AssistantProposal } from './assistantReply'
 import { sampleAssistantConversations } from './assistantReply'
+import { useAssistant, type AssistentApiKey } from './useAgent'
 
-type AssistantPanelProps = {
+export type AssistantPanelProps = {
   /** Current room contents used to ground the mock answer and suggestion. */
   items: LayoutItem[]
   /** Current spacing violations used to explain the suggested adjustment. */
@@ -25,6 +25,11 @@ type AssistantPanelProps = {
   setSelectedIds: (ids: Set<LayoutItem['id']>) => void
   isPerfPanelOpen: boolean
   setIsPerfPanelOpen: (open: boolean) => void
+}
+
+export type ToolCallMessage = {
+  toolName: string
+  message: string
 }
 
 /** Streams a mocked answer and displays actions for a pending scene proposal. */
@@ -43,101 +48,50 @@ export function AssistantPanel({
 }: AssistantPanelProps): ReactElement {
   const { t } = useTranslation()
   const [question, setQuestion] = useState('')
-  const [assistantQuestion, setAssistantQuestion] = useState('')
-  const [reply, setReply] = useState<AssistantReply | null>(null)
+  const [toolCallMessages, setToolCallMessages] = useState<
+    Array<{
+      toolName: string
+      message: string
+    }>
+  >([])
   const [streamedMessage, setStreamedMessage] = useState('')
   const [streaming, setStreaming] = useState(false)
   const [assistantPanelOpen, setAssistantPanelOpen] = useState(true)
+  const [assistentApiKey, setAssistentApiKey] = useState<AssistentApiKey>({
+    name: 'groq',
+    model: 'qwen/qwen3.8-27b',
+    key: '',
+  })
 
-  const sendQuestion = async (
-    submittedQuestion: string,
-    sampleId?: (typeof sampleAssistantConversations)[number]['id']
-  ) => {
-    if (!submittedQuestion || streaming) return
+  const assistant = useAssistant({
+    historyState,
+    items,
+    proposal,
+    setProposal,
+    violations,
+    setStreaming,
+    setToolCallMessages,
+    toolCallMessages,
+    setStreamedMessage,
+    assistentApiKey,
+  })
 
-    setQuestion('')
-    setAssistantQuestion(submittedQuestion)
-    setStreamedMessage('')
-    setStreaming(true)
-
-    const firstViolation = violations[0]
-    const sample = sampleAssistantConversations.find(
-      (conversation) => conversation.id === sampleId
-    )
-    const itemToMove = sample?.equipmentType
-      ? (items.find((item) => item.item.id === sample.equipmentType?.id) ??
-        firstViolation?.second ??
-        items[0])
-      : (firstViolation?.second ?? items[0])
-    const target = itemToMove
-      ? {
-          x: itemToMove.x + 2,
-          z: itemToMove.z + (firstViolation ? 0 : 1),
-        }
-      : null
-    const nextReply: AssistantReply = {
-      message: t(sample?.messageKey ?? 'assistantAnswer', {
-        count: items.length,
-        issues: violations.length,
-        item: itemToMove ? t(itemToMove.item.name) : t('items'),
-      }),
-      proposedChange:
-        itemToMove && target
-          ? {
-              action: 'move_item',
-              itemId: itemToMove.id,
-              target,
-              rationale: t(sample?.rationaleKey ?? 'assistantRationale', {
-                item: t(itemToMove.item.name),
-              }),
-            }
-          : null,
-    }
-
-    setReply(nextReply)
-    for (let index = 0; index < nextReply.message.length; index += 2) {
-      setStreamedMessage(nextReply.message.slice(0, index + 2))
-      await new Promise((resolve) => window.setTimeout(resolve, 18))
-    }
-
-    setStreaming(false)
-    handleAssistantReply(nextReply)
-  }
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault()
-    void sendQuestion(question.trim())
+    const trimmedQuestion = question.trim()
+    if (!trimmedQuestion || streaming) return
+    setQuestion('')
+    void assistant.messageAssistant(trimmedQuestion)
   }
 
+  /** When user chooses a sample readily available prompt */
   const handleSampleClick = (
     sampleId: (typeof sampleAssistantConversations)[number]['id']
   ) => {
     const sample = sampleAssistantConversations.find(
       (conversation) => conversation.id === sampleId
     )
-    if (sample) void sendQuestion(t(sample.promptKey), sample.id)
-  }
-
-  const handleAssistantReply = (reply: AssistantReply) => {
-    const change = reply.proposedChange
-    if (!change) {
-      setProposal(null)
-      return
-    }
-
-    const currentItems = items
-    const currentItem = currentItems.find((item) => item.id === change.itemId)
-    if (!currentItem) {
-      setProposal(null)
-      return
-    }
-
-    setProposal({
-      ghost: {
-        ...currentItem,
-        ...constrainPosition(currentItem, change.target.x, change.target.z),
-      },
-    })
+    if (sample) void assistant.messageAssistant(t(sample.promptKey))
   }
 
   const acceptProposal = () => {
@@ -167,6 +121,7 @@ export function AssistantPanel({
           if (open) setIsPerfPanelOpen(false)
         }}
       >
+        {/* Header */}
         <summary className='ce-panel-heading'>
           <div>
             <p className='ce-eyebrow'>03 / {t('COPILOT')}</p>
@@ -177,15 +132,32 @@ export function AssistantPanel({
               {t('assistant')}
             </h2>
           </div>
-          <span className='ce-beta-tag'>MOCK</span>
+          {proposalPending ? (
+            <span className='ce-assistant-status'>{t('previewing')}</span>
+          ) : null}
         </summary>
+
+        {/* Content */}
         <div className='ce-assistant-content'>
-          <p className='ce-assistant-note'>{t('assistantNote')}</p>
-          <div className='ce-chat-window' aria-live='polite'>
-            {assistantQuestion ? (
-              <p className='ce-chat-user'>{assistantQuestion}</p>
-            ) : null}
-            {reply ? (
+          <div
+            className='ce-chat-window'
+            aria-live='polite'
+            aria-busy={streaming}
+          >
+            {/* The tool calls made by the agent are shown. */}
+            <ol className='ce-tool-calls' aria-label='Assistant activity'>
+              {toolCallMessages.map((message, index) => (
+                <li key={`${message.toolName}-${index}`}>
+                  <dl>
+                    <dt>{message.toolName}</dt>
+                    <dd>{message.message}</dd>
+                  </dl>
+                </li>
+              ))}
+            </ol>
+
+            {/* The agent's response message */}
+            {streamedMessage ? (
               <p className='ce-chat-reply'>
                 <span className='ce-reply-mark' aria-hidden='true'>
                   ✳
@@ -194,29 +166,137 @@ export function AssistantPanel({
                 {streaming ? <span className='ce-stream-cursor' /> : null}
               </p>
             ) : (
+              <></>
+            )}
+            {streamedMessage || streaming ? (
+              <></>
+            ) : (
               <div className='ce-chat-starters'>
+                <div className='ce-chat-empty-icon' aria-hidden='true'>
+                  ✳
+                </div>
                 <p className='ce-chat-empty'>{t('askAssistantHint')}</p>
               </div>
             )}
-            {!streaming && !proposalPending ? (
+
+            {/* Sample readily available prompts */}
+            <details>
+              <summary>
+                <span>Sample prompts</span>
+                <span aria-hidden='true'>+</span>
+              </summary>
               <div className='ce-sample-conversations'>
                 {sampleAssistantConversations.map((sample) => (
                   <button
                     type='button'
                     key={sample.id}
                     onClick={() => handleSampleClick(sample.id)}
+                    disabled={streaming}
                   >
                     <span aria-hidden='true'>✳</span>
                     {t(sample.promptKey)}
                   </button>
                 ))}
               </div>
-            ) : null}
-            {proposalPending && reply?.proposedChange ? (
-              <>
-                <p className='ce-proposal-rationale'>
-                  {reply.proposedChange.rationale}
-                </p>
+            </details>
+
+            {/* API Key and model provider configurations */}
+            <details>
+              <summary>
+                <span>{t('assistantApiConfigTitle')}</span>
+                <span aria-hidden='true'>+</span>
+              </summary>
+              <form
+                className='ce-apikey-form'
+                aria-label={t('assistantApiConfigAriaLabel')}
+                onSubmit={(event) => event.preventDefault()}
+              >
+                <fieldset className='ce-apikey-providers'>
+                  <legend>{t('assistantProviderPlaceholder')}</legend>
+                  <label>
+                    <input
+                      name='ai-assistant-provider'
+                      value={'groq' satisfies AssistentApiKey['name']}
+                      type='radio'
+                      checked={assistentApiKey.name === 'groq'}
+                      onChange={() =>
+                        setAssistentApiKey({
+                          ...assistentApiKey,
+                          name: 'groq',
+                        })
+                      }
+                    />
+                    <span>Groq</span>
+                  </label>
+                  <label>
+                    <input
+                      name='ai-assistant-provider'
+                      value={'openrouter' satisfies AssistentApiKey['name']}
+                      type='radio'
+                      checked={assistentApiKey.name === 'openrouter'}
+                      onChange={() =>
+                        setAssistentApiKey({
+                          ...assistentApiKey,
+                          name: 'openrouter',
+                        })
+                      }
+                    />
+                    <span>OpenRouter</span>
+                  </label>
+                </fieldset>
+
+                <label className='ce-apikey-field' htmlFor='ce-assistant-model'>
+                  <span>{t('assistantModelPlaceholder')}</span>
+                  <input
+                    id='ce-assistant-model'
+                    name='model'
+                    value={assistentApiKey.model}
+                    onChange={(event) =>
+                      setAssistentApiKey({
+                        ...assistentApiKey,
+                        model: event.target.value,
+                      })
+                    }
+                    placeholder={t('assistantModelPlaceholder')}
+                    autoComplete='off'
+                    spellCheck={false}
+                  />
+                </label>
+
+                <label
+                  className='ce-apikey-field'
+                  htmlFor='ce-assistant-api-key'
+                >
+                  <span>{t('assistantKeyPlaceholder')}</span>
+                  <input
+                    id='ce-assistant-api-key'
+                    name='api-key'
+                    value={assistentApiKey.key}
+                    type='password'
+                    onChange={(event) =>
+                      setAssistentApiKey({
+                        ...assistentApiKey,
+                        key: event.target.value,
+                      })
+                    }
+                    placeholder={t('assistantKeyPlaceholder')}
+                    autoComplete='off'
+                    spellCheck={false}
+                  />
+                </label>
+              </form>
+            </details>
+
+            {/* Buttons to accept or reject the agent's suggestion. */}
+            {proposal ? (
+              <div className='ce-proposal-card'>
+                <div className='ce-proposal-copy'>
+                  <span className='ce-proposal-dot' aria-hidden='true' />
+                  <div>
+                    <strong>{t('previewing')}</strong>
+                    <p>{t('assistantReady')}</p>
+                  </div>
+                </div>
                 <div className='ce-proposal-actions'>
                   <button
                     type='button'
@@ -233,9 +313,11 @@ export function AssistantPanel({
                     {t('reject')}
                   </button>
                 </div>
-              </>
+              </div>
             ) : null}
           </div>
+
+          {/* Form to submit message to the assistant. */}
           <form className='ce-chat-form' onSubmit={handleSubmit}>
             <input
               value={question}

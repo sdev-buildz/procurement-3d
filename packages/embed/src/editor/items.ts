@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 /** Fixed dimensions and snapping interval for the electrical room, in meters. */
 export const ROOM = {
   /** Total room width along the X axis. */
@@ -226,6 +228,15 @@ export function getEquipment(name: EquipmentName): ItemType {
   if (!equipment) throw new Error(`Unknown equipment type: ${name}`)
   return equipment
 }
+
+/** Layout Items - Zod Schema */
+export const LayoutItemScheme = z.object({
+  id: z.string(),
+  item: z.number(),
+  x: z.number(),
+  z: z.number(),
+  rotation: z.number(),
+})
 
 /** One placed piece of equipment and its transform and wire connections. */
 export type LayoutItem = {

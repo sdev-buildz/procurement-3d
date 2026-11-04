@@ -19,10 +19,13 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@ai-sdk/groq": "^4.0.76",
+    "@openrouter/ai-sdk-provider": "^3.1.0",
     "@packages/web-app-utils": "workspace:*",
     "@react-three/a11y": "^3.0.0",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
+    "ai": "^7.0.162",
     "i18next": "^25.8.13",
     "r3f-perf": "^7.2.3",
     "react": "catalog:",
@@ -30,7 +33,8 @@
     "react-i18next": "^16.5.4",
     "three": "^0.186.1",
     "three-stdlib": "^2.36.1",
-    "ts-strict-utils": "^1.0.0"
+    "ts-strict-utils": "^1.0.0",
+    "zod": "^4.6.7"
   },
   "peerDependencies": {
     "react": "catalog:",

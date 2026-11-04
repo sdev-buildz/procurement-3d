@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  assistantReplyExample,
-  sampleAssistantConversations,
-} from './assistant/assistantReply'
+import { assistantReplyExample } from './assistant/assistantReply'
 import { createLayoutHistory, layoutHistoryReducer } from './hooks/useHistory'
 import { findRuleViolations } from './hooks/useViolations'
 import { EQUIPMENT, getEquipment, type LayoutItem } from './items'
@@ -90,19 +87,5 @@ describe('assistant response contract', () => {
     const response: unknown = JSON.parse(JSON.stringify(assistantReplyExample))
 
     expect(response).toEqual(assistantReplyExample)
-  })
-
-  it('offers sample prompts that can produce proposals for each equipment type', () => {
-    expect(sampleAssistantConversations.map(({ id }) => id)).toEqual([
-      'spacing',
-      'drive',
-      'cabinet',
-    ])
-    expect(
-      sampleAssistantConversations
-        .map(({ equipmentType }) => equipmentType)
-        .filter((type) => type !== null)
-        .map((item) => item.name)
-    ).toEqual(['drive', 'cabinet'])
   })
 })

@@ -109,6 +109,7 @@ export const getWebpackConfig = (
           ],
         },
       ],
+      exprContextCritical: false, // Suppresses expression-based context warnings globally
     },
     optimization: {
       moduleIds: 'deterministic',

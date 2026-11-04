@@ -4,6 +4,21 @@ import { initReactI18next } from 'react-i18next'
 const resources = {
   en: {
     translation: {
+      sampleViolationsPrompt: 'Fix the rule violations in this room',
+      sampleViolationsAnswer:
+        'I suggest moving the {{item}} to give nearby equipment a little more room.',
+      sampleViolationsRationale:
+        'Move the closest item away from its neighbor to improve clearance.',
+      sampleSpacingPrompt: 'Fix the rule violations in this room',
+      sampleSpacingAnswer:
+        'I suggest moving the {{item}} to give nearby equipment a little more room.',
+      sampleSpacingRationale:
+        'Move the closest item away from its neighbor to improve clearance.',
+      sampleCostPrompt: 'Optimize the cost of the items in this room',
+      sampleCostAnswer:
+        'I suggest removing unused parts from the electrical cabinet.',
+      sampleCostRationale: 'Avoid buying redundant parts items.',
+      uploadView: 'Upload Model',
       PERFORMANCE: 'PERFORMANCE',
       merging: 'merging',
       wireframe: 'wireframe',
@@ -33,7 +48,7 @@ const resources = {
       arrangeSelection: 'Arrange selected equipment',
       emptyInspectorHelp: 'Select equipment in the room or list.',
       askAssistantHint:
-        'Ask how many devices are placed or request a layout suggestion.',
+        'Ask to fix constraint violations or optimize to reduce cost in BOM.',
       emptyItems: 'Place equipment to get started.',
       placeToStart: 'Place equipment to get started.',
       connect: 'Wire selected',
@@ -76,6 +91,11 @@ const resources = {
       total: 'Total',
       assistant: 'Layout assistant',
       assistantNote: 'Mock assistant · preview before applying',
+      assistantApiConfigTitle: 'Configure API Key',
+      assistantApiConfigAriaLabel: 'Assistant API configuration',
+      assistantProviderPlaceholder: 'Provider',
+      assistantModelPlaceholder: 'Model',
+      assistantKeyPlaceholder: 'API Key',
       assistantPlaceholder: 'Ask about this layout…',
       send: 'Send',
       accept: 'Accept change',
@@ -85,11 +105,6 @@ const resources = {
         'There are {{count}} items in this room and {{issues}} spacing issues. I can move the {{item}} to a clearer spot.',
       assistantRationale:
         'Move {{item}} to create more clearance from nearby equipment.',
-      sampleSpacingPrompt: 'Improve the spacing in this room',
-      sampleSpacingAnswer:
-        'I suggest moving the {{item}} to give nearby equipment a little more room.',
-      sampleSpacingRationale:
-        'Move the closest item away from its neighbor to improve clearance.',
       sampleDrivePrompt: 'Give a drive more clearance',
       sampleDriveAnswer:
         'I can reposition the {{item}} to give it more clearance from the other equipment.',
@@ -146,7 +161,7 @@ const resources = {
       arrangeSelection: 'Sắp xếp thiết bị đã chọn',
       emptyInspectorHelp: 'Chọn thiết bị trong phòng hoặc trong danh sách.',
       askAssistantHint:
-        'Hỏi số lượng thiết bị đã đặt hoặc yêu cầu gợi ý bố cục.',
+        'Hãy yêu cầu khắc phục các vi phạm ràng buộc hoặc tối ưu hóa để giảm chi phí trong BOM (Danh mục vật tư).',
       emptyItems: 'Đặt thiết bị để bắt đầu.',
       placeToStart: 'Đặt thiết bị để bắt đầu.',
       connect: 'Đi dây thiết bị đã chọn',
@@ -190,6 +205,11 @@ const resources = {
       total: 'Tổng cộng',
       assistant: 'Trợ lý bố cục',
       assistantNote: 'Trợ lý mô phỏng · xem trước trước khi áp dụng',
+      assistantApiConfigTitle: 'Cấu hình khóa API',
+      assistantApiConfigAriaLabel: 'Cấu hình API của trợ lý',
+      assistantProviderPlaceholder: 'Nhà cung cấp',
+      assistantModelPlaceholder: 'Mô hình',
+      assistantKeyPlaceholder: 'Khóa API',
       assistantPlaceholder: 'Hỏi về bố cục này…',
       send: 'Gửi',
       accept: 'Chấp nhận thay đổi',
@@ -256,7 +276,7 @@ const resources = {
       selectedCount: '已选择 {{count}} 个',
       arrangeSelection: '排列所选设备',
       emptyInspectorHelp: '请在房间内或列表中选择设备。',
-      askAssistantHint: '询问已放置的设备数量或请求布局建议。',
+      askAssistantHint: '请修正BOM中的约束违规或进行优化以降低成本',
       emptyItems: '放置设备以开始。',
       placeToStart: '放置设备以开始。',
       connect: '所选设备接线',
@@ -299,6 +319,11 @@ const resources = {
       total: '总计',
       assistant: '布局助手',
       assistantNote: '模拟助手 · 应用前可预览',
+      assistantApiConfigTitle: '配置 API 密钥',
+      assistantApiConfigAriaLabel: '助手 API 配置',
+      assistantProviderPlaceholder: '服务商',
+      assistantModelPlaceholder: '模型',
+      assistantKeyPlaceholder: 'API 密钥',
       assistantPlaceholder: '询问有关此布局的问题…',
       send: '发送',
       accept: '接受更改',

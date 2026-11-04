@@ -1,4 +1,4 @@
-import { getEquipment, type ItemType, type LayoutItem } from '../items'
+import { type LayoutItem } from '../items'
 
 /**
  * Suggestion from an assistant
@@ -40,39 +40,34 @@ export type AssistantReply = {
 /** A clickable example conversation shown before the user starts a chat. */
 export type SampleAssistantConversation = {
   /** Stable identifier for selecting the sample behavior. */
-  id: 'spacing' | 'drive' | 'cabinet'
+  id: 'rule-violations' | 'spacing' | 'cost'
   /** Translation key for the sample user's prompt. */
   promptKey: string
   /** Translation key for the structured assistant response message. */
   messageKey: string
   /** Translation key for the proposed change's rationale. */
   rationaleKey: string
-  /** Equipment category to move, or null to use the closest rule violation. */
-  equipmentType: ItemType | null
 }
 
 /** Suggested prompts that each produce a previewable scene edit. */
 export const sampleAssistantConversations: SampleAssistantConversation[] = [
   {
+    id: 'rule-violations',
+    promptKey: 'sampleViolationsPrompt',
+    messageKey: 'sampleViolationsAnswer',
+    rationaleKey: 'sampleViolationsRationale',
+  },
+  {
     id: 'spacing',
     promptKey: 'sampleSpacingPrompt',
     messageKey: 'sampleSpacingAnswer',
     rationaleKey: 'sampleSpacingRationale',
-    equipmentType: null,
   },
   {
-    id: 'drive',
-    promptKey: 'sampleDrivePrompt',
-    messageKey: 'sampleDriveAnswer',
-    rationaleKey: 'sampleDriveRationale',
-    equipmentType: getEquipment('drive'),
-  },
-  {
-    id: 'cabinet',
-    promptKey: 'sampleCabinetPrompt',
-    messageKey: 'sampleCabinetAnswer',
-    rationaleKey: 'sampleCabinetRationale',
-    equipmentType: getEquipment('cabinet'),
+    id: 'cost',
+    promptKey: 'sampleCostPrompt',
+    messageKey: 'sampleCostAnswer',
+    rationaleKey: 'sampleCostRationale',
   },
 ]
 

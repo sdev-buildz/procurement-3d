@@ -18,7 +18,7 @@ export function NestedInstances(
     return <></>
   }
 
-  models = models?.sort((a, b) => a.size - b.size)
+  models = models?.toSorted((a, b) => a.size - b.size)
 
   if (isRoot) {
     console.log('isRoot suspense')

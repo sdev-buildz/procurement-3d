@@ -113,7 +113,7 @@ export const GlbModel = ({
     return <></>
   }
 
-  models = models?.sort((a, b) => a.size - b.size)
+  models = models?.toSorted((a, b) => a.size - b.size)
 
   if (isRoot) {
     // Display the wireframe bounding box placeholder as the initial placeholder

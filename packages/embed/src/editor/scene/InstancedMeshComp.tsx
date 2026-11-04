@@ -31,7 +31,7 @@ export function InstancedMeshGroup({
 }) {
   const gl = useThree((state) => state.gl)
 
-  const models = itemType.models.sort((a, b) => a.size - b.size)
+  const models = itemType.models.toSorted((a, b) => a.size - b.size)
 
   // 1. Destructure the exact nodes and materials from your file
   const { scene, nodes, materials } = useGLTF(

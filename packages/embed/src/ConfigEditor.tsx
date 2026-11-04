@@ -20,10 +20,7 @@ import { SelectionInspector } from './editor/panels/SelectionInspector'
 import { StageFor3dViewer } from './editor/panels/StageFor3dViewer'
 import { ToolBar } from './editor/panels/ToolBar'
 import { TopBar } from './editor/panels/TopBar'
-
-function makeId(item: ItemType): string {
-  return `${item.name}-${crypto.randomUUID()}`
-}
+import { makeId } from './utils/makeId'
 
 /**
  * The workspace with 3D view, and other supporting panels.

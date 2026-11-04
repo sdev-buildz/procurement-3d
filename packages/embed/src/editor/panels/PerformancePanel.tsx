@@ -1,6 +1,7 @@
 import type { Dpr } from '@react-three/fiber'
 import { useCallback, useState, type ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
+import { makeId } from '../../utils/makeId'
 import type { useHistory } from '../hooks/useHistory'
 import { getEquipment, ROOM, type ItemType, type LayoutItem } from '../items'
 
@@ -74,7 +75,7 @@ export function PerformancePanel({
         z = z + 1 / 2
       }
       itemsCopy.push({
-        id: `${itemType}-${j}`,
+        id: makeId(itemType),
         item: itemType,
         x,
         z,

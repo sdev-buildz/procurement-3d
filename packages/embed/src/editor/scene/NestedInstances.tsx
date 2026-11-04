@@ -1,6 +1,7 @@
 import { Suspense, type ComponentProps } from 'react'
-import { InstancedMeshGroup } from './InstancedMeshComp'
+import type { InstancedMeshGroup } from './InstancedMeshComp'
 import { InstancedPlaceholderBox } from './InstancedPlaceholderBox'
+import { LodComp } from './LodComp'
 
 /**
  *  Nested loaders with instanced models.
@@ -42,14 +43,14 @@ export function NestedInstances(
   // It is already nested. So display the lowest sized model as Suspence fallback, while loading higher sized models inside the suspense.
   if (sizeIdx === models.length - 1) {
     // Leaf node. only one model to load.
-    return <InstancedMeshGroup {...props} sizeIdx={sizeIdx} />
+    return <LodComp {...props} maxSizeIdx={sizeIdx} />
   }
 
   if (sizeIdx < models.length - 1) {
     console.log(sizeIdx)
     // Not leaf node.
     return (
-      <Suspense fallback={<InstancedMeshGroup {...props} sizeIdx={sizeIdx} />}>
+      <Suspense fallback={<LodComp {...props} maxSizeIdx={sizeIdx} />}>
         <NestedInstances {...props} isRoot={false} sizeIdx={sizeIdx + 1} />
       </Suspense>
     )

@@ -1,5 +1,5 @@
 import type { ThreeEvent } from '@react-three/fiber'
-import type { MeshStandardMaterialParameters } from 'three'
+import type { MeshLambertMaterialParameters } from 'three'
 import type { LayoutItem } from '../items'
 import { getEquipment } from '../items'
 import { EquipmentMeshes } from './EquipmentMeshes'
@@ -26,10 +26,8 @@ export function EquipmentModel({
 }) {
   const equipment = item.item
   const color = violation ? '#ff6577' : equipment.color
-  const materialProps: MeshStandardMaterialParameters = {
+  const materialProps: MeshLambertMaterialParameters = {
     color,
-    roughness: 0.48,
-    metalness: 0.32,
     transparent: ghost,
     opacity: ghost ? 0.34 : 1,
     emissive: violation ? '#8c1024' : selected ? color : '#000000',

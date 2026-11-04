@@ -34,7 +34,7 @@ export const InstancedPlaceholderBox = ({
   )
   const material = useMemo(
     () =>
-      new THREE.MeshStandardMaterial({
+      new THREE.MeshLambertMaterial({
         color: itemType.color,
         transparent: true,
         opacity: ghost ? 0.34 : 0.45,

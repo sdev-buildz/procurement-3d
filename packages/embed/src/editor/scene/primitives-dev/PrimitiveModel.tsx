@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react'
-import type { MeshStandardMaterialParameters } from 'three'
+import type { MeshLambertMaterialParameters } from 'three'
 import type { ItemType } from '../../items'
 import type { EquipmentMeshes } from '../EquipmentMeshes'
 
@@ -8,20 +8,20 @@ const PanelModel = ({
   materialProps,
 }: {
   equipment: ItemType
-  materialProps: MeshStandardMaterialParameters
+  materialProps: MeshLambertMaterialParameters
 }) => (
   <>
     <mesh position={[0, equipment.height / 2, 0]}>
       <boxGeometry
         args={[equipment.width, equipment.height, equipment.depth]}
       />
-      <meshStandardMaterial {...materialProps} />
+      <meshLambertMaterial {...materialProps} />
     </mesh>
     <mesh position={[0, equipment.height * 0.61, equipment.depth / 2 + 0.009]}>
       <boxGeometry
         args={[equipment.width * 0.72, equipment.height * 0.38, 0.02]}
       />
-      <meshStandardMaterial color='#17232e' metalness={0.4} />
+      <meshLambertMaterial color='#17232e' />
     </mesh>
     {[-0.14, 0, 0.14].map((offset) => (
       <mesh
@@ -33,7 +33,7 @@ const PanelModel = ({
         ]}
       >
         <sphereGeometry args={[0.035, 12, 12]} />
-        <meshStandardMaterial
+        <meshLambertMaterial
           color='#b6ffab'
           emissive='#65e88b'
           emissiveIntensity={1.4}
@@ -48,7 +48,7 @@ const DriveModel = ({
   materialProps,
 }: {
   equipment: ItemType
-  materialProps: MeshStandardMaterialParameters
+  materialProps: MeshLambertMaterialParameters
 }) => (
   <>
     <mesh position={[0, equipment.height * 0.43, 0]}>
@@ -59,15 +59,15 @@ const DriveModel = ({
           equipment.depth * 0.76,
         ]}
       />
-      <meshStandardMaterial {...materialProps} />
+      <meshLambertMaterial {...materialProps} />
     </mesh>
     <mesh position={[0, equipment.height * 0.27, equipment.depth * 0.39]}>
       <boxGeometry args={[equipment.width * 0.38, 0.22, 0.025]} />
-      <meshStandardMaterial color='#15242d' metalness={0.45} />
+      <meshLambertMaterial color='#15242d' />
     </mesh>
     <mesh position={[0.16, equipment.height * 0.28, equipment.depth * 0.41]}>
       <sphereGeometry args={[0.035, 12, 12]} />
-      <meshStandardMaterial
+      <meshLambertMaterial
         color='#b6ffab'
         emissive='#65e88b'
         emissiveIntensity={1.5}
@@ -81,20 +81,20 @@ const CabinetModel = ({
   materialProps,
 }: {
   equipment: ItemType
-  materialProps: MeshStandardMaterialParameters
+  materialProps: MeshLambertMaterialParameters
 }) => (
   <>
     <mesh position={[0, equipment.height / 2, 0]}>
       <boxGeometry
         args={[equipment.width, equipment.height, equipment.depth]}
       />
-      <meshStandardMaterial {...materialProps} />
+      <meshLambertMaterial {...materialProps} />
     </mesh>
     <mesh position={[0, equipment.height / 2, equipment.depth / 2 + 0.008]}>
       <boxGeometry
         args={[equipment.width * 0.82, equipment.height * 0.86, 0.018]}
       />
-      <meshStandardMaterial color='#202d3b' metalness={0.5} />
+      <meshLambertMaterial color='#202d3b' />
     </mesh>
     <mesh
       position={[
@@ -104,7 +104,7 @@ const CabinetModel = ({
       ]}
     >
       <boxGeometry args={[0.035, 0.36, 0.025]} />
-      <meshStandardMaterial color='#aec3d1' metalness={0.75} />
+      <meshLambertMaterial color='#aec3d1' />
     </mesh>
   </>
 )

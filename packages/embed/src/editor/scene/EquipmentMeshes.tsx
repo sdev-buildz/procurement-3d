@@ -1,4 +1,4 @@
-import type { MeshStandardMaterialParameters } from 'three'
+import type { MeshLambertMaterialParameters } from 'three'
 import type { LayoutItem } from '../items'
 import { GlbModel } from './GlbModel'
 import { PrimitiveModel } from './primitives-dev/PrimitiveModel'
@@ -11,7 +11,7 @@ export function EquipmentMeshes({
 }: {
   item: LayoutItem
   ghost: boolean
-  materialProps: MeshStandardMaterialParameters
+  materialProps: MeshLambertMaterialParameters
 }) {
   const equipment = item.item
   const modelUrl = equipment.models[0]?.url ?? ''

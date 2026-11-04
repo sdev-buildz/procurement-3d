@@ -19,7 +19,7 @@ const Placeholder = ({
 }) => (
   <mesh position={[0, equipment.height / 2, 0]}>
     <boxGeometry args={[equipment.width, equipment.height, equipment.depth]} />
-    <meshStandardMaterial
+    <meshLambertMaterial
       color={equipment.color}
       transparent
       opacity={ghost ? 0.34 : 0.45}

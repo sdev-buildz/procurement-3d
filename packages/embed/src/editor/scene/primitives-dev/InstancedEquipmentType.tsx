@@ -268,11 +268,7 @@ export function InstancedEquipmentType({
             <boxGeometry
               args={[equipment.width, equipment.height, equipment.depth]}
             />
-            <meshStandardMaterial
-              color={equipment.color}
-              roughness={0.48}
-              metalness={0.32}
-            />
+            <meshLambertMaterial color={equipment.color} />
           </instancedMesh>
         ) : null}
         {violatingCount ? (
@@ -285,11 +281,7 @@ export function InstancedEquipmentType({
             <boxGeometry
               args={[equipment.width, equipment.height, equipment.depth]}
             />
-            <meshStandardMaterial
-              color='#ff6577'
-              roughness={0.48}
-              metalness={0.32}
-            />
+            <meshLambertMaterial color='#ff6577' />
           </instancedMesh>
         ) : null}
         <instancedMesh
@@ -300,7 +292,7 @@ export function InstancedEquipmentType({
           <boxGeometry
             args={[equipment.width * 0.82, equipment.height * 0.86, 0.018]}
           />
-          <meshStandardMaterial color='#202d3b' metalness={0.5} />
+          <meshLambertMaterial color='#202d3b' />
         </instancedMesh>
         <instancedMesh
           ref={accentRef}
@@ -308,7 +300,7 @@ export function InstancedEquipmentType({
           {...pointerProps}
         >
           <boxGeometry args={[0.035, 0.36, 0.025]} />
-          <meshStandardMaterial color='#aec3d1' metalness={0.75} />
+          <meshLambertMaterial color='#aec3d1' />
         </instancedMesh>
         {selectedCount ? (
           <instancedMesh
@@ -372,11 +364,7 @@ export function InstancedEquipmentType({
                 equipment.depth * 0.76,
               ]}
             />
-            <meshStandardMaterial
-              color={equipment.color}
-              roughness={0.48}
-              metalness={0.32}
-            />
+            <meshLambertMaterial color={equipment.color} />
           </instancedMesh>
         ) : null}
         {violatingCount ? (
@@ -393,11 +381,7 @@ export function InstancedEquipmentType({
                 equipment.depth * 0.76,
               ]}
             />
-            <meshStandardMaterial
-              color='#ff6577'
-              roughness={0.48}
-              metalness={0.32}
-            />
+            <meshLambertMaterial color='#ff6577' />
           </instancedMesh>
         ) : null}
         <instancedMesh
@@ -406,7 +390,7 @@ export function InstancedEquipmentType({
           {...pointerProps}
         >
           <boxGeometry args={[equipment.width * 0.38, 0.22, 0.025]} />
-          <meshStandardMaterial color='#15242d' metalness={0.45} />
+          <meshLambertMaterial color='#15242d' />
         </instancedMesh>
         <instancedMesh
           ref={accentRef}
@@ -414,7 +398,7 @@ export function InstancedEquipmentType({
           {...pointerProps}
         >
           <sphereGeometry args={[0.035, 12, 12]} />
-          <meshStandardMaterial
+          <meshLambertMaterial
             color='#b6ffab'
             emissive='#65e88b'
             emissiveIntensity={1.5}
@@ -477,11 +461,7 @@ export function InstancedEquipmentType({
           <boxGeometry
             args={[equipment.width, equipment.height, equipment.depth]}
           />
-          <meshStandardMaterial
-            color={equipment.color}
-            roughness={0.48}
-            metalness={0.32}
-          />
+          <meshLambertMaterial color={equipment.color} />
         </instancedMesh>
       ) : null}
       {violatingCount ? (
@@ -494,11 +474,7 @@ export function InstancedEquipmentType({
           <boxGeometry
             args={[equipment.width, equipment.height, equipment.depth]}
           />
-          <meshStandardMaterial
-            color='#ff6577'
-            roughness={0.48}
-            metalness={0.32}
-          />
+          <meshLambertMaterial color='#ff6577' />
         </instancedMesh>
       ) : null}
       <instancedMesh
@@ -509,14 +485,14 @@ export function InstancedEquipmentType({
         <boxGeometry
           args={[equipment.width * 0.72, equipment.height * 0.38, 0.02]}
         />
-        <meshStandardMaterial color='#17232e' metalness={0.4} />
+        <meshLambertMaterial color='#17232e' />
       </instancedMesh>
       <instancedMesh
         ref={accentRef}
         args={[undefined, undefined, items.length * 3]}
       >
         <sphereGeometry args={[0.035, 12, 12]} />
-        <meshStandardMaterial
+        <meshLambertMaterial
           color='#b6ffab'
           emissive='#65e88b'
           emissiveIntensity={1.4}

@@ -182,12 +182,20 @@ export const useAssistant = (
 
     const { textStream } = streamText({
       model: providerHandle(props.assistentApiKey.model),
-
       system:
         'You are assistant in an interactive 3D electrical room configuration tool.',
       prompt: input,
       tools,
       stopWhen: isStepCount(5),
+      onError: (err) => {
+        if (
+          err.error &&
+          err.error instanceof Error &&
+          'responseBody' in err.error
+        )
+          props.setStreamedMessage(err.error.responseBody as string)
+        console.log(err)
+      },
     })
 
     let response = ''

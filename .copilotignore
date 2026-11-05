@@ -1,0 +1,10 @@
+# Ignore environment variable files
+**/*.env*
+
+# Ignore specific sensitive configuration files
+**/secret*
+
+# Ignore specific files by name
+**/*.crt
+**/*.key
+**/*.pem

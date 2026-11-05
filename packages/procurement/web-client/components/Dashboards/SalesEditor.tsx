@@ -47,7 +47,7 @@ export const SalesEditor = () => {
     <iframe
       ref={iframeRef}
       title='3D configuration editor'
-      sandbox='allow-scripts allow-same-origin'
+      sandbox='allow-scripts allow-same-origin allow-forms'
       src={sharedConfig.embedClientOrigin}
       style={{
         width: '100%',

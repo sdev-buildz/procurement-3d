@@ -146,7 +146,7 @@ export function RoomScene({
           <PerformanceMonitor
             bounds={(refreshrate) => [refreshrate / 2, refreshrate]}
             onDecline={() => setLodBound(lodBound + 1)}
-            onIncline={() => setLodBound(lodBound - 1)}
+            onIncline={() => setLodBound(Math.max(0, lodBound - 1))}
           />
           <Perf />
           <color attach='background' args={['#101820']} />

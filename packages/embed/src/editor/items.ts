@@ -203,7 +203,32 @@ export const EQUIPMENT: ItemType[] = [
     height: 1.1,
     color: '#d7a6cf',
     price: 780,
-    models: [{ id: 6, url: getAssetUrl('SheenChair'), size: 0 }],
+    models: [
+      {
+        id: 61,
+        url: getAssetUrl(
+          'SheenChair-lossless',
+          'QmdTmNhLtuQygfLkWGmg3AGfbh5jrgNQvZuq3bc6YnUYeo'
+        ),
+        size: 3000,
+      },
+      {
+        id: 62,
+        url: getAssetUrl(
+          'SheenChair-medium-lossy',
+          'QmNwyDGrwLRcSMvbGDtUbNoAX27JBbgiTAcnoxX5g8VoXe'
+        ),
+        size: 500,
+      },
+      {
+        id: 63,
+        url: getAssetUrl(
+          'SheenChair-lowest',
+          'QmRKq3NLtLbv42A3n2HeSfR49EdCJtoHejtpbrZbPnqmk6'
+        ),
+        size: 180,
+      },
+    ],
   },
   {
     id: 7,

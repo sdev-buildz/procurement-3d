@@ -2,10 +2,10 @@ import type { ApolloClient } from '@apollo/client'
 import { ApolloProvider } from '@apollo/client/react'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import { apolloClient } from './contexts/ApolloClient'
-import { HtmlHeadChildren } from './HtmlHeadChildren'
-import './mount.css'
+import { App } from '../web-client/App'
+import { apolloClient } from '../web-client/contexts/ApolloClient'
+import { HtmlHeadChildren } from '../web-client/HtmlHeadChildren'
+import '../web-client/mount.css'
 
 /**
  * Mounts the children of the head tag such as Script tags, Link tags, etc...

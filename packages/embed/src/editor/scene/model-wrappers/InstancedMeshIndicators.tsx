@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import * as THREE from 'three'
-import type { LayoutItem } from '../items'
-import { getEquipment } from '../items'
+import { getEquipment, type LayoutItem } from '../../items'
 
 /** Renders selection and violation indicators for instanced GLTF equipment. */
 export function InstancedMeshIndicators({

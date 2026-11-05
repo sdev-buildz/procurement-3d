@@ -4,7 +4,7 @@ import { Suspense, useMemo } from 'react'
 import type { Group } from 'three'
 import { Box3, Vector3 } from 'three'
 import { KTX2Loader } from 'three-stdlib'
-import { type ItemType, type ModelType } from '../items'
+import { type ItemType, type ModelType } from '../../items'
 
 /**
  * Wireframe placeholder until the model loads.

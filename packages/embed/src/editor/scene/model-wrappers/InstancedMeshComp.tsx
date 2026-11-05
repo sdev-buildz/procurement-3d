@@ -4,7 +4,7 @@ import { useLayoutEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { KTX2Loader } from 'three-stdlib'
 import { typedObjectEntries } from 'ts-strict-utils'
-import { type ItemType, type LayoutItem } from '../items'
+import { type ItemType, type LayoutItem } from '../../items'
 
 type ArgsType = { nodeName: string; mesh: THREE.Mesh; material: THREE.Material }
 

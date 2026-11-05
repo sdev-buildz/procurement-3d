@@ -1,7 +1,7 @@
 import type { MeshLambertMaterialParameters } from 'three'
-import type { LayoutItem } from '../items'
+import type { LayoutItem } from '../../items'
 import { GlbModel } from './GlbModel'
-import { PrimitiveModel } from './primitives-dev/PrimitiveModel'
+import { PrimitiveModel } from './PrimitiveModel'
 
 /** Renders the equipment item */
 export function EquipmentMeshes({

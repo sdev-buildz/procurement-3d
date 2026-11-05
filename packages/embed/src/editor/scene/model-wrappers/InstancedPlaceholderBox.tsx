@@ -1,7 +1,7 @@
 import { type ThreeEvent } from '@react-three/fiber'
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
-import { type ItemType, type LayoutItem } from '../items'
+import type { ItemType, LayoutItem } from '../../items'
 
 /**
  * Wireframe placeholder until the model loads.

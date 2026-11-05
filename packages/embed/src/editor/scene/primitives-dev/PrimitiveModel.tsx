@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react'
 import type { MeshLambertMaterialParameters } from 'three'
 import type { ItemType } from '../../items'
-import type { EquipmentMeshes } from '../EquipmentMeshes'
+import type { EquipmentMeshes } from './EquipmentMeshes'
 
 const PanelModel = ({
   equipment,

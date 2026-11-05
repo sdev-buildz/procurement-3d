@@ -12,22 +12,18 @@ export function LodComp(
 ) {
   const { lodBound } = useContext(RoomContext)
   const { itemType } = props
-  let models = itemType.models
+  const models = itemType.models.toSorted((a, b) => a.size - b.size)
 
   if (!models?.length) {
     console.warn('No model url is provided to load.')
     return <></>
   }
 
-  models = models
-    ?.toSorted((a, b) => b.size - a.size)
-    .slice(Math.min(lodBound, models.length - 1))
-
   /** The distance at which the lowest sized model is shown */
   const maxDistance: number = 4
 
   /** The distance delta at which the model is switched */
-  const distanceDelta = 20 / (models.length - 1)
+  const distanceDelta = 20 / (models.length - lodBound - 1)
 
   /** The distances at which the model is switched. */
   const distances: number[] = [0]
@@ -39,12 +35,16 @@ export function LodComp(
   return (
     <Detailed distances={distances}>
       {Array.from({ length: Math.max(1, props.maxSizeIdx + 1 - lodBound) }).map(
-        (_, idx) => (
-          <InstancedMeshGroup
-            {...props}
-            sizeIdx={props.maxSizeIdx - idx - lodBound}
-          />
-        )
+        (_, idx) => {
+          const modelIdx = Math.max(props.maxSizeIdx - idx - lodBound, 0)
+          return (
+            <InstancedMeshGroup
+              key={models[modelIdx]?.id}
+              {...props}
+              sizeIdx={modelIdx}
+            />
+          )
+        }
       )}
     </Detailed>
   )

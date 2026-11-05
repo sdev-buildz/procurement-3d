@@ -183,7 +183,6 @@ export function RoomScene({
             onPointerUp={handleItemUp}
             onPointerCancel={handleItemUp}
           />
-
           {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
             (itemType) => {
               const instancesInScene = items.filter(

@@ -139,12 +139,17 @@ export const EQUIPMENT: ItemType[] = [
       {
         id: 5,
         url: getAssetUrl('CommercialRefrigerator'),
-        size: 5000,
+        size: 8500,
+      },
+      {
+        id: 12,
+        url: getAssetUrl('CommercialRefrigerator-medium'),
+        size: 2500,
       },
       {
         id: 11,
-        url: getAssetUrl('PotOfCoals-placeholder'),
-        size: 71,
+        url: getAssetUrl('CommercialRefrigerator-lowest'),
+        size: 860,
       },
     ],
   },
@@ -190,15 +195,15 @@ export const EQUIPMENT: ItemType[] = [
     price: 250,
     models: [
       {
+        id: 9,
+        url: getAssetUrl('PotOfCoals-lossless-instanced'),
+        size: 2487,
+      },
+      {
         id: 8,
         // url: getAssetUrl('PotOfCoals'),
         url: getAssetUrl('PotOfCoals-instanced'),
-        size: 4587,
-      },
-      {
-        id: 9,
-        url: getAssetUrl('PotOfCoals-lossless'),
-        size: 2487,
+        size: 397,
       },
       {
         id: 10,

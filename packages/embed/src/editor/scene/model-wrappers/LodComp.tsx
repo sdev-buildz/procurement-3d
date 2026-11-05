@@ -1,5 +1,6 @@
 import { Detailed } from '@react-three/drei'
-import { type ComponentProps } from 'react'
+import { useContext, type ComponentProps } from 'react'
+import { RoomContext } from '../context'
 import { InstancedMeshGroup } from './InstancedMeshComp'
 import type { NestedInstances } from './NestedInstances'
 
@@ -9,6 +10,7 @@ import type { NestedInstances } from './NestedInstances'
 export function LodComp(
   props: ComponentProps<typeof NestedInstances> & { maxSizeIdx: number }
 ) {
+  const { lodBound } = useContext(RoomContext)
   const { itemType } = props
   let models = itemType.models
 
@@ -17,7 +19,9 @@ export function LodComp(
     return <></>
   }
 
-  models = models?.toSorted((a, b) => b.size - a.size)
+  models = models
+    ?.toSorted((a, b) => b.size - a.size)
+    .slice(Math.min(lodBound, models.length - 1))
 
   /** The distance at which the lowest sized model is shown */
   const maxDistance: number = 4
@@ -31,11 +35,17 @@ export function LodComp(
   for (let i = 0; i < maxDistance / distanceDelta; i += 1) {
     distances.push(distanceDelta * (i + 1))
   }
+
   return (
     <Detailed distances={distances}>
-      {Array.from({ length: props.maxSizeIdx + 1 }).map((_, idx) => (
-        <InstancedMeshGroup {...props} sizeIdx={props.maxSizeIdx - idx} />
-      ))}
+      {Array.from({ length: Math.max(1, props.maxSizeIdx + 1 - lodBound) }).map(
+        (_, idx) => (
+          <InstancedMeshGroup
+            {...props}
+            sizeIdx={props.maxSizeIdx - idx - lodBound}
+          />
+        )
+      )}
     </Detailed>
   )
 }

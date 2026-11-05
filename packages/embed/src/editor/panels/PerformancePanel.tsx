@@ -1,9 +1,10 @@
 import type { Dpr } from '@react-three/fiber'
-import { useCallback, useState, type ReactElement } from 'react'
+import { useCallback, useContext, useState, type ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { makeId } from '../../utils/makeId'
 import type { useHistory } from '../hooks/useHistory'
 import { getEquipment, ROOM, type ItemType, type LayoutItem } from '../items'
+import { RoomContext } from '../scene/context'
 
 type PerformancePanelProps = {
   items: LayoutItem[]
@@ -42,6 +43,7 @@ export function PerformancePanel({
   const [maxDpr, setMaxDpr] = useState(1.5)
   const [shading, setShading] =
     useState<(typeof shadingModes)[number]>('original')
+  const { lodBound } = useContext(RoomContext)
 
   const updateDpr = useCallback(
     (nextMin: number, nextMax: number) => {
@@ -104,7 +106,7 @@ export function PerformancePanel({
           <p className='ce-performance-description'>
             These settings help adjust rendering quality and scene performance.
           </p>
-
+          lod bound ={lodBound}
           <fieldset className='ce-performance-options'>
             <legend>Rendering</legend>
 
@@ -140,7 +142,6 @@ export function PerformancePanel({
               </span>
             </label>
           </fieldset>
-
           {/* DPR Range - Dots to Pixel Ratio */}
           <fieldset className='ce-performance-options'>
             <legend>{t('dpr')} range</legend>
@@ -175,7 +176,6 @@ export function PerformancePanel({
               </label>
             </div>
           </fieldset>
-
           <fieldset className='ce-performance-options'>
             {/* Toggle shading mode. */}
             <legend>Shading</legend>
@@ -196,7 +196,6 @@ export function PerformancePanel({
               ))}
             </div>
           </fieldset>
-
           <button
             type='button'
             className='ce-tool-button ce-performance-add'

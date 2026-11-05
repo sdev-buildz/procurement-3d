@@ -20,6 +20,7 @@ import { SelectionInspector } from './editor/panels/SelectionInspector'
 import { StageFor3dViewer } from './editor/panels/StageFor3dViewer'
 import { ToolBar } from './editor/panels/ToolBar'
 import { TopBar } from './editor/panels/TopBar'
+import { RoomContext } from './editor/scene/context'
 import { makeId } from './utils/makeId'
 
 /**
@@ -35,6 +36,7 @@ export function ConfigEditor(): ReactElement {
   const [proposal, setProposal] = useState<AssistantProposal | null>(null)
   const [announcement, setAnnouncement] = useState('')
   const [isPerfPanelOpen, setIsPerfPanelOpen] = useState<boolean>(false)
+  const [lodBound, setLodBound] = useState(0)
 
   const [dpr, setDpr] = useState<Dpr>([1, 1.5])
 
@@ -272,93 +274,95 @@ export function ConfigEditor(): ReactElement {
 
   return (
     <main className='ce-shell'>
-      <TopBar />
+      <RoomContext value={{ lodBound, setLodBound }}>
+        <TopBar />
 
-      <ToolBar {...historyState} topDown={topDown} setTopDown={setTopDown} />
+        <ToolBar {...historyState} topDown={topDown} setTopDown={setTopDown} />
 
-      <div className='ce-workspace'>
-        <CatalogPanel
-          itemPlaced={itemPlaced}
-          onSelectItem={(item: ItemType) =>
-            setPlacementType((current) =>
-              current?.id === item.id ? null : item
-            )
-          }
-        />
-        <StageFor3dViewer
-          itemsDisplayed={itemsDisplayed}
-          selectedIds={selectedIds}
-          previewItem={proposal?.ghost ?? null}
-          itemPlaced={itemPlaced}
-          topDown={topDown}
-          onSelect={selectItem}
-          onClearSelection={clearSelection}
-          onPlace={(x, z) => itemPlaced && addItem(itemPlaced, x, z)}
-          dragHandlers={dragHandlers}
-          draggingId={draggedItem.current?.id}
-          proposal={proposal}
-          violations={violations}
-          dpr={dpr}
-        />
-
-        <aside className='ce-right-panels'>
-          <PerformancePanel
-            commitItems={historyState.commitItems}
-            items={items}
-            dpr={dpr}
-            setDpr={setDpr}
-            open={isPerfPanelOpen}
-            setIsOpen={setIsPerfPanelOpen}
+        <div className='ce-workspace'>
+          <CatalogPanel
             itemPlaced={itemPlaced}
+            onSelectItem={(item: ItemType) =>
+              setPlacementType((current) =>
+                current?.id === item.id ? null : item
+              )
+            }
           />
-          <SelectionInspector
-            items={items}
-            selectedItems={selectedItems}
-            selectedItem={selectedItem}
-            isPerfPanelOpen={isPerfPanelOpen}
-            setIsPerfPanelOpen={setIsPerfPanelOpen}
-            onPositionChange={changePosition}
-            onRotate={rotateSelection}
-            onDelete={removeSelection}
-            onAlign={alignSelection}
-            onDistribute={distributeSelection}
-            commitItems={historyState.commitItems}
-          />
-
-          <AssistantPanel
-            items={items}
-            violations={violations}
-            proposalPending={proposal !== null}
-            onReject={() => setProposal(null)}
+          <StageFor3dViewer
+            itemsDisplayed={itemsDisplayed}
+            selectedIds={selectedIds}
+            previewItem={proposal?.ghost ?? null}
+            itemPlaced={itemPlaced}
+            topDown={topDown}
+            onSelect={selectItem}
+            onClearSelection={clearSelection}
+            onPlace={(x, z) => itemPlaced && addItem(itemPlaced, x, z)}
+            dragHandlers={dragHandlers}
+            draggingId={draggedItem.current?.id}
             proposal={proposal}
-            setProposal={setProposal}
-            historyState={historyState}
-            setSelectedIds={setSelectedIds}
-            setAnnouncement={setAnnouncement}
-            isPerfPanelOpen={isPerfPanelOpen}
-            setIsPerfPanelOpen={setIsPerfPanelOpen}
+            violations={violations}
+            dpr={dpr}
           />
-        </aside>
-      </div>
-      <div className='ce-bottom-grid'>
-        <ItemsInScene
-          items={items}
-          selectedIds={selectedIds}
-          copiedItemsCount={copiedItems.length}
-          onSelectItem={selectItem}
-          onCopy={copySelection}
-          onPaste={pasteSelection}
-        />
-        <BomPanel items={items} />
-      </div>
 
-      <footer className='ce-footer'>
-        <span>{t('keyboardHelp')}</span>
-        <span>GRID · 0.5 m</span>
-      </footer>
-      <div className='ce-sr-only' aria-live='assertive'>
-        {announcement}
-      </div>
+          <aside className='ce-right-panels'>
+            <PerformancePanel
+              commitItems={historyState.commitItems}
+              items={items}
+              dpr={dpr}
+              setDpr={setDpr}
+              open={isPerfPanelOpen}
+              setIsOpen={setIsPerfPanelOpen}
+              itemPlaced={itemPlaced}
+            />
+            <SelectionInspector
+              items={items}
+              selectedItems={selectedItems}
+              selectedItem={selectedItem}
+              isPerfPanelOpen={isPerfPanelOpen}
+              setIsPerfPanelOpen={setIsPerfPanelOpen}
+              onPositionChange={changePosition}
+              onRotate={rotateSelection}
+              onDelete={removeSelection}
+              onAlign={alignSelection}
+              onDistribute={distributeSelection}
+              commitItems={historyState.commitItems}
+            />
+
+            <AssistantPanel
+              items={items}
+              violations={violations}
+              proposalPending={proposal !== null}
+              onReject={() => setProposal(null)}
+              proposal={proposal}
+              setProposal={setProposal}
+              historyState={historyState}
+              setSelectedIds={setSelectedIds}
+              setAnnouncement={setAnnouncement}
+              isPerfPanelOpen={isPerfPanelOpen}
+              setIsPerfPanelOpen={setIsPerfPanelOpen}
+            />
+          </aside>
+        </div>
+        <div className='ce-bottom-grid'>
+          <ItemsInScene
+            items={items}
+            selectedIds={selectedIds}
+            copiedItemsCount={copiedItems.length}
+            onSelectItem={selectItem}
+            onCopy={copySelection}
+            onPaste={pasteSelection}
+          />
+          <BomPanel items={items} />
+        </div>
+
+        <footer className='ce-footer'>
+          <span>{t('keyboardHelp')}</span>
+          <span>GRID · 0.5 m</span>
+        </footer>
+        <div className='ce-sr-only' aria-live='assertive'>
+          {announcement}
+        </div>
+      </RoomContext>
     </main>
   )
 }

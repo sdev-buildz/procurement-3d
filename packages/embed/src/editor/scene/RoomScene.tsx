@@ -1,11 +1,19 @@
 import { A11yAnnouncer } from '@react-three/a11y'
+import { PerformanceMonitor } from '@react-three/drei'
 import type { Dpr, ThreeEvent } from '@react-three/fiber'
 import { Canvas, useThree } from '@react-three/fiber'
 import { Perf } from 'r3f-perf'
-import { useEffect, useMemo, useRef, type ComponentProps } from 'react'
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  type ComponentProps,
+} from 'react'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import type { RuleViolation } from '../hooks/useViolations'
 import { EQUIPMENT, type LayoutItem } from '../items'
+import { RoomContext } from './context'
 import { EquipmentModel } from './model-wrappers/EquipmentModel'
 import { InstancedMeshIndicators } from './model-wrappers/InstancedMeshIndicators'
 import { NestedInstances } from './model-wrappers/NestedInstances'
@@ -79,6 +87,8 @@ export function RoomScene({
       new Set(violations.flatMap(({ first, second }) => [first.id, second.id])),
     [violations]
   )
+  const { lodBound, setLodBound } = useContext(RoomContext)
+
   /** Handles pressing mouse button down on an object. */
   const handleItemDown = (
     item: LayoutItem,
@@ -133,6 +143,11 @@ export function RoomScene({
           }}
           onPointerMissed={onClearSelection}
         >
+          <PerformanceMonitor
+            bounds={(refreshrate) => [refreshrate / 2, refreshrate]}
+            onDecline={() => setLodBound(lodBound + 1)}
+            onIncline={() => setLodBound(lodBound - 1)}
+          />
           <Perf />
           <color attach='background' args={['#101820']} />
           <ambientLight intensity={1.35} />

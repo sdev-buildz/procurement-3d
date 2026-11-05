@@ -593,6 +593,9 @@ importers:
       react-router:
         specifier: ^8.5.0
         version: 8.5.0(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      sofa-api:
+        specifier: ^0.18.10
+        version: 0.18.10(graphql@17.0.2)
       uWebSockets.js:
         specifier: 'catalog:'
         version: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/b1092c70692ddbcc87464a77da44848614f6342a
@@ -2566,6 +2569,13 @@ packages:
       }
     engines: { node: '>=18.0.0' }
 
+  '@envelop/instrumentation@2.0.0':
+    resolution:
+      {
+        integrity: sha512-nXW9DAHfJ7Fh5nTnvr0uDUvCvMw017Agvk3MiE58u8Eby6mTwuiCFp16as2sPVODLLeCBs6rmKs0F1tkpbAXYQ==,
+      }
+    engines: { node: '>=22.15.0' }
+
   '@envelop/types@5.2.2':
     resolution:
       {
@@ -3305,6 +3315,15 @@ packages:
         integrity: sha512-4GYvqG80NJDZ7ZgJiNWb1Kb2SlVB1XC8GeIYm5BiEdezJ/fRHioUN3dMGbryN12mhSIMEdsLLKpK/0Ry73LinQ==,
       }
     engines: { node: '>=20.0.0' }
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+
+  '@graphql-tools/utils@11.2.2':
+    resolution:
+      {
+        integrity: sha512-Do2A/t6ayqOma8m7PvpYMsCBswL+NB35BQSng4GWSBqafL2/BnfAZy/NSENPwV721Rm2fG0BHETFC0+FJJZmLw==,
+      }
+    engines: { node: '>=16.0.0' }
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
@@ -6602,6 +6621,13 @@ packages:
       webpack-dev-server:
         optional: true
 
+  '@whatwg-node/cookie-store@0.3.0':
+    resolution:
+      {
+        integrity: sha512-qla3eWs7kABMinV2o6Z3KGPFzR/noo3jkhIRxkaoo9XwiDYXPF2OtBfLyf0Gqa318eUFtoC3nazzcKn4Y0hzQg==,
+      }
+    engines: { node: '>=22.15.0' }
+
   '@whatwg-node/disposablestack@0.0.6':
     resolution:
       {
@@ -6665,12 +6691,26 @@ packages:
       }
     engines: { node: '>=22.15.0' }
 
+  '@whatwg-node/promise-helpers@2.0.1':
+    resolution:
+      {
+        integrity: sha512-ziVgm01A9irPLVBaUFei64qp771BrDXldbv5pY6kgFgNtA+7zq8ux6nj/6w8bELGH/+Ttnc76ox04HIjU8nqvg==,
+      }
+    engines: { node: '>=22.15.0' }
+
   '@whatwg-node/server@0.11.0':
     resolution:
       {
         integrity: sha512-VSdkwnJRr8Yv9UgB2aXB3VUPWwd6Oqnn0hycFwhg9pZgWxJXb7JmhsiXe9tmpMwjHFxli12PGcz9aI63YYloGQ==,
       }
     engines: { node: '>=18.0.0' }
+
+  '@whatwg-node/server@0.13.2':
+    resolution:
+      {
+        integrity: sha512-Ujh+gD274sDqs3s8JbxdMMl8x7dhexFbuxoBAJgPZZMWP/uITAW4IqJuK8D83Yg93yQ5Kgq6jrpuhZqUV+bTlg==,
+      }
+    engines: { node: '>=22.15.0' }
 
   '@workflow/serde@4.1.0':
     resolution:
@@ -6786,6 +6826,13 @@ packages:
       {
         integrity: sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==,
       }
+
+  ansi-colors@4.1.3:
+    resolution:
+      {
+        integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==,
+      }
+    engines: { node: '>=6' }
 
   ansi-escapes@7.3.0:
     resolution:
@@ -8636,6 +8683,13 @@ packages:
       }
     engines: { node: ^12.20 || >= 14.13 }
 
+  fets@0.8.13:
+    resolution:
+      {
+        integrity: sha512-W25J/tYQL7+Djm9m7XmdCZaF33ygA7CHU59tXOA92p5IXMis33J0tTLZ4n0n3V7N+GG2qH7uFe5f9QaxxUbh3g==,
+      }
+    engines: { node: '>=16.0.0' }
+
   fflate@0.6.11:
     resolution:
       {
@@ -9069,6 +9123,12 @@ packages:
     resolution:
       {
         integrity: sha512-p/LgFzRN5FeoD3DLS6bkUapeye6E4SI6yJs6KetENd18S+FBthqYq2amJUWpt5z0EQwwHemidjY5OqJGEKm5uA==,
+      }
+
+  hotscript@1.0.13:
+    resolution:
+      {
+        integrity: sha512-C++tTF1GqkGYecL+2S1wJTfoH6APGAsbb7PAWQ3iVIwgG/EFseAfEVOKFgAFq4yK3+6j1EjUD4UQ9dRJHX/sSQ==,
       }
 
   hpack.js@2.1.6:
@@ -9618,6 +9678,13 @@ packages:
       {
         integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==,
       }
+
+  json-schema-to-ts@3.1.1:
+    resolution:
+      {
+        integrity: sha512-+DWg8jCJG2TEnpy7kOm/7/AxaYoaRbjVB4LFZLySZlWn8exGs3A4OLJR966cVvU26N7X9TWxl+Jsw7dzAqKT6g==,
+      }
+    engines: { node: '>=16' }
 
   json-schema-traverse@0.4.1:
     resolution:
@@ -10428,6 +10495,12 @@ packages:
         integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==,
       }
     engines: { node: '>=18' }
+
+  openapi-types@12.1.3:
+    resolution:
+      {
+        integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==,
+      }
 
   optimism@0.18.1:
     resolution:
@@ -11455,6 +11528,13 @@ packages:
       }
     engines: { node: '>=0.6' }
 
+  qs@6.17.1:
+    resolution:
+      {
+        integrity: sha512-jd3COkaKVgGUW+ZHyEHCG9bH7RoaaiWuMgzsIBjUMVjLAaWGWpoUAVwljVvBHxRu/2qEHnadLGZrkutYUBPQJA==,
+      }
+    engines: { node: '>=0.6' }
+
   queue-microtask@1.2.3:
     resolution:
       {
@@ -12089,6 +12169,14 @@ packages:
         integrity: sha512-GJgLTZ7vYb/JtPSSZ10hsOYIvEYsjbNU+zPdIHcUaWVNUEPivzxku31865sSSud0Da0W4lEeOPlmw93zLQchuQ==,
       }
 
+  sofa-api@0.18.10:
+    resolution:
+      {
+        integrity: sha512-NjZ0c25MlraZiylgpwx1D+lxV0Kbeqvn7zINcJ4vWEFJpMUS8XIxtGX0OIIFIVgNkpJ43BroSpoE7ySCGwy0Zg==,
+      }
+    peerDependencies:
+      graphql: ^15.0.0 || ^16.0.0
+
   source-map-js@1.2.2:
     resolution:
       {
@@ -12563,6 +12651,12 @@ packages:
         integrity: sha512-W1CpvTHykaPH5brv5VHLfQo9D1OYuo0cSBEUQFFT/nBUzM8iD6Lq2/tgG/f1OelbAS1WtaTPQzE5uM49egnngw==,
       }
 
+  ts-algebra@2.0.0:
+    resolution:
+      {
+        integrity: sha512-FPAhNPFMrkwz76P7cdjdmiShwMynZYN6SgOujD1urY4oNm80Ou9oMdmbR45LotcKOXoy7wSmHkRFE6Mxbrhefw==,
+      }
+
   ts-api-utils@2.5.0:
     resolution:
       {
@@ -12599,6 +12693,12 @@ packages:
     engines: { node: '>=22.0.0' }
     peerDependencies:
       typescript: '>=4.7.2'
+
+  ts-toolbelt@9.6.0:
+    resolution:
+      {
+        integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==,
+      }
 
   tslib@1.14.1:
     resolution:
@@ -14829,6 +14929,11 @@ snapshots:
       '@whatwg-node/promise-helpers': 1.3.2
       tslib: 2.8.1
 
+  '@envelop/instrumentation@2.0.0':
+    dependencies:
+      '@whatwg-node/promise-helpers': 2.0.1
+      tslib: 2.8.1
+
   '@envelop/types@5.2.2':
     dependencies:
       '@whatwg-node/promise-helpers': 1.3.2
@@ -15410,6 +15515,14 @@ snapshots:
       - bufferutil
       - crossws
       - utf-8-validate
+
+  '@graphql-tools/utils@11.2.2(graphql@17.0.2)':
+    dependencies:
+      '@graphql-typed-document-node/core': 3.2.0(graphql@17.0.2)
+      '@whatwg-node/promise-helpers': 1.3.2
+      cross-inspect: 1.0.1
+      graphql: 17.0.2
+      tslib: 2.8.1
 
   '@graphql-tools/utils@12.1.0(graphql@17.0.2)':
     dependencies:
@@ -17406,6 +17519,11 @@ snapshots:
     optionalDependencies:
       webpack-dev-server: 5.2.6(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2)(webpack-cli@6.0.1)(webpack@5.112.0)
 
+  '@whatwg-node/cookie-store@0.3.0':
+    dependencies:
+      '@whatwg-node/promise-helpers': 2.0.1
+      tslib: 2.8.1
+
   '@whatwg-node/disposablestack@0.0.6':
     dependencies:
       '@whatwg-node/promise-helpers': 1.3.2
@@ -17413,7 +17531,7 @@ snapshots:
 
   '@whatwg-node/disposablestack@0.1.0':
     dependencies:
-      '@whatwg-node/promise-helpers': 2.0.0
+      '@whatwg-node/promise-helpers': 2.0.1
       tslib: 2.8.1
 
   '@whatwg-node/events@0.1.2':
@@ -17441,7 +17559,7 @@ snapshots:
     dependencies:
       '@fastify/busboy': 3.2.3
       '@whatwg-node/disposablestack': 0.1.0
-      '@whatwg-node/promise-helpers': 2.0.0
+      '@whatwg-node/promise-helpers': 2.0.1
       tslib: 2.8.1
 
   '@whatwg-node/promise-helpers@1.3.2':
@@ -17452,12 +17570,24 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
+  '@whatwg-node/promise-helpers@2.0.1':
+    dependencies:
+      tslib: 2.8.1
+
   '@whatwg-node/server@0.11.0':
     dependencies:
       '@envelop/instrumentation': 1.0.1
       '@whatwg-node/disposablestack': 0.0.6
       '@whatwg-node/fetch': 0.10.13
       '@whatwg-node/promise-helpers': 1.3.2
+      tslib: 2.8.1
+
+  '@whatwg-node/server@0.13.2':
+    dependencies:
+      '@envelop/instrumentation': 2.0.0
+      '@whatwg-node/disposablestack': 0.1.0
+      '@whatwg-node/fetch': 0.12.1
+      '@whatwg-node/promise-helpers': 2.0.1
       tslib: 2.8.1
 
   '@workflow/serde@4.1.0': {}
@@ -17529,6 +17659,8 @@ snapshots:
       fast-uri: 3.1.8
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
+
+  ansi-colors@4.1.3: {}
 
   ansi-escapes@7.3.0:
     dependencies:
@@ -18672,6 +18804,18 @@ snapshots:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.3.3
 
+  fets@0.8.13:
+    dependencies:
+      '@sinclair/typebox': 0.34.52
+      '@whatwg-node/cookie-store': 0.3.0
+      '@whatwg-node/fetch': 0.12.1
+      '@whatwg-node/server': 0.13.2
+      hotscript: 1.0.13
+      json-schema-to-ts: 3.1.1
+      qs: 6.17.1
+      ts-toolbelt: 9.6.0
+      tslib: 2.8.1
+
   fflate@0.6.11: {}
 
   fflate@0.8.3: {}
@@ -18921,6 +19065,8 @@ snapshots:
   hookified@1.15.1: {}
 
   hookified@2.2.0: {}
+
+  hotscript@1.0.13: {}
 
   hpack.js@2.1.6:
     dependencies:
@@ -19229,6 +19375,11 @@ snapshots:
   jsesc@3.1.0: {}
 
   json-parse-even-better-errors@2.3.1: {}
+
+  json-schema-to-ts@3.1.1:
+    dependencies:
+      '@babel/runtime': 7.29.10
+      ts-algebra: 2.0.0
 
   json-schema-traverse@0.4.1: {}
 
@@ -19630,6 +19781,8 @@ snapshots:
       define-lazy-prop: 3.0.0
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
+
+  openapi-types@12.1.3: {}
 
   optimism@0.18.1:
     dependencies:
@@ -20359,6 +20512,11 @@ snapshots:
       es-define-property: 1.0.1
       side-channel: 1.1.1
 
+  qs@6.17.1:
+    dependencies:
+      es-define-property: 1.0.1
+      side-channel: 1.1.1
+
   queue-microtask@1.2.3: {}
 
   r3f-perf@7.2.3(@react-three/fiber@9.8.2(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(three@0.186.1))(@types/react@19.3.0)(@types/three@0.183.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(three@0.186.1)(use-sync-external-store@1.7.0(react@19.3.1)):
@@ -20772,6 +20930,19 @@ snapshots:
       uuid: 8.3.2
       websocket-driver: 0.7.5
 
+  sofa-api@0.18.10(graphql@17.0.2):
+    dependencies:
+      '@graphql-tools/utils': 11.2.2(graphql@17.0.2)
+      '@whatwg-node/fetch': 0.10.13
+      ansi-colors: 4.1.3
+      fets: 0.8.13
+      graphql: 17.0.2
+      openapi-types: 12.1.3
+      param-case: 3.0.4
+      qs: 6.17.1
+      title-case: 3.0.3
+      tslib: 2.8.1
+
   source-map-js@1.2.2: {}
 
   source-map-support@0.5.21:
@@ -21018,6 +21189,8 @@ snapshots:
 
   troika-worker-utils@0.52.0: {}
 
+  ts-algebra@2.0.0: {}
+
   ts-api-utils@2.5.0(@typescript/typescript6@6.0.2):
     dependencies:
       typescript: '@typescript/typescript6@6.0.2'
@@ -21035,6 +21208,8 @@ snapshots:
     dependencies:
       canonical-serialization: 1.0.0
       typescript: '@typescript/typescript6@6.0.2'
+
+  ts-toolbelt@9.6.0: {}
 
   tslib@1.14.1: {}
 

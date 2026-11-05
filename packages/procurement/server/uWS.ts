@@ -7,9 +7,10 @@ import {
   getGraphqlWsHandler,
 } from '@packages/web-app-utils'
 import path from 'path'
+import { useSofa } from 'sofa-api'
 import { SSLApp } from 'uWebSockets.js'
+import { schema } from './schema'
 import { yoga } from './util/yogaServerInstance'
-
 /**
  * The uWebSockets server app instance.
  * All the routes and handlers are mounted onto this instance.
@@ -21,6 +22,16 @@ export const uWS = SSLApp({
 
 uWS
   .any('/api/*', getGraphqlApiHandler(yoga))
+  .any(
+    '/rest/*',
+    useSofa({
+      basePath: '/rest',
+      schema: schema,
+      swaggerUI: {
+        endpoint: '/swagger',
+      },
+    })
+  )
   .ws('/api/*', getGraphqlWsHandler(yoga))
 // .any('/.well-known/appspecific/com.chrome.devtools.json', (res, req) => {
 //   /**

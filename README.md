@@ -6,8 +6,7 @@ You can access the micro-app (3D editor) at https://sdev-buildz.github.io/procur
 
 I have a constant 120 FPS when using the micro-app on my laptop. My laptop is Motobook 60 Pro which has an Intel Core Ultra 5 225H 16 Core CPU (1.70 GHz), 16 GB RAM, 512 GB SSD, Intel Arc 130T GPU (8GB) (128 MB), a monitor with 2.8 K resolution, and 120 FPS refresh rate.
 
-When I added 500 objects to the scene, moving or rotating objects causes the frame rate to drop to around 10 to 30 FPS for around 5 -10 seconds. But moving the camera without moving or rotating any objects, maintained a constant 120 FPS.
-
+When I added 500 objects to the scene with instancing, moving or rotating objects causes the frame rate to drop to around 20 to 40 FPS. But my app auto-adjusts by swapping models with their compressed versions and maintains the framerate between 60 and 120 FPS.
 ![3d-editor-micro-app-embedded-inside-host](./assets/embedded-iframe-3d-editor-screenshot.png)
 
 ### AI Usage

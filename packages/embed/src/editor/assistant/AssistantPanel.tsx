@@ -1,6 +1,6 @@
 /* eslint jsdoc/require-jsdoc: off */
 import type { ReactElement, SubmitEventHandler } from 'react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { useHistory } from '../hooks/useHistory'
 import type { RuleViolation } from '../hooks/useViolations'
@@ -57,11 +57,18 @@ export function AssistantPanel({
   const [streamedMessage, setStreamedMessage] = useState('')
   const [streaming, setStreaming] = useState(false)
   const [assistantPanelOpen, setAssistantPanelOpen] = useState(true)
+  const samplePromptsDetailsRef = useRef<HTMLDetailsElement>(null)
   const [assistentApiKey, setAssistentApiKey] = useState<AssistentApiKey>({
     name: 'groq',
     model: 'qwen/qwen3.8-27b',
     key: '',
   })
+
+  useEffect(() => {
+    if (streaming && samplePromptsDetailsRef.current) {
+      samplePromptsDetailsRef.current.open = false
+    }
+  }, [streaming])
 
   const assistant = useAssistant({
     historyState,
@@ -180,7 +187,7 @@ export function AssistantPanel({
             )}
 
             {/* Sample readily available prompts */}
-            <details>
+            <details ref={samplePromptsDetailsRef}>
               <summary>
                 <span>Sample prompts</span>
                 <span aria-hidden='true'>+</span>

@@ -20,7 +20,7 @@ export function LodComp(
   models = models?.toSorted((a, b) => b.size - a.size)
 
   /** The distance at which the lowest sized model is shown */
-  const maxDistance: number = 6
+  const maxDistance: number = 4
 
   /** The distance delta at which the model is switched */
   const distanceDelta = 20 / (models.length - 1)
@@ -31,8 +31,6 @@ export function LodComp(
   for (let i = 0; i < maxDistance / distanceDelta; i += 1) {
     distances.push(distanceDelta * (i + 1))
   }
-  console.log('distances =', distances)
-  console.log('models =', models)
   return (
     <Detailed distances={distances}>
       {Array.from({ length: props.maxSizeIdx + 1 }).map((_, idx) => (

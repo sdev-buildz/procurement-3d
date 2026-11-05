@@ -131,9 +131,28 @@ export const EQUIPMENT: ItemType[] = [
     price: 3200,
     models: [
       {
-        id: 4,
-        url: getAssetUrl('CarConcept'),
-        size: 0,
+        id: 13,
+        url: getAssetUrl(
+          'CarConcept-lossless',
+          'QmQFYMrRRrcpePRwp1CdhUb27CEmrm2XHpC2T75JAHGpGb'
+        ),
+        size: 10000,
+      },
+      {
+        id: 14,
+        url: getAssetUrl(
+          'CarConcept-medium-lossy',
+          'QmPhuJKj43WhJuGW1QhqR6F5ijMy2Tz6AcZos8LqcLEepv'
+        ),
+        size: 3500,
+      },
+      {
+        id: 15,
+        url: getAssetUrl(
+          'CarConcept-lowest',
+          'Qmcf5BVGwEvx3DTforZSkQDP1btXn8CcUnrM6u9zR9FGya'
+        ),
+        size: 2300,
       },
     ],
   },

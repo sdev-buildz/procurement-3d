@@ -17,6 +17,8 @@ export type ModelType = {
   url: string
   /** Size in bytes */
   size: number
+  /** Content Identifiers used with IPFS cloud object storage. */
+  cid?: string
 }
 
 /** The items which can be placed in the 3D scene. */
@@ -44,8 +46,19 @@ export type ItemType = {
   models: ModelType[]
 }
 
-const getAssetUrl = (modelFileName: string): string =>
-  new URL(`./static/assets/${modelFileName}.glb`, window.location.origin).href
+const getAssetUrl = (localModelName?: string, cid?: string): string => {
+  if (process.env.CI) {
+    if (cid) {
+      return new URL(`https://clumsy-coral-beaver.myfilebase.com/ipfs/${cid}`)
+        .href
+    }
+  }
+
+  return new URL(
+    `./static/assets/${localModelName}.glb`,
+    window.location.origin
+  ).href
+}
 
 /** Catalog metadata used by the scene, palette, inspector, and BOM. */
 export const EQUIPMENT: ItemType[] = [
@@ -119,8 +132,7 @@ export const EQUIPMENT: ItemType[] = [
     models: [
       {
         id: 4,
-        // url: getAssetUrl('CarConcept'),
-        url: getAssetUrl('output'),
+        url: getAssetUrl('CarConcept'),
         size: 0,
       },
     ],
@@ -138,17 +150,26 @@ export const EQUIPMENT: ItemType[] = [
     models: [
       {
         id: 5,
-        url: getAssetUrl('CommercialRefrigerator'),
+        url: getAssetUrl(
+          'CommercialRefrigerator',
+          'QmYNSW7jutWivHmAyiktHfzYL2wgA8YBQGBSHSkvTHKms5'
+        ),
         size: 8500,
       },
       {
         id: 12,
-        url: getAssetUrl('CommercialRefrigerator-medium'),
+        url: getAssetUrl(
+          'CommercialRefrigerator-medium',
+          'QmWaJTu9yVrU2wbjxWRb3it79PdvoxRpmFP2CX5GVhzDA9'
+        ),
         size: 2500,
       },
       {
         id: 11,
-        url: getAssetUrl('CommercialRefrigerator-lowest'),
+        url: getAssetUrl(
+          'CommercialRefrigerator-lowest',
+          'Qmap12dcSYwoTwoWQaNNSzmhif9FvJTKVSoJK7MvJZtHze'
+        ),
         size: 860,
       },
     ],
@@ -196,18 +217,27 @@ export const EQUIPMENT: ItemType[] = [
     models: [
       {
         id: 9,
-        url: getAssetUrl('PotOfCoals-lossless-instanced'),
+        url: getAssetUrl(
+          'PotOfCoals-lossless-instanced',
+          'QmQHoHZBBgW7b93Xapc9QWj7nKbUUnyb3oVv7EEJWc8Do2'
+        ),
         size: 2487,
       },
       {
         id: 8,
         // url: getAssetUrl('PotOfCoals'),
-        url: getAssetUrl('PotOfCoals-instanced'),
+        url: getAssetUrl(
+          'PotOfCoals-instanced',
+          'QmUF1wGRwLmjiTcrUkypT2xMQsMav84boHieCH4FZKEWGL'
+        ),
         size: 397,
       },
       {
         id: 10,
-        url: getAssetUrl('PotOfCoals-placeholder'),
+        url: getAssetUrl(
+          'PotOfCoals-placeholder',
+          'QmRhum9bbXa4kG5hEVyQBtouAHv8kZRiMntBb71FA2zkKM'
+        ),
         size: 71,
       },
     ],

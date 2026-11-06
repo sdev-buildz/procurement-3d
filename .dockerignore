@@ -1,0 +1,11 @@
+.git
+.github
+.vscode
+**/.env
+!**/.env.example
+**/node_modules
+**/coverage
+**/dist
+**/dist-tsc
+**/.turbo
+**/generated

@@ -1,19 +1,87 @@
+name: procurement-3d
+
+x-workspace-build: &workspace-build
+  context: .
+  additional_contexts:
+    workspace-base: service:workspace-base
+
 services:
   postgres:
-    image: postgres:18 # Use a specific PostgreSQL image
+    image: postgres:18
     ports:
       - name: db-port
         target: '${POSTGRES_TARGET_PORT:-5432}'
-        # host_ip: 127.0.0.1
         published: '${POSTGRES_PUBLISHED_PORT:-5434}'
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-fs-template}
     volumes:
-      # Persistant storgae volume using bind mount
       - ${PG_VOLUME_HOST_PATH:-C:\projects\postgres-volumes}:${PG_VOLUME_CONTAINER_PATH:-/var/lib/postgresql/18/docker}
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      test:
+        ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
       interval: 2s
       timeout: 10s
       retries: 5
+
+  workspace-base:
+    image: procurement-3d-workspace-base
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: workspace-base
+    command: ['node', '-e', 'process.exit(0)']
+
+  db-migrate:
+    build:
+      <<: *workspace-build
+      dockerfile: packages/db/Dockerfile
+    env_file:
+      - ./packages/db/.env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fs-template}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  procurement-api:
+    build:
+      <<: *workspace-build
+      dockerfile: packages/procurement/Dockerfile.api
+    env_file:
+      - ./packages/procurement/.env
+      - ./packages/db/.env
+    environment:
+      HOST: 0.0.0.0
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fs-template}
+    ports:
+      - '${API_SERVER_PUBLISHED_PORT:-443}:443'
+    depends_on:
+      db-migrate:
+        condition: service_completed_successfully
+
+  procurement-react:
+    build:
+      <<: *workspace-build
+      dockerfile: packages/procurement/Dockerfile.react
+    env_file:
+      - ./packages/procurement/.env
+    environment:
+      HOST: 0.0.0.0
+    ports:
+      - '${WEB_CLIENT_PUBLISHED_PORT:-3000}:3000'
+    depends_on:
+      procurement-api:
+        condition: service_started
+
+  embed:
+    build:
+      <<: *workspace-build
+      dockerfile: packages/embed/Dockerfile
+    env_file:
+      - ./packages/embed/.env
+    environment:
+      HOST: 0.0.0.0
+    ports:
+      - '${EMBED_CLIENT_PUBLISHED_PORT:-3001}:3001'

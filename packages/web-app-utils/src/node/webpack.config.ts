@@ -33,6 +33,7 @@ export const getWebpackConfig = (
           mode: 'development',
           devtool: 'eval-source-map',
           devServer: {
+            host: process.env.HOST ?? 'localhost',
             static: {
               publicPath: sharedConfig.webClientBundlePath,
             },

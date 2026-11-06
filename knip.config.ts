@@ -38,7 +38,6 @@ const config: KnipConfig = {
       entry: [
         './server/schema/prisma-objects.ts',
         './web-client/lib/colors.ts',
-        './web-client/mount.tsx',
       ],
     },
     'packages/embed': {
@@ -47,6 +46,7 @@ const config: KnipConfig = {
     'packages/db': {
       ignoreDependencies: [
         '@prisma/client',
+        '@prisma/client-runtime-utils',
         '@pothos/plugin-prisma',
         'prisma-pothos-types',
       ],

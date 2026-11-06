@@ -39,10 +39,14 @@
     "uWebSockets.js": "catalog:"
   },
   "devDependencies": {
+    "@babel/preset-env": "catalog:",
+    "@babel/preset-react": "catalog:",
+    "@babel/preset-typescript": "catalog:",
     "@packages/db": "workspace:*",
     "@packages/web-app-utils": "workspace:*",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "babel-plugin-react-compiler": "catalog:",
     "concurrently": "^10.0.5",
     "tsx": "catalog:",
     "typescript": "catalog:",

@@ -41,9 +41,13 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@babel/preset-env": "catalog:",
+    "@babel/preset-react": "catalog:",
+    "@babel/preset-typescript": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@types/three": "^0.183.1",
+    "babel-plugin-react-compiler": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:",
     "webpack": "catalog:",

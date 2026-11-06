@@ -1,0 +1,42 @@
+FROM workspace-base
+
+WORKDIR /workspace/packages/procurement
+
+COPY tsconfig.json tsconfig.dom.base.json tsconfig.references.base.json /workspace/
+COPY packages/db/tsconfig.json /workspace/packages/db/
+COPY packages/embed/tsconfig.json /workspace/packages/embed/
+COPY packages/logger/tsconfig.json /workspace/packages/logger/
+COPY packages/optimizer/tsconfig.json /workspace/packages/optimizer/
+COPY packages/procurement/tsconfig.json /workspace/packages/procurement/
+COPY packages/procurement/server/tsconfig.json /workspace/packages/procurement/server/
+COPY packages/procurement/server/tests/tsconfig.json /workspace/packages/procurement/server/tests/
+COPY packages/web-app-utils/tsconfig.json /workspace/packages/web-app-utils/
+COPY packages/web-app-utils/src/shared/tsconfig.json /workspace/packages/web-app-utils/src/shared/
+COPY packages/web-app-utils/src/node/tsconfig.json /workspace/packages/web-app-utils/src/node/
+COPY packages/web-app-utils/src/browser/tsconfig.json /workspace/packages/web-app-utils/src/browser/
+
+COPY packages/embed/assets/ /workspace/packages/embed/assets/
+COPY packages/embed/src/ /workspace/packages/embed/src/
+COPY packages/logger/src/ /workspace/packages/logger/src/
+COPY packages/procurement/assets/ ./assets/
+COPY packages/procurement/public/ ./public/
+COPY packages/procurement/src/ ./src/
+COPY packages/procurement/web-client/ ./web-client/
+COPY packages/procurement/webpack/ ./webpack/
+COPY packages/procurement/buildGql.ts ./buildGql.ts
+COPY packages/procurement/server/ ./server/
+COPY packages/db/dotenv-configured.ts /workspace/packages/db/
+COPY packages/db/migrations/ /workspace/packages/db/migrations/
+COPY packages/db/prisma/ /workspace/packages/db/prisma/
+COPY packages/db/prisma.config.ts /workspace/packages/db/
+COPY packages/web-app-utils/src/ /workspace/packages/web-app-utils/src/
+
+WORKDIR /workspace/packages/db
+RUN DATABASE_URL=postgresql://postgres:postgres@localhost:5432/fs-template pnpm run prisma:generate
+
+WORKDIR /workspace/packages/procurement
+RUN pnpm run build:gql-types
+
+EXPOSE 3000
+
+CMD ["pnpm", "run", "start-react:watch"]

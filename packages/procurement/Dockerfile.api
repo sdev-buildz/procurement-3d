@@ -1,0 +1,25 @@
+FROM workspace-base
+
+WORKDIR /workspace/packages/procurement
+
+COPY packages/db/dotenv-configured.ts /workspace/packages/db/
+COPY packages/db/migrations/ /workspace/packages/db/migrations/
+COPY packages/db/prisma/ /workspace/packages/db/prisma/
+COPY packages/db/prisma.config.ts /workspace/packages/db/
+COPY packages/logger/src/ /workspace/packages/logger/src/
+COPY packages/procurement/buildGql.ts ./
+COPY packages/procurement/server/ ./server/
+COPY packages/procurement/web-client ./web-client
+COPY packages/web-app-utils/src/ /workspace/packages/web-app-utils/src/
+
+RUN find /workspace/packages/db/migrations -mindepth 1 -maxdepth 1 -type d -empty -delete
+
+WORKDIR /workspace/packages/db
+RUN DATABASE_URL=postgresql://postgres:postgres@localhost:5432/fs-template pnpm run prisma:generate
+
+WORKDIR /workspace/packages/procurement
+RUN pnpm run build:gql-types
+
+EXPOSE 443
+
+CMD ["pnpm", "run", "start-server:watch"]

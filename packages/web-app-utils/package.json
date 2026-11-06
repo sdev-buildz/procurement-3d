@@ -27,8 +27,8 @@
   "dependencies": {
     "@babel/core": "^7.29.7",
     "@babel/preset-env": "^7.29.7",
-    "@babel/preset-react": "^7.29.7",
-    "@babel/preset-typescript": "^7.29.7",
+    "@babel/preset-react": "catalog:",
+    "@babel/preset-typescript": "catalog:",
     "@graphql-codegen/cli": "^7.4.0",
     "@graphql-codegen/typescript": "^6.1.0",
     "@packages/logger": "workspace:*",

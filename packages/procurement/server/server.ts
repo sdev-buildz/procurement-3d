@@ -11,7 +11,7 @@ uWS
   .any('/*', (res, req) => {
     res.writeStatus('200 OK').end()
   })
-  .listen('localhost', config.port, (listenSocket) => {
+  .listen(process.env.HOST ?? 'localhost', config.port, (listenSocket) => {
     logger.info(`Visit https://localhost:${config.port}/api/graphql`)
     logger.info(`Visit https://localhost:${config.port}/`)
 

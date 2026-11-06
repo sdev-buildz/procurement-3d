@@ -39,7 +39,6 @@ export function NestedInstances(
       </Suspense>
     )
   }
-
   // It is already nested. So display the lowest sized model as Suspence fallback, while loading higher sized models inside the suspense.
   if (sizeIdx === models.length - 1) {
     // Leaf node. only one model to load.

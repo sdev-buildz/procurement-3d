@@ -39,7 +39,7 @@ export function LodComp(
           const modelIdx = Math.max(props.maxSizeIdx - idx - lodBound, 0)
           return (
             <InstancedMeshGroup
-              key={models[modelIdx]?.id}
+              key={`${itemType.id}-${lodBound}-${models[modelIdx]?.id}`}
               {...props}
               sizeIdx={modelIdx}
             />

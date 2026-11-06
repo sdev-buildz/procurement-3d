@@ -131,7 +131,7 @@ export const EQUIPMENT: ItemType[] = [
     price: 3200,
     models: [
       {
-        id: 13,
+        id: 41,
         url: getAssetUrl(
           'CarConcept-lossless',
           'QmQFYMrRRrcpePRwp1CdhUb27CEmrm2XHpC2T75JAHGpGb'
@@ -139,7 +139,7 @@ export const EQUIPMENT: ItemType[] = [
         size: 10000,
       },
       {
-        id: 14,
+        id: 42,
         url: getAssetUrl(
           'CarConcept-medium-lossy',
           'QmPhuJKj43WhJuGW1QhqR6F5ijMy2Tz6AcZos8LqcLEepv'
@@ -147,7 +147,7 @@ export const EQUIPMENT: ItemType[] = [
         size: 3500,
       },
       {
-        id: 15,
+        id: 43,
         url: getAssetUrl(
           'CarConcept-lowest',
           'Qmcf5BVGwEvx3DTforZSkQDP1btXn8CcUnrM6u9zR9FGya'
@@ -168,7 +168,7 @@ export const EQUIPMENT: ItemType[] = [
     price: 2100,
     models: [
       {
-        id: 5,
+        id: 51,
         url: getAssetUrl(
           'CommercialRefrigerator',
           'QmYNSW7jutWivHmAyiktHfzYL2wgA8YBQGBSHSkvTHKms5'
@@ -176,7 +176,7 @@ export const EQUIPMENT: ItemType[] = [
         size: 8500,
       },
       {
-        id: 12,
+        id: 52,
         url: getAssetUrl(
           'CommercialRefrigerator-medium',
           'QmWaJTu9yVrU2wbjxWRb3it79PdvoxRpmFP2CX5GVhzDA9'
@@ -184,7 +184,7 @@ export const EQUIPMENT: ItemType[] = [
         size: 2500,
       },
       {
-        id: 11,
+        id: 53,
         url: getAssetUrl(
           'CommercialRefrigerator-lowest',
           'Qmap12dcSYwoTwoWQaNNSzmhif9FvJTKVSoJK7MvJZtHze'
@@ -242,7 +242,7 @@ export const EQUIPMENT: ItemType[] = [
     price: 420,
     models: [
       {
-        id: 7,
+        id: 71,
         url: getAssetUrl('DiffuseTransmissionTeacup'),
         size: 0,
       },
@@ -260,7 +260,7 @@ export const EQUIPMENT: ItemType[] = [
     price: 250,
     models: [
       {
-        id: 9,
+        id: 81,
         url: getAssetUrl(
           'PotOfCoals-lossless-instanced',
           'QmQHoHZBBgW7b93Xapc9QWj7nKbUUnyb3oVv7EEJWc8Do2'
@@ -268,7 +268,7 @@ export const EQUIPMENT: ItemType[] = [
         size: 2487,
       },
       {
-        id: 8,
+        id: 82,
         // url: getAssetUrl('PotOfCoals'),
         url: getAssetUrl(
           'PotOfCoals-instanced',
@@ -277,7 +277,7 @@ export const EQUIPMENT: ItemType[] = [
         size: 397,
       },
       {
-        id: 10,
+        id: 83,
         url: getAssetUrl(
           'PotOfCoals-placeholder',
           'QmRhum9bbXa4kG5hEVyQBtouAHv8kZRiMntBb71FA2zkKM'

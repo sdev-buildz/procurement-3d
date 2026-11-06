@@ -21,6 +21,7 @@ export function InstancedMeshGroup({
   onPointerCancel,
 }: {
   ghost?: boolean
+  /** The index of the model to use from the sorted list. */
   sizeIdx?: number
   itemsToInstance: LayoutItem[]
   itemType: ItemType
@@ -32,7 +33,7 @@ export function InstancedMeshGroup({
   const gl = useThree((state) => state.gl)
 
   const models = itemType.models.toSorted((a, b) => a.size - b.size)
-  console.log(sizeIdx, models[sizeIdx], models)
+
   // 1. Destructure the exact nodes and materials from your file
   const { scene, nodes, materials } = useGLTF(
     models[sizeIdx]!.url,
@@ -44,7 +45,6 @@ export function InstancedMeshGroup({
       ktx2Loader.detectSupport(gl)
       loader.setKTX2Loader(ktx2Loader)
     }
-    // getEquipment('potOfCoals').models[0]!.url
   )
 
   const modelScale = useMemo(() => {

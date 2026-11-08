@@ -55,7 +55,17 @@ If you don't have git installed, you can download the repository as a [zip file]
 
 For the next steps, make sure you are in the root folder of the repository.
 
-### 2. Install Dependencies
+### 2. Start the servers using Docker
+
+Open your terminal application from the root of the repository folder and execute:
+
+```shell
+docker compose up --build
+```
+
+## 🛠️ Setup for development
+
+### 1. Install Dependencies
 
 Open your terminal application from the root of the repository folder and execute:
 
@@ -63,7 +73,7 @@ Open your terminal application from the root of the repository folder and execut
 pnpm i
 ```
 
-### 3. Start Database Using Docker
+### 2. Start Database Using Docker
 
 In the folder ./packages/db, add and configure a .env file using ./packages/db/.env.example as reference.
 
@@ -80,7 +90,7 @@ pnom run docker:compose-up
 
 _(Keep this terminal open to keep the database active.)_
 
-### 4. Set up the database
+### 3. Set up the database
 
 In case the database that you configured in the **DATABASE_URL** environment variable in the ./packages/db/.env does not exist, you can create it using pgadmin. In pgadmin, add a new server and create the database.
 
@@ -102,7 +112,7 @@ Run the below command to seed the database with sample data.
 pnpm run prisma:seed
 ```
 
-### 5. Start API Server for both the Surfaces
+### 4. Start API Server for both the Surfaces
 
 Open a **new** dedicated terminal window/tab and run:
 
@@ -157,7 +167,7 @@ Now the micro-app should open automatically.
 
 You can use the micro app to configure the 3D layout.
 
-#### 9. Onboard as a supplier
+### 9. Onboard as a supplier
 
 Click `Logout` at top right corner of the screen. Once the login page opens, use these credentials to login.
 
@@ -166,7 +176,7 @@ Password: oNW-h7W5PHIOF2LK--facbM7
 
 The onboarding page should open automatically.
 
-#### 9. Review and approve RFQ bids as a buyer
+### 10. Review and approve RFQ bids as a buyer
 
 Click `Logout` at top right corner of the screen. Once the login page opens, use these credentials to login.
 

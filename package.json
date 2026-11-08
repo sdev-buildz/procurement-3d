@@ -34,7 +34,7 @@
     "docs": "typedoc --options typedoc.config.js",
     "docs:turbo": "turbo docs",
     "docs:ci": "pnpm run build && pnpm run docs",
-    "docker:compose-up": "docker compose --env-file ./packages/db/.env up",
+    "docker:compose-up": "docker compose --env-file ./packages/db/.env --env-file ./packages/procurement/.env --env-file ./packages/embed/.env up",
     "prisma:seed": "pnpm --filter=@packages/db run prisma:seed",
     "prisma:generate": "pnpm --filter=@packages/db run prisma:generate",
     "prisma:migrate-dev:create-only": "pnpm --filter=@packages/db run prisma:migrate-dev:create-only",

@@ -19,7 +19,7 @@ type BidLineItem {
   rfqLineItem: RfqLineItem
   rfqLineItemId: Int
   technicalNotes: String
-  totalAmount: Int
+  totalAmount: Float
 }
 
 """A Buyer"""

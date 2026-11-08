@@ -199,7 +199,11 @@ export const BidLineItemRef: PrismaObjectRef<
     bid: t.relation('bid', { nullable: true }),
 
     leadTimeWeeks: t.exposeInt('leadTimeWeeks', { nullable: true }),
-    totalAmount: t.exposeInt('totalAmount', { nullable: true }),
+    totalAmount: t.field({
+      type: 'Float',
+      nullable: true,
+      resolve: ({ totalAmount }) => totalAmount.toNumber(),
+    }),
 
     isApproved: t.exposeBoolean('isApproved', { nullable: true }),
 

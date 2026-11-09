@@ -8,7 +8,7 @@
     "start-server": "concurrently \"tsx --env-file-if-exists=.env server/index.ts\" \"tsx ./buildGql.ts\"",
     "start-server:watch": "concurrently \"tsx --env-file-if-exists=.env --watch server/index.ts\" \"tsx --watch ./buildGql.ts\"",
     "start-react:watch": "tsx --env-file-if-exists=.env ./webpack/webpack.dev-server.ts",
-    "build:react": " ",
+    "build:react": "tsx ./webpack/webpack.prod-bundler.ts",
     "build:gql-types": "tsx ./buildGql.ts"
   },
   "dependencies": {

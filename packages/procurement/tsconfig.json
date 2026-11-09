@@ -4,6 +4,7 @@
     "jsx": "react-jsx",
     "outDir": "./dist-tsc",
     "paths": {
+      "@deploy-config": ["./config/deploy.ts"],
       "@types-gen-react-apollo": ["./generated/typescript-react-apollo"]
     }
   },

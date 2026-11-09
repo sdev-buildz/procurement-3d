@@ -24,6 +24,7 @@ export const getWebpackConfig = (
     PORT: String(sharedConfig.port),
     ORIGIN: sharedConfig.origin,
     WEB_CLIENT_ORIGIN: sharedConfig.webClientOrigin,
+    EMBED_CLIENT_ORIGIN: sharedConfig.embedClientOrigin,
     CI: process.env.CI,
   }
 

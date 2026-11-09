@@ -140,6 +140,7 @@ describe('me query', () => {
 describe('login mutation', () => {
   beforeEach(() => {
     vi.mocked(prisma.user1.findUnique).mockResolvedValue(testUser)
+    vi.stubEnv('JWE_KEY', 'a'.repeat(32))
   })
 
   it('authenticates valid credentials and returns a token and public user data', async () => {

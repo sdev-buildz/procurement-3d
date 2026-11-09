@@ -31,3 +31,4 @@ catalog:
   'uWebSockets.js': 'github:uNetworking/uWebSockets.js#v20.70.0'
   'vitest': '^5.0.0'
   'webpack': '^5.110.3'
+  'wrangler': '^4.159.0'

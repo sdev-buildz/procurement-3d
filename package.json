@@ -14,7 +14,7 @@
     "check": "turbo turbo-build prettier:check lint type-check coverage:ci knip:ci e2e:ci",
     "check:lite": "turbo turbo-build prettier:check lint type-check coverage:ci knip:ci",
     "build": "turbo turbo-build",
-    "build:main": "pnpm run build:embed",
+    "build:main": "pnpm run build:embed && pnpm run build:react",
     "unit-tests": "vitest",
     "coverage": "vitest --coverage --ui",
     "coverage:ci": "vitest run --coverage",

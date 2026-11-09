@@ -9,6 +9,7 @@
 
     "//#build:main": {
       "description": "bundles the web-client.",
+      "env": ["ORIGIN", "WEB_CLIENT_ORIGIN", "EMBED_CLIENT_ORIGIN"],
       "outputs": ["./packages/procurement/dist/**", "./packages/embed/dist/**"],
       "inputs": [
         "$TURBO_DEFAULT$",

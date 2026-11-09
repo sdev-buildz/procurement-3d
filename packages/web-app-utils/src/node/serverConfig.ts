@@ -18,9 +18,12 @@ export const serverConfig = {
     /**
      * Used in authorization header. The key must be 32 bytes (256 bits) for AES-256
      */
-    jweKey:
-      process.env.JWE_KEY ??
-      (sharedConfig.environment === 'DEV' ? '1'.repeat(32) : ''),
+    get jweKey() {
+      return (
+        process.env.JWE_KEY ??
+        (sharedConfig.environment === 'DEV' ? '1'.repeat(32) : '')
+      )
+    },
   },
 }
 

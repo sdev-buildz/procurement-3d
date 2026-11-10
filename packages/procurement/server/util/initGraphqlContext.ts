@@ -43,8 +43,11 @@ export const initGraphqlContext = async (
       ? { currentUser: user }
       : { currentUser: undefined }),
     reqOrigin: isWsContext(context)
-      ? context.extra.persistedRequest.headers.origin
-      : context.res.reqOrigin,
+      ? getHeaderValue(context.extra.request.headers.origin)
+      : (context.request.headers.get('origin') ?? ''),
     pubsub: pubsub,
   }
 }
+
+const getHeaderValue = (value: string | string[] | undefined): string =>
+  Array.isArray(value) ? (value[0] ?? '') : (value ?? '')

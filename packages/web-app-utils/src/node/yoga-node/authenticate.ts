@@ -8,7 +8,7 @@ import { isWsContext } from './types'
 export const authenticate = (context: GraphqlContextType): unknown => {
   const authHeader = isWsContext(context)
     ? context.connectionParams?.headers?.authorization
-    : context.res.authHeader
+    : context.request.headers.get('authorization')
 
   if (!authHeader) return
   const bearerToken = authHeader.startsWith('bearer ')

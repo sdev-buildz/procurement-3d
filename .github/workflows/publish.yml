@@ -32,8 +32,8 @@ jobs:
 
       - run: pnpm exec prettier --write ./pnpm-lock.yaml
 
-      - name:
-        run: pnpm run build:main
+      - name: Build React bundles
+        run: pnpm run build
 
       - name: Remove GLB files before deployment
         run: rm -rf ./packages/embed/dist/**/*.glb

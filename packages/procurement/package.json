@@ -37,9 +37,10 @@
     "react-dom": "catalog:",
     "react-router": "^8.5.0",
     "sofa-api": "^0.18.10",
-    "uWebSockets.js": "catalog:"
+    "ws": "^8.22.0"
   },
   "devDependencies": {
+    "@types/ws": "^8.18.2",
     "@babel/preset-env": "catalog:",
     "@babel/preset-react": "catalog:",
     "@babel/preset-typescript": "catalog:",

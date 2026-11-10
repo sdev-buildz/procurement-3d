@@ -11,6 +11,7 @@ import { initGraphqlContext } from './initGraphqlContext'
  * The GraphQL server instance.
  */
 export const yoga = createYoga<GraphqlContextType>({
+  graphqlEndpoint: '/api/graphql',
   schema: schema,
   context: (context) => {
     return initGraphqlContext(context)

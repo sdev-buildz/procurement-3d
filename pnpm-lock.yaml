@@ -316,9 +316,6 @@ catalogs:
     typescript:
       specifier: npm:@typescript/typescript6@^6.0.2
       version: 6.0.2
-    uWebSockets.js:
-      specifier: github:uNetworking/uWebSockets.js#v20.70.0
-      version: 20.70.0
     vitest:
       specifier: ^5.0.0
       version: 5.0.5
@@ -626,9 +623,9 @@ importers:
       sofa-api:
         specifier: ^0.18.10
         version: 0.18.10(graphql@17.0.2)
-      uWebSockets.js:
-        specifier: 'catalog:'
-        version: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/b1092c70692ddbcc87464a77da44848614f6342a
+      ws:
+        specifier: ^8.22.0
+        version: 8.22.0
     devDependencies:
       '@babel/preset-env':
         specifier: 'catalog:'
@@ -651,6 +648,9 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 19.3.0(@types/react@19.3.0)
+      '@types/ws':
+        specifier: ^8.18.2
+        version: 8.18.2
       babel-plugin-react-compiler:
         specifier: 'catalog:'
         version: 1.0.0
@@ -741,9 +741,6 @@ importers:
       typescript:
         specifier: 'catalog:'
         version: '@typescript/typescript6@6.0.2'
-      uWebSockets.js:
-        specifier: 'catalog:'
-        version: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/b1092c70692ddbcc87464a77da44848614f6342a
       webpack:
         specifier: 'catalog:'
         version: 5.112.0(clean-css@5.3.3)(cssnano@7.1.9(postcss@8.5.30))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(lightningcss@1.33.0)(postcss@8.5.30)(sharp@0.35.5(@types/node@26.6.5))(svgo@4.1.0)(webpack-cli@6.0.1)
@@ -753,6 +750,10 @@ importers:
       webpack-dev-server:
         specifier: ^5.2.6
         version: 5.2.6(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2)(webpack-cli@6.0.1)(webpack@5.112.0)
+    devDependencies:
+      '@types/ws':
+        specifier: ^8.18.2
+        version: 8.18.2
 
 packages:
   '@ai-sdk/gateway@4.0.135':
@@ -12987,15 +12988,6 @@ packages:
     engines: { node: '>=16.20.0' }
     hasBin: true
 
-  uWebSockets.js@https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/b1092c70692ddbcc87464a77da44848614f6342a:
-    resolution:
-      {
-        gitHosted: true,
-        integrity: sha512-imizeoZ5qzl4yNm/MNOlg5K/vatTvGqqbmYjzrhmCHREov1zBKMUEf+NkAJDDLl2DfRrJbEbBkcGyBwjdg4ibw==,
-        tarball: https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/b1092c70692ddbcc87464a77da44848614f6342a,
-      }
-    version: 20.70.0
-
   uc.micro@2.1.0:
     resolution:
       {
@@ -21615,9 +21607,6 @@ snapshots:
       '@typescript/typescript-sunos-x64': 7.0.2
       '@typescript/typescript-win32-arm64': 7.0.2
       '@typescript/typescript-win32-x64': 7.0.2
-
-  uWebSockets.js@https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/b1092c70692ddbcc87464a77da44848614f6342a:
-    {}
 
   uc.micro@2.1.0: {}
 

@@ -3,18 +3,23 @@
  * {@inheritDoc setupGracefulShutdown}
  */
 import { logger } from '@packages/logger'
-import { us_listen_socket_close, type TemplatedApp } from 'uWebSockets.js'
+import type { Server } from 'node:http'
 import type { ListeningStatusType } from './types'
+
+/**
+ * Tracks whether the HTTPS server is accepting requests or shutting down.
+ */
+export const listeningStatus: ListeningStatusType = {}
 
 /**
  * Sets up the event listeners which initiate graceful shutdown.
  */
 export function setupGracefulShutdown(
-  uWS: TemplatedApp,
+  server: Server,
   listeningStatus: ListeningStatusType
 ) {
-  process.on('SIGTERM', () => initiateGracefulShutdown(uWS, listeningStatus))
-  process.on('SIGINT', () => initiateGracefulShutdown(uWS, listeningStatus))
+  process.on('SIGTERM', () => initiateGracefulShutdown(server, listeningStatus))
+  process.on('SIGINT', () => initiateGracefulShutdown(server, listeningStatus))
 }
 
 /**
@@ -27,30 +32,29 @@ export function setupGracefulShutdown(
  *  the nodejs app would still be running in the background, in case there are existing connections.
  * Once all the existing connections are served and closed, the app will automatically go out of scope
  *  and the memory will gracefully be deleted.
- * @see Reference {@link https://github.com/uNetworking/uWebSockets/blob/master/misc/READMORE.md#apprun-and-fallthrough | link}
  */
-async function initiateGracefulShutdown(
-  uWS: TemplatedApp,
+function initiateGracefulShutdown(
+  server: Server,
   listeningStatus: ListeningStatusType
 ) {
   logger.info('Initiating graceful shutdown...')
 
-  if (!listeningStatus.listenSocket) {
-    uWS.close()
+  if (listeningStatus.shuttingDown) {
     return
   }
-
-  /**
-   * Stopping new connections.
-   */
-  us_listen_socket_close(listeningStatus.listenSocket)
 
   listeningStatus.acceptingNewConnections = false
   listeningStatus.shuttingDown = true
   listeningStatus.reasonForNotAccepting =
     'The server is under graceful shutdown.'
 
-  logger.info(
-    `Server stopped accepting new connections. Any existing open connections are being served before complete shut down.`
-  )
+  server.close((error) => {
+    if (error) {
+      logger.error(`Error during graceful shutdown: ${error.message}`)
+      process.exitCode = 1
+      return
+    }
+
+    logger.info('Server shut down after serving existing connections.')
+  })
 }

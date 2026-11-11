@@ -3,7 +3,6 @@
  * @see serverConfig
  */
 
-import { logger } from '@packages/logger'
 import { sharedConfig } from '../shared'
 
 /**
@@ -25,7 +24,7 @@ export const serverConfig = {
 }
 
 if (!serverConfig.auth.jweKey) {
-  logger.error(
+  console.error(
     `No JWE Key present. Provide a JWE_KEY environment variable and keep it secure from others.`,
     {
       readMoreAboutJwe: `https://datatracker.ietf.org/doc/html/rfc7516`,

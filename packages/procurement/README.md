@@ -17,8 +17,10 @@ The 3D editor is hosted as a separate frontend at
 ## Cloudflare deployment
 
 Build and deploy the frontend assets and GraphQL Worker with
-`pnpm dlx wrangler deploy --config ./packages/procurement/cloudflare.jsonc`.
-Before using the API, configure `JWE_KEY` as a Wrangler secret (it must be 32
-UTF-8 bytes). Configure `DATABASE_URL` as a Wrangler secret when the Supabase
-database is ready. Set `ORIGIN` and `WEB_CLIENT_ORIGIN` to the deployed site
-origin so credentialed API requests pass CORS validation.
+`pnpm --filter @packages/enterprise-procurement-workspace run deploy`.
+Before deploying, configure `JWE_KEY` as a Wrangler secret (it must be 32
+UTF-8 bytes) with
+`pnpm --filter @packages/enterprise-procurement-workspace exec wrangler secret put JWE_KEY --config ./cloudflare.jsonc`.
+Configure `DATABASE_URL` as a Wrangler secret when the Supabase database is
+ready. Set `ORIGIN` and `WEB_CLIENT_ORIGIN` to the deployed site origin so
+credentialed API requests pass CORS validation.

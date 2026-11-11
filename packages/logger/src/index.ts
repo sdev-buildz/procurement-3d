@@ -1,5 +1,5 @@
 import { createLogger, format } from 'winston'
-import { consoleTransport } from './lib'
+import { consoleTransport, createElapsedTimeFormat } from './lib'
 
 /**
  * The Winston logger instance.
@@ -8,7 +8,7 @@ export const logger = createLogger({
   level: 'silly',
   format: format.combine(
     format.timestamp(),
-    format.ms(),
+    createElapsedTimeFormat(),
     format.errors({ stack: true }),
     format.splat(),
     format.json()

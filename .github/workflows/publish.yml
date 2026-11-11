@@ -30,6 +30,40 @@ jobs:
 
       - run: pnpm exec prettier --write ./pnpm-lock.yaml
 
+      # Check which services need to be deployed, by checking the changed files
+      - name: Check workspace changes
+        # v4
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d
+        id: should-deploy
+        with:
+          filters: |
+            prisma:
+              - 'packages/db/**'
+              - 'pnpm-lock.yaml'
+            host-app:
+              - 'packages/procurement/**'
+              - 'pnpm-lock.yaml'
+            micro-app:
+              - 'packages/micro-app/**'
+              - 'pnpm-lock.yaml'
+
+      # Deploy Prisma migrations
+      - name: Run Prisma migrations
+        if: steps.should-deploy.outputs.prisma == 'true'
+        run: pnpm run prisma:migrate-prod
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
+      # Seed the database
+      - name: Seed the database
+        if: steps.should-deploy.outputs.prisma == 'true'
+        run: pnpm run prisma:seed
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
+      # Build React bundles for both host and micro-app.
       - name: Build React bundles
         run: pnpm run build
         env:

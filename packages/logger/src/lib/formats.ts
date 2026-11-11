@@ -1,6 +1,24 @@
 import winston, { format, type createLogger } from 'winston'
 
 /**
+ * Creates a log format that tracks elapsed time without relying on `this`.
+ */
+export const createElapsedTimeFormat = () => {
+  /** Timestamp of the preceding log entry. */
+  let previousTime: number | undefined
+
+  return format((info) => {
+    /** Timestamp of the current log entry. */
+    const currentTime = Date.now()
+    /** Elapsed milliseconds since the preceding log entry. */
+    const elapsedTime = currentTime - (previousTime ?? currentTime)
+    previousTime = currentTime
+    info.ms = `+${elapsedTime}ms`
+    return info
+  })()
+}
+
+/**
  * The return value of {@link format.colorize} after applying the custom configurations.
  */
 export const formatColorize = format.colorize({

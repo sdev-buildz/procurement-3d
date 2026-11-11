@@ -7,16 +7,22 @@
 import 'dotenv/config'
 import path from 'node:path'
 import type { PrismaConfig } from 'prisma'
-
+console.log(
+  'conn string = ',
+  process.env.CI === 'true' ? 'DIRECT_URL' : 'DATABASE_URL'
+)
 export default {
   schema: path.join(import.meta.dirname, 'prisma', 'schema.prisma'),
   migrations: {
     path: path.join(import.meta.dirname, 'migrations'),
-    seed: 'tsx --env-file=.env ./prisma/seed.ts',
+    seed: 'tsx --env-file-if-exists=.env ./prisma/seed.ts',
   },
   datasource: {
     // url: env('DATABASE_URL'),
-    url: process.env['DATABASE_URL']!,
+    url:
+      process.env.CI === 'true'
+        ? process.env['DIRECT_URL']!
+        : process.env['DATABASE_URL']!,
   },
   views: {
     //path: path.join("db", "views"),

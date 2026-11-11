@@ -13,6 +13,7 @@ export default defineConfig([
     ignores: [
       '**/dist*',
       '**/generated',
+      '**/.wrangler/**',
       'packages/migration/tests/test-source-files',
       './docs',
       '**/contract.d.ts',

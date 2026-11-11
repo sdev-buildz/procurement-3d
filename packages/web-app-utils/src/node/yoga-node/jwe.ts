@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable jsdoc/require-jsdoc */
-import { logger } from '@packages/logger'
 import crypto from 'node:crypto'
 import { serverConfig } from '../serverConfig.ts'
 
@@ -21,9 +20,8 @@ function resolveKey(jweKey: string, encoding: BufferEncoding): Buffer {
   return key
 }
 
-const key = resolveKey(serverConfig.auth.jweKey, 'utf8' as BufferEncoding)
-
 export function encryptJwe(plaintext: string): string {
+  const key = resolveKey(serverConfig.auth.jweKey, 'utf8' as BufferEncoding)
   const iv = crypto.randomBytes(IV_LEN)
   const cipher = crypto.createCipheriv('aes-256-gcm', key, iv)
   const ciphertext = Buffer.concat([
@@ -43,7 +41,7 @@ export function decryptJwe(encryptedBase64: string): string | null {
 
   // Guard against truncated/garbage input before touching crypto.
   if (inputBuffer.length < IV_LEN + TAG_LEN) {
-    logger.error('Decryption failed: token too short')
+    console.error('Decryption failed: token too short')
     return null
   }
 
@@ -51,6 +49,7 @@ export function decryptJwe(encryptedBase64: string): string | null {
   const authTag = inputBuffer.subarray(IV_LEN, IV_LEN + TAG_LEN)
   const ciphertext = inputBuffer.subarray(IV_LEN + TAG_LEN) // pass Buffer directly
 
+  const key = resolveKey(serverConfig.auth.jweKey, 'utf8' as BufferEncoding)
   try {
     const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv)
     decipher.setAuthTag(authTag)
@@ -61,7 +60,7 @@ export function decryptJwe(encryptedBase64: string): string | null {
     return plaintext
   } catch (error) {
     // Auth failure (tampered/corrupted) or any crypto error -> null
-    logger.error(
+    console.error(
       'Decryption failed: invalid authentication tag or corrupted token'
     )
     return null

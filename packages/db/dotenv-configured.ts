@@ -1,6 +1,10 @@
 import dotenv from 'dotenv'
 import path from 'path'
 
-dotenv.config({
-  path: path.join(import.meta.dirname, '.env'),
-})
+const moduleDirectory = import.meta.dirname
+
+if (typeof moduleDirectory === 'string') {
+  dotenv.config({
+    path: path.join(moduleDirectory, '.env'),
+  })
+}

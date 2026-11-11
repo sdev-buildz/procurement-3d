@@ -1,10 +1,10 @@
 import { prisma } from '@packages/db/prisma'
 import type { User1 } from '@packages/db/prisma-client'
+import { authenticate } from '@packages/web-app-utils/node/yoga-node/authenticate'
 import {
-  authenticate,
-  type GraphqlContextType,
   isWsContext,
-} from '@packages/web-app-utils'
+  type GraphqlContextType,
+} from '@packages/web-app-utils/node/yoga-node/types'
 import type { CustomGraphqlContextType } from '../schema/lib/builder'
 import { pubsub } from './pubsub'
 

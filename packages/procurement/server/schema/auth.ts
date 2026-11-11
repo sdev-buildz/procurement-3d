@@ -1,5 +1,5 @@
 import { prisma } from '@packages/db/prisma'
-import { encryptJwe } from '@packages/web-app-utils'
+import { encryptJwe } from '@packages/web-app-utils/node/yoga-node/jwe'
 import { GraphQLError } from 'graphql'
 import { scrypt, timingSafeEqual } from 'node:crypto'
 import { builder } from './lib/builder'

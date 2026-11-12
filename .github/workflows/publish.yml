@@ -77,6 +77,12 @@ jobs:
       - name: Remove GLB files before deployment
         run: rm -rf ./packages/embed/dist/**/*.glb
 
+      - name: Run Prisma migrations
+        run: pnpm run prisma:migrate-prod
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
       - name: Deploy host to Cloudflare
         uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0
         with:
@@ -98,11 +104,25 @@ jobs:
           EMBED_CLIENT_ORIGIN: ${{ vars.EMBED_CLIENT_ORIGIN }}
           ORIGIN: ${{ vars.ORIGIN }}
 
+      # Set micro-app frame ancestor
+      - name: Set micro-app frame ancestor
+        run: pnpm --filter @packages/embed-3d run set-host-origin
+        env:
+          HOST_ORIGIN: ${{ vars.ORIGIN }}
+
       # Deploy micro-app frontend to Cloudflare
       - name: Deploy micro-app to Cloudflare
         uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0
         with:
           workingDirectory: ./packages/embed
-          command: 'deploy --config ./cloudflare.jsonc'
+          command: 'deploy'
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_MICRO_APP }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Deploy micro-app to Cloudflare
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0
+        with:
+          working-directory: ./packages/embed
+          command: 'deploy --config ./packages/embed/cloudflare.jsonc'
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_MICRO_APP }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

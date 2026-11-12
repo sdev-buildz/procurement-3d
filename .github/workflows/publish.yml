@@ -47,6 +47,17 @@ jobs:
               - 'packages/micro-app/**'
               - 'pnpm-lock.yaml'
 
+      # Build React bundles and Prisma Client.
+      - name: Build
+        run: pnpm run build
+        env:
+          # Map repository variables to process.env
+          ORIGIN: ${{ vars.ORIGIN }}
+          WEB_CLIENT_ORIGIN: ${{ vars.WEB_CLIENT_ORIGIN }}
+          EMBED_CLIENT_ORIGIN: ${{ vars.EMBED_CLIENT_ORIGIN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
       # Deploy Prisma migrations
       - name: Run Prisma migrations
         if: steps.should-deploy.outputs.prisma == 'true'
@@ -60,18 +71,6 @@ jobs:
         if: steps.should-deploy.outputs.prisma == 'true'
         run: pnpm run prisma:seed
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-
-      # Build React bundles for both host and micro-app.
-      - name: Build React bundles
-        if: steps.should-deploy.outputs.host-app == 'true' || steps.should-deploy.outputs.micro-app == 'true'
-        run: pnpm run build
-        env:
-          # Map repository variables to process.env
-          ORIGIN: ${{ vars.ORIGIN }}
-          WEB_CLIENT_ORIGIN: ${{ vars.WEB_CLIENT_ORIGIN }}
-          EMBED_CLIENT_ORIGIN: ${{ vars.EMBED_CLIENT_ORIGIN }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
 

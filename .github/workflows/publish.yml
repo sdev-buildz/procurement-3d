@@ -65,6 +65,7 @@ jobs:
 
       # Build React bundles for both host and micro-app.
       - name: Build React bundles
+        if: steps.should-deploy.outputs.host-app == 'true' || steps.should-deploy.outputs.micro-app == 'true'
         run: pnpm run build
         env:
           # Map repository variables to process.env
@@ -74,16 +75,13 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
+      # Remove GLB files. Part of the previous build step.
       - name: Remove GLB files before deployment
         run: rm -rf ./packages/embed/dist/**/*.glb
 
-      - name: Run Prisma migrations
-        run: pnpm run prisma:migrate-prod
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-
+      # Deploy host app's frontend and API server to Cloudflare
       - name: Deploy host to Cloudflare
+        if: steps.should-deploy.outputs.host-app == 'true'
         uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0
         with:
           workingDirectory: ./packages/procurement
@@ -111,13 +109,5 @@ jobs:
         with:
           workingDirectory: ./packages/embed
           command: 'deploy'
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_MICRO_APP }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Deploy micro-app to Cloudflare
-        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0
-        with:
-          working-directory: ./packages/embed
-          command: 'deploy --config ./packages/embed/cloudflare.jsonc'
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_MICRO_APP }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

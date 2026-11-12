@@ -12,7 +12,8 @@
   "scripts": {
     "start-react:watch": "tsx --env-file-if-exists=.env ./webpack/webpack.dev-server.ts",
     "test": "vitest run src",
-    "build": "tsx ./webpack/webpack.prod-bundler.ts"
+    "build": "tsx ./webpack/webpack.prod-bundler.ts",
+    "deploy": "wrangler deploy"
   },
   "keywords": [],
   "author": "",
@@ -51,6 +52,7 @@
     "tsx": "catalog:",
     "typescript": "catalog:",
     "webpack": "catalog:",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^6.0.1",
+    "wrangler": "catalog:"
   }
 }

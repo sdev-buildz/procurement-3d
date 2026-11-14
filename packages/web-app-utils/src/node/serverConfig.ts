@@ -3,7 +3,6 @@
  * @see serverConfig
  */
 
-import { logger } from '@packages/logger'
 import { sharedConfig } from '../shared'
 
 /**
@@ -18,14 +17,17 @@ export const serverConfig = {
     /**
      * Used in authorization header. The key must be 32 bytes (256 bits) for AES-256
      */
-    jweKey:
-      process.env.JWE_KEY ??
-      (sharedConfig.environment === 'DEV' ? '1'.repeat(32) : ''),
+    get jweKey() {
+      return (
+        process.env.JWE_KEY ??
+        (sharedConfig.environment === 'DEV' ? '1'.repeat(32) : '')
+      )
+    },
   },
 }
 
 if (!serverConfig.auth.jweKey) {
-  logger.error(
+  console.error(
     `No JWE Key present. Provide a JWE_KEY environment variable and keep it secure from others.`,
     {
       readMoreAboutJwe: `https://datatracker.ietf.org/doc/html/rfc7516`,

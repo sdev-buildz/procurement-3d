@@ -25,3 +25,5 @@ jobs:
       - run: pnpm exec prettier --write ./pnpm-lock.yaml
 
       - run: pnpm run check:lite
+        env:
+          JWE_KEY: ab34567890abcd567890123456789012

@@ -12,6 +12,18 @@
       "types": "./src/node/webpack.config.ts",
       "default": "./src/node/webpack.config.ts"
     },
+    "./node/yoga-node/authenticate": {
+      "types": "./src/node/yoga-node/authenticate.ts",
+      "default": "./src/node/yoga-node/authenticate.ts"
+    },
+    "./node/yoga-node/jwe": {
+      "types": "./src/node/yoga-node/jwe.ts",
+      "default": "./src/node/yoga-node/jwe.ts"
+    },
+    "./node/yoga-node/types": {
+      "types": "./src/node/yoga-node/types.ts",
+      "default": "./src/node/yoga-node/types.ts"
+    },
     "./shared": {
       "types": "./src/shared/index.ts",
       "default": "./src/shared/index.ts"
@@ -47,9 +59,11 @@
     "style-loader": "^4.0.0",
     "ts-morph": "catalog:",
     "typescript": "catalog:",
-    "uWebSockets.js": "catalog:",
     "webpack": "catalog:",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.6"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.2"
   }
 }

@@ -18,6 +18,8 @@ const apiServerPort: number = Number(
 const webClientPort: number = Number(process.env.WEB_CLIENT_PORT ?? 3000)
 const embedClientPort: number = Number(process.env.EMBED_CLIENT_PORT ?? 3001)
 
+console.log('in sharedConfig file. process.env.ORIGIN =', process.env.ORIGIN)
+
 /**
  * The host configurations such as host name and port number.
  *
@@ -64,8 +66,10 @@ export const sharedConfig = {
     process.env.EMBED_CLIENT_ORIGIN ?? `https://localhost:${embedClientPort}`,
 
   /** The port of this server's endpoint */
-  environment: (process.env.IS_PRODUCTION === 'true' ? 'PROD' : 'DEV') as
-    'PROD' | 'DEV',
+  environment: (process.env.IS_PRODUCTION === 'true' ||
+  process.env.CI === 'true'
+    ? 'PROD'
+    : 'DEV') as 'PROD' | 'DEV',
 
   /**
    * To enable console logging in production.

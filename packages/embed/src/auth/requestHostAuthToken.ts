@@ -43,8 +43,18 @@ export const requestHostAuthToken = (
     }
 
     const onMessage = (event: MessageEvent<unknown>) => {
-      if (event.origin !== hostOrigin) return
+      console.log(
+        'in micro-app. received messageEvent =',
+        event,
+        '\nevent.data =',
+        event.data
+      )
+      console.log('hostOrigin =', hostOrigin)
+      if (new URL(event.origin).pathname !== new URL(hostOrigin).pathname)
+        return
+      console.log('it is hoatOrigin')
       if (!isAuthTokenResponseMessage(event.data)) return
+      console.log('it isAuthTokenResponseMessage')
       finish(event.data.token)
     }
 

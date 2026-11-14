@@ -1,10 +1,10 @@
 import { prisma } from '@packages/db/prisma'
 import type { User1 } from '@packages/db/prisma-client'
+import { authenticate } from '@packages/web-app-utils/node/yoga-node/authenticate'
 import {
-  authenticate,
-  type GraphqlContextType,
   isWsContext,
-} from '@packages/web-app-utils'
+  type GraphqlContextType,
+} from '@packages/web-app-utils/node/yoga-node/types'
 import type { CustomGraphqlContextType } from '../schema/lib/builder'
 import { pubsub } from './pubsub'
 
@@ -43,8 +43,11 @@ export const initGraphqlContext = async (
       ? { currentUser: user }
       : { currentUser: undefined }),
     reqOrigin: isWsContext(context)
-      ? context.extra.persistedRequest.headers.origin
-      : context.res.reqOrigin,
+      ? getHeaderValue(context.extra.request.headers.origin)
+      : (context.request.headers.get('origin') ?? ''),
     pubsub: pubsub,
   }
 }
+
+const getHeaderValue = (value: string | string[] | undefined): string =>
+  Array.isArray(value) ? (value[0] ?? '') : (value ?? '')

@@ -26,7 +26,17 @@ export const SalesEditor = () => {
 
   useEffect(() => {
     const onMessage = (event: MessageEvent<unknown>) => {
-      if (event.origin !== sharedConfig.embedClientOrigin) return
+      if (
+        new URL(event.origin).pathname !==
+        new URL(sharedConfig.embedClientOrigin).pathname
+      )
+        return
+      console.log(
+        'in host ui. received messageEvent =',
+        event,
+        '\n event.data =',
+        event.data
+      )
       if (!isAuthTokenRequestMessage(event.data)) return
       const source = event.source
       if (!source || !('postMessage' in source)) return

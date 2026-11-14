@@ -43,7 +43,7 @@ export const requestHostAuthToken = (
     }
 
     const onMessage = (event: MessageEvent<unknown>) => {
-      if (event.origin !== hostOrigin) return
+      if (new URL(event.origin).href !== new URL(hostOrigin).href) return
       if (!isAuthTokenResponseMessage(event.data)) return
       finish(event.data.token)
     }

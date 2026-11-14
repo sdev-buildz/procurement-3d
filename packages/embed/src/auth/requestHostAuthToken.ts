@@ -54,6 +54,7 @@ export const requestHostAuthToken = (
         return
       console.log('it is hoatOrigin')
       if (!isAuthTokenResponseMessage(event.data)) return
+      console.log('it isAuthTokenResponseMessage')
       finish(event.data.token)
     }
 

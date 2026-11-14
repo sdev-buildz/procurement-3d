@@ -1,11 +1,11 @@
 import { sharedConfig } from '@packages/web-app-utils/shared'
-import { createYoga } from 'graphql-yoga'
 import type { execute, ExecutionArgs, subscribe } from 'graphql'
 import {
   handleProtocols,
   makeServer,
   type ConnectionInitMessage,
 } from 'graphql-ws'
+import { createYoga } from 'graphql-yoga'
 import { schema } from './schema'
 import { initGraphqlContext } from './util/initGraphqlContext'
 
@@ -30,7 +30,12 @@ const webSocketPairConstructor = (
     WebSocketPair: new () => CloudflareWebSocketPair
   }
 ).WebSocketPair
-
+console.log(
+  'creating yoga. sharedConfig.embedClientOrigin =',
+  sharedConfig.embedClientOrigin,
+  '\nprocess.env.EMBED_CLIENT_ORIGIN ',
+  process.env.EMBED_CLIENT_ORIGIN
+)
 const yoga = createYoga({
   graphqlEndpoint: '/api/graphql',
   schema,

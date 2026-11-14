@@ -18,6 +18,8 @@ const apiServerPort: number = Number(
 const webClientPort: number = Number(process.env.WEB_CLIENT_PORT ?? 3000)
 const embedClientPort: number = Number(process.env.EMBED_CLIENT_PORT ?? 3001)
 
+console.log('in sharedConfig file. process.env.ORIGIN =', process.env.ORIGIN)
+
 /**
  * The host configurations such as host name and port number.
  *

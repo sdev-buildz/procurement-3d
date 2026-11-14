@@ -47,6 +47,10 @@ type MeResponse = {
 export const fetchCurrentUser = async (
   token: string
 ): Promise<AuthenticatedUser | null> => {
+  console.log(
+    'fetching current user. sharedConfig.graphqlEndpoint =',
+    sharedConfig.graphqlEndpoint
+  )
   const response = await fetch(sharedConfig.graphqlEndpoint, {
     method: 'POST',
     headers: {

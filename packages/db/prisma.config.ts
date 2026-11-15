@@ -4,6 +4,7 @@
  * {@link https://www.prisma.io/docs/orm/reference/prisma-config-reference | Reference Doc https://www.prisma.io/docs/orm/reference/prisma-config-reference}
  */
 
+import { sharedConfig } from '@packages/web-app-utils/shared'
 import 'dotenv/config'
 import path from 'node:path'
 import type { PrismaConfig } from 'prisma'
@@ -20,7 +21,7 @@ export default {
   datasource: {
     // url: env('DATABASE_URL'),
     url:
-      process.env.CI === 'true'
+      sharedConfig.environment === 'PROD'
         ? process.env['DIRECT_URL']!
         : process.env['DATABASE_URL']!,
   },

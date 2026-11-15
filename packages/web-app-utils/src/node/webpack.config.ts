@@ -42,7 +42,7 @@ export const getWebpackConfig = (
               progress: true,
             },
             server: 'https',
-            hot: process.env.CI ? false : true,
+            hot: sharedConfig.environment === 'PROD' ? false : true,
             open: process.env.PLAYWRIGHT_TEST == '1' ? false : true,
             port: sharedConfig.webClientPort,
             historyApiFallback: true,

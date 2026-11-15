@@ -10,7 +10,7 @@ const defaultConfig = getWebpackConfig()
 
 /**
  *  Runs the development server with hot module reload.
- *  When process.env.CI=true, hot module reload will be disabled.
+ *  In production, hot module reload will automatically be disabled.
  */
 export const startWebpackServer = (config = defaultConfig) => {
   const compiler = webpack(config)

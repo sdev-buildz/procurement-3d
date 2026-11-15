@@ -1,3 +1,4 @@
+import { sharedConfig } from '@packages/web-app-utils/shared'
 import { z } from 'zod'
 
 /** Fixed dimensions and snapping interval for the electrical room, in meters. */
@@ -47,7 +48,7 @@ export type ItemType = {
 }
 
 const getAssetUrl = (localModelName?: string, cid?: string): string => {
-  if (process.env.CI) {
+  if (sharedConfig.environment === 'PROD') {
     if (cid) {
       return new URL(`https://clumsy-coral-beaver.myfilebase.com/ipfs/${cid}`)
         .href

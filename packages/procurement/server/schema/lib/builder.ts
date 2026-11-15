@@ -1,7 +1,6 @@
 import type PrismaTypes from '@packages/db/pothos-prisma-types'
 import { getDatamodel } from '@packages/db/pothos-prisma-types'
-import { prisma } from '@packages/db/prisma'
-import type { User1 } from '@packages/db/prisma-client'
+import type { PrismaClient, User1 } from '@packages/db/prisma-client'
 import { sharedConfig } from '@packages/web-app-utils/shared'
 import SchemaBuilder from '@pothos/core'
 import PrismaPlugin from '@pothos/plugin-prisma'
@@ -14,6 +13,7 @@ import type { pubsub } from '../../util/pubsub'
  */
 export type CustomGraphqlContextType = {
   currentUser: Pick<User1, 'id' | 'email' | 'role'> | undefined
+  prisma: PrismaClient
   reqOrigin: string
   pubsub: typeof pubsub
 }
@@ -54,7 +54,7 @@ export const builder = new SchemaBuilder<CustomSchemaTypes>({
     }),
   },
   prisma: {
-    client: prisma,
+    client: (context) => context.prisma,
     // This give pothos information about your tables, relations, and indexes to help it generate optimal queries at runtime.
     // This used to be attached to the prisma client, but has been removed in most runtimes/modes to reduce bundle size.
     dmmf: getDatamodel(),

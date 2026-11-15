@@ -1,4 +1,3 @@
-import { prisma } from '@packages/db/prisma'
 import { createYoga } from 'graphql-yoga'
 import { scryptSync } from 'node:crypto'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -9,13 +8,9 @@ const { findUnique } = vi.hoisted(() => ({
   findUnique: vi.fn(),
 }))
 
-vi.mock('@packages/db/prisma', () => ({
-  prisma: {
-    user1: {
-      findUnique,
-    },
-  },
-}))
+const prisma = {
+  user1: { findUnique },
+}
 
 const testPassword = 'oNW-h7W5PHIOF2LK--facbM7'
 const testSalt = 'a0a64cf9260d3676ca161c1b43c9b7e2'
@@ -44,7 +39,12 @@ const loginMutation = `
 
 const yoga = createYoga({
   schema,
-  context: () => ({ currentUser: undefined, reqOrigin: '', pubsub }),
+  context: () => ({
+    currentUser: undefined,
+    prisma,
+    reqOrigin: '',
+    pubsub,
+  }),
 })
 
 type LoginResponse = {
@@ -102,6 +102,7 @@ describe('me query', () => {
           email: testUser.email,
           role: testUser.role,
         },
+        prisma,
         reqOrigin: '',
         pubsub,
       }),

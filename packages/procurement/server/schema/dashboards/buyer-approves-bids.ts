@@ -1,4 +1,3 @@
-import { prisma } from '@packages/db/prisma'
 import { builder } from '../lib/builder'
 import { BidLineItemRef } from '../prisma-objects'
 
@@ -12,7 +11,7 @@ builder.mutationField('approveBids', (t) =>
       isBuyer: true,
     },
     resolve: async (query, _, { ids }, ctx) => {
-      await prisma.bidLineItem.updateMany({
+      await ctx.prisma.bidLineItem.updateMany({
         where: { id: { in: ids } },
         data: { isApproved: true },
       })
@@ -22,7 +21,7 @@ builder.mutationField('approveBids', (t) =>
         ids.map((id) => ({ id }))
       )
 
-      return prisma.bidLineItem.findMany({
+      return ctx.prisma.bidLineItem.findMany({
         ...query,
         where: { id: { in: ids } },
       })

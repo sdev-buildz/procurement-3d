@@ -9,6 +9,10 @@
       "types": "./prisma/prisma.ts",
       "default": "./prisma/prisma.ts"
     },
+    "./prisma-node": {
+      "types": "./prisma/prisma-node.ts",
+      "default": "./prisma/prisma-node.ts"
+    },
     "./pothos-prisma-types": {
       "types": "./generated/pothos-prisma-types.ts",
       "default": "./generated/pothos-prisma-types.ts"

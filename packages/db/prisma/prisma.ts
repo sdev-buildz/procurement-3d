@@ -3,14 +3,16 @@ import { PrismaPg } from '@prisma/adapter-pg'
 import '../dotenv-configured'
 import { PrismaClient } from '../generated/prisma-client'
 
-// const adapter = new PrismaPg({ connectionString: process.env['DIRECT_URL']! })
-const adapter = new PrismaPg({
-  connectionString:
-    sharedConfig.environment === 'PROD'
-      ? process.env['DIRECT_URL']!
-      : process.env['DATABASE_URL']!,
-  // process.env['DATABASE_URL']!
-})
-const prisma = new PrismaClient({ adapter })
+/**
+ * Create a new Prisma client.
+ */
+export const createPrismaClient = () => {
+  const adapter = new PrismaPg({
+    connectionString:
+      sharedConfig.environment === 'PROD'
+        ? process.env['DIRECT_URL']!
+        : process.env['DATABASE_URL']!,
+  })
 
-export { prisma }
+  return new PrismaClient({ adapter })
+}

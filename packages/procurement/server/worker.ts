@@ -1,11 +1,13 @@
+import { createPrismaClient } from '@packages/db/prisma'
+import type { PrismaClient } from '@packages/db/prisma-client'
 import { sharedConfig } from '@packages/web-app-utils/shared'
-import { createYoga } from 'graphql-yoga'
 import type { execute, ExecutionArgs, subscribe } from 'graphql'
 import {
   handleProtocols,
   makeServer,
   type ConnectionInitMessage,
 } from 'graphql-ws'
+import { createYoga } from 'graphql-yoga'
 import { schema } from './schema'
 import { initGraphqlContext } from './util/initGraphqlContext'
 
@@ -31,7 +33,7 @@ const webSocketPairConstructor = (
   }
 ).WebSocketPair
 
-const yoga = createYoga({
+const yoga = createYoga<{ prisma: PrismaClient }>({
   graphqlEndpoint: '/api/graphql',
   schema,
   context: (context) => initGraphqlContext(context),
@@ -51,14 +53,17 @@ const yoga = createYoga({
 
 const graphqlWsServer = makeServer<
   ConnectionInitMessage['payload'],
-  { request: Request }
+  { request: Request; prisma: PrismaClient }
 >({
   execute: (args) => (args as EnvelopedExecutionArgs).rootValue.execute(args),
   subscribe: (args) =>
     (args as EnvelopedExecutionArgs).rootValue.subscribe(args),
   onSubscribe: async (ctx, _id, params) => {
     const { schema, execute, subscribe, contextFactory, parse, validate } =
-      yoga.getEnveloped({ request: ctx.extra.request })
+      yoga.getEnveloped({
+        request: ctx.extra.request,
+        prisma: ctx.extra.prisma,
+      })
     const args: EnvelopedExecutionArgs = {
       schema,
       operationName: params.operationName,
@@ -90,6 +95,7 @@ const handleWebSocket = (request: Request): Response => {
   const pair = new webSocketPairConstructor()
   const client = pair[0]
   const server = pair[1]
+  const prisma = createPrismaClient()
   server.accept()
 
   const dispose = graphqlWsServer.opened(
@@ -111,7 +117,7 @@ const handleWebSocket = (request: Request): Response => {
         })
       },
     },
-    { request }
+    { request, prisma }
   )
 
   let disposed = false
@@ -119,6 +125,10 @@ const handleWebSocket = (request: Request): Response => {
     if (disposed) return
     disposed = true
     void dispose(code, reason)
+      .then(() => prisma.$disconnect())
+      .catch((error: unknown) => {
+        console.error('GraphQL WebSocket cleanup failed', error)
+      })
   }
   server.addEventListener('close', (event) => {
     cleanup(event.code, event.reason)
@@ -137,7 +147,7 @@ const handleWebSocket = (request: Request): Response => {
 /**
  * Handles GraphQL HTTP and WebSocket requests.
  */
-function fetchWorker(request: Request): Promise<Response> | Response {
+async function fetchWorker(request: Request): Promise<Response> {
   const { pathname } = new URL(request.url)
   if (pathname !== '/api/graphql') {
     return new Response('Not Found', { status: 404 })
@@ -147,7 +157,12 @@ function fetchWorker(request: Request): Promise<Response> | Response {
     return handleWebSocket(request)
   }
 
-  return yoga.fetch(request)
+  const prisma = createPrismaClient()
+  try {
+    return await yoga.fetch(request, { prisma })
+  } finally {
+    await prisma.$disconnect()
+  }
 }
 
 export default {

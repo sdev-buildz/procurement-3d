@@ -2,6 +2,7 @@ import {
   winstonYogaLogger,
   type GraphqlContextType,
 } from '@packages/web-app-utils'
+import { prisma } from '@packages/db/prisma-node'
 import { sharedConfig } from '@packages/web-app-utils/shared'
 import { createYoga } from 'graphql-yoga'
 import { schema } from '../schema'
@@ -14,7 +15,7 @@ export const yoga = createYoga<GraphqlContextType>({
   graphqlEndpoint: '/api/graphql',
   schema: schema,
   context: (context) => {
-    return initGraphqlContext(context)
+    return initGraphqlContext({ ...context, prisma })
   },
   cors: {
     origin: [

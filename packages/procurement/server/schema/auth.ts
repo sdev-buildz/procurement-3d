@@ -1,4 +1,3 @@
-import { prisma } from '@packages/db/prisma'
 import { encryptJwe } from '@packages/web-app-utils/node/yoga-node/jwe'
 import { GraphQLError } from 'graphql'
 import { scrypt, timingSafeEqual } from 'node:crypto'
@@ -72,8 +71,8 @@ builder.mutationField('login', (t) =>
       email: t.arg.string({ required: true }),
       password: t.arg.string({ required: true }),
     },
-    resolve: async (_parent, { email, password }) => {
-      const user = await prisma.user1.findUnique({
+    resolve: async (_parent, { email, password }, context) => {
+      const user = await context.prisma.user1.findUnique({
         where: { email: email.trim().toLowerCase() },
         select: {
           id: true,

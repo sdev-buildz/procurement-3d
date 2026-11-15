@@ -1,5 +1,4 @@
-import { prisma } from '@packages/db/prisma'
-import type { User1 } from '@packages/db/prisma-client'
+import type { PrismaClient, User1 } from '@packages/db/prisma-client'
 import { authenticate } from '@packages/web-app-utils/node/yoga-node/authenticate'
 import {
   isWsContext,
@@ -22,12 +21,12 @@ const isValidAuthPayload = (user: unknown): user is Pick<User1, 'id'> => {
  * Used as a middleware, when the request packet is entering.
  */
 export const initGraphqlContext = async (
-  context: GraphqlContextType
+  context: GraphqlContextType & { prisma: PrismaClient }
 ): Promise<CustomGraphqlContextType> => {
   const payload = authenticate(context)
   let user: Pick<User1, 'id' | 'email' | 'role'> | undefined | null
   if (isValidAuthPayload(payload)) {
-    user = await prisma.user1.findFirst({
+    user = await context.prisma.user1.findFirst({
       select: {
         id: true,
         email: true,
@@ -42,6 +41,7 @@ export const initGraphqlContext = async (
     ...(user && user !== null
       ? { currentUser: user }
       : { currentUser: undefined }),
+    prisma: context.prisma,
     reqOrigin: isWsContext(context)
       ? getHeaderValue(context.extra.request.headers.origin)
       : (context.request.headers.get('origin') ?? ''),

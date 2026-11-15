@@ -11,7 +11,7 @@ import type {
   VehicleModel,
   VehiclePart,
 } from '../../generated/prisma-client'
-import { prisma } from '../prisma'
+import { prisma } from '../prisma-node'
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const TEST_PASSWORD_HASH =

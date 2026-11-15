@@ -1,4 +1,3 @@
-import { prisma } from '@packages/db/prisma'
 import { ComplianceStatus, type BidLineItem } from '@packages/db/prisma-client'
 import { builder } from '../lib/builder'
 import { ComplianceEnumRef, CountryEnumRef, RfqRef } from '../prisma-objects'
@@ -72,7 +71,7 @@ builder.queryField('bidsOfRfq', (t) =>
       } else {
         Object.assign(query, extraSelect)
       }
-      return prisma.rfq.findFirst({
+      return ctx.prisma.rfq.findFirst({
         ...query,
         where: {
           id: args.rfqId,

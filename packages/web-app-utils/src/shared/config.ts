@@ -63,7 +63,9 @@ export const sharedConfig = {
 
   /** The port of this server's endpoint */
   environment: (process.env.IS_PRODUCTION === 'true' ||
-  process.env.CI === 'true'
+  process.env.CI === 'true' ||
+  process.env.NODE_ENV === 'production' ||
+  navigator.userAgent === 'Cloudflare-Workers'
     ? 'PROD'
     : 'DEV') as 'PROD' | 'DEV',
 

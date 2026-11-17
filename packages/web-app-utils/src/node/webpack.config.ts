@@ -162,7 +162,13 @@ export const getWebpackConfig = (
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: 'public', to: 'static/public' },
+          {
+            from: 'public',
+            to: '.',
+            globOptions: {
+              ignore: ['**/index.html'],
+            },
+          },
           { from: 'assets', to: 'static/assets' },
         ],
       }),

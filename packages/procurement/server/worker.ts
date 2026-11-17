@@ -8,8 +8,10 @@ import {
   type ConnectionInitMessage,
 } from 'graphql-ws'
 import { createYoga } from 'graphql-yoga'
+import { useSofa } from 'sofa-api'
 import { schema } from './schema'
 import { initGraphqlContext } from './util/initGraphqlContext'
+import { sofaOpenAPI } from './util/sofaOpenAPI'
 
 type EnvelopedExecutionArgs = ExecutionArgs & {
   rootValue: {
@@ -48,6 +50,15 @@ const yoga = createYoga<{ prisma: PrismaClient }>({
   },
   graphiql: {
     subscriptionsProtocol: 'WS',
+  },
+})
+
+const sofa = useSofa({
+  basePath: '/api/rest',
+  schema,
+  openAPI: sofaOpenAPI,
+  swaggerUI: {
+    endpoint: '/swagger',
   },
 })
 
@@ -149,6 +160,10 @@ const handleWebSocket = (request: Request): Response => {
  */
 async function fetchWorker(request: Request): Promise<Response> {
   const { pathname } = new URL(request.url)
+  if (pathname === '/api/rest' || pathname.startsWith('/api/rest/')) {
+    return sofa.fetch(request)
+  }
+
   if (pathname !== '/api/graphql') {
     return new Response('Not Found', { status: 404 })
   }

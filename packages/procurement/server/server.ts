@@ -16,6 +16,7 @@ import { useSofa } from 'sofa-api'
 import { WebSocketServer } from 'ws'
 import { config } from './config'
 import { schema } from './schema'
+import { sofaOpenAPI } from './util/sofaOpenAPI'
 import { yoga } from './util/yogaServerInstance'
 
 const server = createServer(
@@ -32,13 +33,15 @@ const server = createServer(
       return
     }
 
-    if (request.url?.startsWith('/api/')) {
-      yoga(request, response)
+    const pathname = new URL(request.url ?? '/', 'https://localhost').pathname
+    if (pathname === '/api/rest' || pathname.startsWith('/api/rest/')) {
+      sofa(request, response)
       return
     }
 
-    if (request.url?.startsWith('/rest/')) {
-      sofa(request, response)
+    if (pathname.startsWith('/api/')) {
+      // GraphQL api is served at /api/graphql
+      yoga(request, response)
       return
     }
 
@@ -48,8 +51,9 @@ const server = createServer(
 )
 
 const sofa = useSofa({
-  basePath: '/rest',
+  basePath: '/api/rest',
   schema,
+  openAPI: sofaOpenAPI,
   swaggerUI: {
     endpoint: '/swagger',
   },
@@ -72,6 +76,7 @@ server.on('upgrade', (request, socket, head) => {
 
 server.listen(config.port, process.env.HOST ?? 'localhost', () => {
   logger.info(`Visit https://localhost:${config.port}/api/graphql`)
+  logger.info(`Visit https://localhost:${config.port}/api/rest/swagger`)
   logger.info(`Visit https://localhost:${config.port}/`)
 
   listeningStatus.acceptingNewConnections = true

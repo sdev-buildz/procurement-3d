@@ -2,7 +2,14 @@
     <h1 align="center">Enterprise Procurement Workspace and a Embedded 3D Configuration Workspace</h1>
 </hgroup>
 
-You can access the micro-app (3D editor) at https://sdev-buildz.github.io/procurement-3d/.
+### Deployment - Live Environments & API Docs
+
+- **Host Application:** https://procurement-host.sdev-buildz.workers.dev
+- **Micro-App:** https://procurement-micro-app.sdev-buildz.workers.dev
+- **REST API (Swagger):** https://procurement-host.sdev-buildz.workers.dev/api/rest/swagger
+- **GraphQL API (GraphiQL):** https://procurement-host.sdev-buildz.workers.dev/api/graphql
+
+### Overview
 
 I have a constant 120 FPS when using the micro-app on my laptop. My laptop is Motobook 60 Pro which has an Intel Core Ultra 5 225H 16 Core CPU (1.70 GHz), 16 GB RAM, 512 GB SSD, Intel Arc 130T GPU (8GB) (128 MB), a monitor with 2.8 K resolution, and 120 FPS refresh rate.
 

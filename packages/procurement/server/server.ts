@@ -3,6 +3,7 @@
  * @packageDocumentation
  */
 import { logger } from '@packages/logger'
+import { prisma } from '@packages/db/prisma-node'
 import {
   getGraphqlWsHandler,
   listeningStatus,
@@ -17,6 +18,7 @@ import { WebSocketServer } from 'ws'
 import { config } from './config'
 import { schema } from './schema'
 import { sofaOpenAPI } from './util/sofaOpenAPI'
+import { initGraphqlContext } from './util/initGraphqlContext'
 import { yoga } from './util/yogaServerInstance'
 
 const server = createServer(
@@ -53,6 +55,11 @@ const server = createServer(
 const sofa = useSofa({
   basePath: '/api/rest',
   schema,
+  context: (context) =>
+    initGraphqlContext({
+      request: context.request as unknown as Request,
+      prisma,
+    }),
   openAPI: sofaOpenAPI,
   swaggerUI: {
     endpoint: '/swagger',

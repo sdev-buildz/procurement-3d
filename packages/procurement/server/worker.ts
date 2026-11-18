@@ -53,14 +53,16 @@ const yoga = createYoga<{ prisma: PrismaClient }>({
   },
 })
 
-const sofa = useSofa({
-  basePath: '/api/rest',
-  schema,
-  openAPI: sofaOpenAPI,
-  swaggerUI: {
-    endpoint: '/swagger',
-  },
-})
+const createSofa = (request: Request, prisma: PrismaClient) =>
+  useSofa({
+    basePath: '/api/rest',
+    schema,
+    context: () => initGraphqlContext({ request, prisma }),
+    openAPI: sofaOpenAPI,
+    swaggerUI: {
+      endpoint: '/swagger',
+    },
+  })
 
 const graphqlWsServer = makeServer<
   ConnectionInitMessage['payload'],
@@ -161,7 +163,12 @@ const handleWebSocket = (request: Request): Response => {
 async function fetchWorker(request: Request): Promise<Response> {
   const { pathname } = new URL(request.url)
   if (pathname === '/api/rest' || pathname.startsWith('/api/rest/')) {
-    return sofa.fetch(request)
+    const prisma = createPrismaClient()
+    try {
+      return await createSofa(request, prisma).fetch(request)
+    } finally {
+      await prisma.$disconnect()
+    }
   }
 
   if (pathname !== '/api/graphql') {

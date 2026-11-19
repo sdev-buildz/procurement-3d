@@ -1,6 +1,7 @@
 import './auth'
 import './dashboards'
 import { builder } from './lib/builder'
+import './oidc'
 import './prisma-objects'
 
 /**

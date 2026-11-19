@@ -3,7 +3,13 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { ConfigEditor } from '@packages/embed-3d'
 import { UserRole } from '@types-gen-react-apollo'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from 'react-router'
 import { ReviewBids } from './components/Dashboards/ReviewBids'
 import { SalesEditor } from './components/Dashboards/SalesEditor'
 import { HomePage } from './components/HomePage/HomePage'
@@ -42,6 +48,20 @@ const theme = createTheme({
   },
 })
 
+const RootRedirect = () => {
+  const location = useLocation()
+  return (
+    <Navigate
+      to={{
+        pathname: '/login',
+        search: location.search,
+        hash: location.hash,
+      }}
+      replace
+    />
+  )
+}
+
 /**
  * The React App with the navbar, pages, routing, etc...
  * It includes the whole App Layout.
@@ -64,7 +84,7 @@ export function App() {
                   isLoggedIn && user ? (
                     <Navigate to={getRoleHomePath(user.role)} replace />
                   ) : (
-                    <Navigate to='/login' replace />
+                    <RootRedirect />
                   )
                 }
               />

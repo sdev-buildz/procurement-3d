@@ -76,8 +76,20 @@ type LoginUser {
 type Mutation {
   approveBids(ids: [Int!]!): [BidLineItem!]
 
+  """Exchange a Google authorization code and log in the user."""
+  exchangeAuthCode(authorizationCode: String!, pkceSessionToken: String!): LoginResult
+
   """Authenticate with an email and password."""
   login(email: String!, password: String!): LoginResult
+
+  """
+  Provide an authorization URL and PKCE values for the Google sign-in button.
+  """
+  oidcInit: OidcInitRes
+}
+
+type OidcInitRes {
+  authorizationUrl: String
 }
 
 input PaginationInput {

@@ -16,6 +16,7 @@ import { useContext, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { AppContext } from '../../contexts/AppContext'
 import { getRoleHomePath, isUserRole } from '../../util/auth'
+import { GoogleSsoButton } from './GoogleSsoButton'
 
 const loginMutation = gql`
   mutation Login($email: String!, $password: String!) {
@@ -173,6 +174,7 @@ export const LoginPage = () => {
             </Button>
           </Box>
         </Stack>
+        <GoogleSsoButton />
       </Paper>
     </Container>
   )

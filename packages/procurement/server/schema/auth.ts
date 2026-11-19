@@ -31,15 +31,20 @@ const UserRef = builder.objectRef<LoginResult['user']>('LoginUser').implement({
   }),
 })
 
-const LoginResultRef = builder.objectRef<LoginResult>('LoginResult').implement({
-  fields: (t) => ({
-    token: t.exposeString('token'),
-    user: t.field({
-      type: UserRef,
-      resolve: ({ user }) => user,
+/**
+ * LoginResult
+ */
+export const LoginResultRef = builder
+  .objectRef<LoginResult>('LoginResult')
+  .implement({
+    fields: (t) => ({
+      token: t.exposeString('token'),
+      user: t.field({
+        type: UserRef,
+        resolve: ({ user }) => user,
+      }),
     }),
-  }),
-})
+  })
 
 const derivePasswordHash = (password: string, salt: string) =>
   new Promise<Buffer>((resolve, reject) => {

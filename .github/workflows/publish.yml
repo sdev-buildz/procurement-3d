@@ -3,6 +3,8 @@ name: Publish the Apps
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -12,12 +14,13 @@ permissions:
 
 # Allow only one concurrent deployment to avoid conflicts
 concurrency:
-  group: 'pages'
+  group: 'publish-${{ github.event.pull_request.number || github.ref }}'
   cancel-in-progress: true
 
 jobs:
   publish-micro-app:
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       # v7
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
@@ -47,20 +50,30 @@ jobs:
               - 'packages/micro-app/**'
               - 'pnpm-lock.yaml'
 
+      - name: Set deployment origins
+        id: deployment
+        env:
+          ORIGIN: ${{ vars.ORIGIN }}
+          WEB_CLIENT_ORIGIN: ${{ vars.WEB_CLIENT_ORIGIN }}
+          EMBED_CLIENT_ORIGIN: ${{ vars.EMBED_CLIENT_ORIGIN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: node ./scripts/set-deployment-origins.ts
+
       # Build React bundles and Prisma Client.
       - name: Build
         run: pnpm run build
         env:
           # Map repository variables to process.env
-          ORIGIN: ${{ vars.ORIGIN }}
-          WEB_CLIENT_ORIGIN: ${{ vars.WEB_CLIENT_ORIGIN }}
-          EMBED_CLIENT_ORIGIN: ${{ vars.EMBED_CLIENT_ORIGIN }}
+          ORIGIN: ${{ steps.deployment.outputs.origin }}
+          WEB_CLIENT_ORIGIN: ${{ steps.deployment.outputs.web_client_origin }}
+          EMBED_CLIENT_ORIGIN: ${{ steps.deployment.outputs.embed_client_origin }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
       # Deploy Prisma migrations
       - name: Run Prisma migrations
-        if: steps.should-deploy.outputs.prisma == 'true'
+        if: github.event_name != 'pull_request' && steps.should-deploy.outputs.prisma == 'true'
         run: pnpm run prisma:migrate-prod
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -68,7 +81,7 @@ jobs:
 
       # Seed the database
       - name: Seed the database
-        if: steps.should-deploy.outputs.prisma == 'true'
+        if: github.event_name != 'pull_request' && steps.should-deploy.outputs.prisma == 'true'
         run: pnpm run prisma:seed
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -84,7 +97,7 @@ jobs:
         uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0
         with:
           workingDirectory: ./packages/procurement
-          command: 'deploy'
+          command: 'deploy --name ${{ steps.deployment.outputs.host_name }}'
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_HOST_APP }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           packageManager: pnpm
@@ -100,22 +113,22 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
           JWE_KEY: ${{ secrets.JWE_KEY }}
-          EMBED_CLIENT_ORIGIN: ${{ vars.EMBED_CLIENT_ORIGIN }}
-          ORIGIN: ${{ vars.ORIGIN }}
           GOOGLE_OAUTH2_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH2_CLIENT_ID }}
           GOOGLE_OAUTH2_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH2_CLIENT_SECRET }}
+          EMBED_CLIENT_ORIGIN: ${{ steps.deployment.outputs.embed_client_origin }}
+          ORIGIN: ${{ steps.deployment.outputs.origin }}
 
       # Set micro-app frame ancestor
       - name: Set micro-app frame ancestor
         run: pnpm --filter @packages/embed-3d run set-host-origin
         env:
-          HOST_ORIGIN: ${{ vars.ORIGIN }}
+          HOST_ORIGIN: ${{ steps.deployment.outputs.origin }}
 
       # Deploy micro-app frontend to Cloudflare
       - name: Deploy micro-app to Cloudflare
         uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0
         with:
           workingDirectory: ./packages/embed
-          command: 'deploy'
+          command: 'deploy --name ${{ steps.deployment.outputs.embed_name }}'
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_MICRO_APP }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

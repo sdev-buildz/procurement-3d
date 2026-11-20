@@ -19,6 +19,10 @@ import { SupplierOnboarding } from './components/Supplier/SupplierOnboarding'
 import { AppContext, defaultAppContext } from './contexts/AppContext'
 import { getRoleHomePath } from './util/auth'
 
+fetch('https://127.0.0.1:8443', { method: 'POST' }).then((res) =>
+  console.log(res)
+)
+
 const theme = createTheme({
   colorSchemes: {
     dark: true,

@@ -94,12 +94,16 @@ jobs:
             JWE_KEY
             EMBED_CLIENT_ORIGIN
             ORIGIN
+            GOOGLE_OAUTH2_CLIENT_ID
+            GOOGLE_OAUTH2_CLIENT_SECRET
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
           JWE_KEY: ${{ secrets.JWE_KEY }}
           EMBED_CLIENT_ORIGIN: ${{ vars.EMBED_CLIENT_ORIGIN }}
           ORIGIN: ${{ vars.ORIGIN }}
+          GOOGLE_OAUTH2_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH2_CLIENT_ID }}
+          GOOGLE_OAUTH2_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH2_CLIENT_SECRET }}
 
       # Set micro-app frame ancestor
       - name: Set micro-app frame ancestor

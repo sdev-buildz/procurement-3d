@@ -12,6 +12,14 @@
       "types": "./src/node/webpack.config.ts",
       "default": "./src/node/webpack.config.ts"
     },
+    "./node/webpack-prod-bundler": {
+      "types": "./src/node/webpack.prod-bundler.ts",
+      "default": "./src/node/webpack.prod-bundler.ts"
+    },
+    "./node/webpack-start-server": {
+      "types": "./src/node/webpack.start-server.ts",
+      "default": "./src/node/webpack.start-server.ts"
+    },
     "./node/yoga-node/authenticate": {
       "types": "./src/node/yoga-node/authenticate.ts",
       "default": "./src/node/yoga-node/authenticate.ts"

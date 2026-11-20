@@ -22,6 +22,7 @@
   "type": "module",
   "dependencies": {
     "@ai-sdk/groq": "^4.0.76",
+    "@ai-sdk/openai-compatible": "^3.0.82",
     "@openrouter/ai-sdk-provider": "^3.1.0",
     "@packages/web-app-utils": "workspace:*",
     "@react-three/a11y": "^3.0.0",

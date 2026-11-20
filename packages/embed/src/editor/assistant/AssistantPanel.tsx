@@ -63,6 +63,7 @@ export function AssistantPanel({
     name: 'groq',
     model: 'qwen/qwen3.8-27b',
     key: '',
+    url: 'https://127.0.0.1:8443',
   })
 
   useEffect(() => {

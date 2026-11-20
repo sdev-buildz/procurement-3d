@@ -96,6 +96,7 @@ const resources = {
       assistantProviderPlaceholder: 'Provider',
       assistantModelPlaceholder: 'Model',
       assistantKeyPlaceholder: 'API Key',
+      assistantUrlPlaceholder: 'OpenAI-compatible base URL',
       assistantPlaceholder: 'Ask about this layout…',
       send: 'Send',
       accept: 'Accept change',

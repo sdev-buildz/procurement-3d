@@ -58,7 +58,44 @@ export function AssistantApiConfig({
             />
             <span>OpenRouter</span>
           </label>
+          <label>
+            <input
+              name='ai-assistant-provider'
+              value={'local' satisfies AssistentApiKey['name']}
+              type='radio'
+              checked={assistentApiKey.name === 'local'}
+              onChange={() =>
+                setAssistentApiKey({
+                  ...assistentApiKey,
+                  name: 'local',
+                  url: assistentApiKey.url || 'http://localhost:1234/v1',
+                })
+              }
+            />
+            <span>Local / URL</span>
+          </label>
         </fieldset>
+
+        {assistentApiKey.name === 'local' && (
+          <label className='ce-apikey-field' htmlFor='ce-assistant-url'>
+            <span>{t('assistantUrlPlaceholder')}</span>
+            <input
+              id='ce-assistant-url'
+              name='base-url'
+              value={assistentApiKey.url}
+              type='url'
+              onChange={(event) =>
+                setAssistentApiKey({
+                  ...assistentApiKey,
+                  url: event.target.value,
+                })
+              }
+              placeholder='https://127.0.0.1:8443'
+              autoComplete='url'
+              spellCheck={false}
+            />
+          </label>
+        )}
 
         {/* Model name */}
         <label className='ce-apikey-field' htmlFor='ce-assistant-model'>

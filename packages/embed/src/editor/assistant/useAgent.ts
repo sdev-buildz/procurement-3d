@@ -1,4 +1,5 @@
 import { createGroq } from '@ai-sdk/groq'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 import { isStepCount, streamText, tool } from 'ai'
 import { z } from 'zod'
@@ -14,9 +15,10 @@ export type UseAssistantResult = {
 
 /** AI API key */
 export type AssistentApiKey = {
-  name: 'groq' | 'openrouter'
+  name: 'groq' | 'openrouter' | 'local'
   model: string
   key: string
+  url: string
 }
 
 /**
@@ -160,28 +162,66 @@ export const useAssistant = (
   }
 
   const messageAssistant = async (input: string) => {
-    if (
-      !props.assistentApiKey?.key &&
-      !props.assistentApiKey?.model &&
-      !props.assistentApiKey?.name
-    ) {
+    if (!props.assistentApiKey?.model) {
+      props.setStreamedMessage(
+        'No model provided. You can provide one using the form below.'
+      )
+      return
+    }
+
+    if (props.assistentApiKey.name !== 'local' && !props.assistentApiKey.key) {
       props.setStreamedMessage(
         'No API key provided. You can provide one using the form below.'
       )
       return
     }
 
-    const provider =
-      props.assistentApiKey.name === 'openrouter'
-        ? createOpenRouter
-        : createGroq
-    const providerHandle = provider({ apiKey: props.assistentApiKey.key })
+    let model
+    if (props.assistentApiKey.name === 'openrouter') {
+      const providerHandle = createOpenRouter({
+        apiKey: props.assistentApiKey.key,
+      })
+      model = providerHandle(props.assistentApiKey.model)
+    } else if (props.assistentApiKey.name === 'groq') {
+      const providerHandle = createGroq({
+        apiKey: props.assistentApiKey.key,
+      })
+      model = providerHandle(props.assistentApiKey.model)
+    } else {
+      if (!props.assistentApiKey.url) {
+        props.setStreamedMessage(
+          'No base URL provided. Enter an OpenAI-compatible server URL.'
+        )
+        return
+      }
+
+      let baseURL: string
+      try {
+        baseURL = new URL(props.assistentApiKey.url)
+          .toString()
+          .replace(/\/$/, '')
+      } catch {
+        props.setStreamedMessage(
+          'Invalid base URL. Enter a complete URL such as http://localhost:1234/v1.'
+        )
+        return
+      }
+
+      const providerHandle = createOpenAICompatible({
+        name: 'local',
+        baseURL,
+        ...(props.assistentApiKey.key
+          ? { apiKey: props.assistentApiKey.key }
+          : {}),
+      })
+      model = providerHandle.chatModel(props.assistentApiKey.model)
+    }
 
     props.setStreaming(true)
     props.setToolCallMessages([])
 
     const { textStream } = streamText({
-      model: providerHandle(props.assistentApiKey.model),
+      model,
       system:
         'You are assistant in an interactive 3D electrical room configuration tool.',
       prompt: input,

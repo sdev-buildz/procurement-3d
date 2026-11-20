@@ -93,7 +93,7 @@ jobs:
 
       # Deploy host app's frontend and API server to Cloudflare
       - name: Deploy host to Cloudflare
-        if: steps.should-deploy.outputs.host-app == 'true'
+        # if: steps.should-deploy.outputs.host-app == 'true'
         uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0
         with:
           workingDirectory: ./packages/procurement

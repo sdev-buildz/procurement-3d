@@ -10,7 +10,7 @@ import { useDrag } from './editor/hooks/useDrag'
 import { useHistory } from './editor/hooks/useHistory'
 import { useViolations } from './editor/hooks/useViolations'
 import type { ItemType, LayoutItem } from './editor/items'
-import { ROOM } from './editor/items'
+import { getDefaultItemLabel, ROOM } from './editor/items'
 import { constrainPosition } from './editor/layout'
 import { BomPanel } from './editor/panels/BomPanel'
 import { CatalogPanel } from './editor/panels/CatalogPanel'
@@ -36,6 +36,7 @@ export function ConfigEditor(): ReactElement {
   const [proposal, setProposal] = useState<AssistantProposal | null>(null)
   const [announcement, setAnnouncement] = useState('')
   const [isPerfPanelOpen, setIsPerfPanelOpen] = useState<boolean>(false)
+  const [showLabels, setShowLabels] = useState(true)
   const [lodBound, setLodBound] = useState(0)
 
   const [dpr, setDpr] = useState<Dpr>([1, 1.5])
@@ -192,10 +193,13 @@ export function ConfigEditor(): ReactElement {
   }
 
   const addItem = (item: ItemType, x: number, z: number) => {
+    const id = makeId(item)
+    const label = getDefaultItemLabel(item, items)
     const layoutItem: LayoutItem = {
-      id: makeId(item),
+      id,
       item: item,
-      ...constrainPosition({ item, id: '', x: 0, z: 0, rotation: 0 }, x, z),
+      label,
+      ...constrainPosition({ item, id, label, x: 0, z: 0, rotation: 0 }, x, z),
       rotation: 0,
     }
     historyState.commitItems([...items, layoutItem])
@@ -214,6 +218,15 @@ export function ConfigEditor(): ReactElement {
     historyState.commitItems(
       items.map((item) =>
         item.id === selectedItem.id ? { ...item, ...position } : item
+      )
+    )
+  }
+
+  const changeLabel = (label: string) => {
+    if (!selectedItem) return
+    historyState.commitItems(
+      items.map((item) =>
+        item.id === selectedItem.id ? { ...item, label } : item
       )
     )
   }
@@ -302,6 +315,7 @@ export function ConfigEditor(): ReactElement {
             proposal={proposal}
             violations={violations}
             dpr={dpr}
+            showLabels={showLabels}
           />
 
           <aside className='ce-right-panels'>
@@ -313,6 +327,8 @@ export function ConfigEditor(): ReactElement {
               open={isPerfPanelOpen}
               setIsOpen={setIsPerfPanelOpen}
               itemPlaced={itemPlaced}
+              showLabels={showLabels}
+              setShowLabels={setShowLabels}
             />
             <SelectionInspector
               items={items}
@@ -321,6 +337,7 @@ export function ConfigEditor(): ReactElement {
               isPerfPanelOpen={isPerfPanelOpen}
               setIsPerfPanelOpen={setIsPerfPanelOpen}
               onPositionChange={changePosition}
+              onLabelChange={changeLabel}
               onRotate={rotateSelection}
               onDelete={removeSelection}
               onAlign={alignSelection}

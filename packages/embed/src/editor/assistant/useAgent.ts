@@ -108,7 +108,7 @@ export const useAssistant = (
   const suggestSolution = tool({
     description: 'Suggest a solution by moving an item',
     inputSchema: z.object({
-      item: LayoutItemScheme.omit({ item: true }).describe(
+      item: LayoutItemScheme.omit({ item: true, label: true }).describe(
         'The new state of the item to move'
       ),
       message: z.string().optional().describe('message to the user'),

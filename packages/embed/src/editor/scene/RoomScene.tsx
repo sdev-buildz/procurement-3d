@@ -19,6 +19,7 @@ import { InstancedMeshIndicators } from './model-wrappers/InstancedMeshIndicator
 import { NestedInstances } from './model-wrappers/NestedInstances'
 import { InstancedEquipmentModels } from './primitives-dev/InstancedEquipmentModels'
 import { RoomBounds } from './RoomBounds'
+import { SceneItemLabels } from './SceneItemLabels'
 
 type RoomSceneProps = {
   /** Current room equipment. */
@@ -34,6 +35,7 @@ type RoomSceneProps = {
   /** Selects an item, optionally extending the current selection. */
   onSelect: (id: string, extend: boolean) => void
   dpr: Dpr
+  showLabels: boolean
 } & Omit<ComponentProps<typeof RoomBounds>, 'handleItemUp'>
 
 function CameraControls({
@@ -74,6 +76,7 @@ export function RoomScene({
   topDown,
   onSelect,
   onClearSelection,
+  showLabels,
   itemPlaced,
   onPlace,
   dragHandlers,
@@ -173,6 +176,15 @@ export function RoomScene({
             draggingId={draggingId}
             handleItemUp={handleItemUp}
           ></RoomBounds>
+
+          {showLabels ? (
+            <SceneItemLabels
+              items={items}
+              selectedIds={selectedIds}
+              violationIds={violationIds}
+              topDown={topDown}
+            />
+          ) : null}
 
           <InstancedEquipmentModels
             items={items}

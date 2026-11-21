@@ -691,6 +691,21 @@
   outline: none;
 }
 
+.ce-scene-label {
+  padding: 3px 7px;
+  border: 1px solid rgb(105 215 189 / 45%);
+  border-radius: 4px;
+  color: #e8eff4;
+  background: rgb(16 24 32 / 88%);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+}
+
 .ce-room-stats-parent {
   position: relative;
   width: 100%;
@@ -935,6 +950,24 @@
   margin-bottom: 7px;
   color: #9aa9b2;
   font-size: 0.625rem;
+}
+
+.ce-label-input {
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 12px;
+  padding: 8px;
+  border: 1px solid #354650;
+  border-radius: 6px;
+  outline: 0;
+  color: #e4edf1;
+  background: #15212a;
+  font: inherit;
+  font-size: 0.6875rem;
+}
+
+.ce-label-input:focus {
+  border-color: var(--ce-accent);
 }
 
 .ce-position-fields {

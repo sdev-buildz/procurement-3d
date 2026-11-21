@@ -15,6 +15,7 @@ function layoutItem(
   return {
     id,
     item: getEquipment('drive'),
+    label: id,
     x,
     z,
     rotation: 0,

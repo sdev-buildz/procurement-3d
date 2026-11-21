@@ -5,7 +5,14 @@ import { getEquipment, type LayoutItem } from '../items'
 import { useDrag } from './useDrag'
 
 const items: LayoutItem[] = [
-  { id: 'drive-1', item: getEquipment('drive'), x: 0, z: 0, rotation: 0 },
+  {
+    id: 'drive-1',
+    item: getEquipment('drive'),
+    label: 'drive 1',
+    x: 0,
+    z: 0,
+    rotation: 0,
+  },
 ]
 
 describe('useDrag', () => {

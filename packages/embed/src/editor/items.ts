@@ -313,6 +313,7 @@ export function getEquipment(name: EquipmentName): ItemType {
 export const LayoutItemScheme = z.object({
   id: z.string(),
   item: z.number(),
+  label: z.string(),
   x: z.number(),
   z: z.number(),
   rotation: z.number(),
@@ -323,6 +324,8 @@ export type LayoutItem = {
   /** Stable identifier used by selection and connections. */
   id: string
   item: ItemType
+  /** Editable label displayed above the equipment in the scene. */
+  label: string
   /** Center position in meters along the room X axis. */
   x: number
   /** Center position in meters along the room Z axis. */
@@ -331,4 +334,19 @@ export type LayoutItem = {
   rotation: number
   /** IDs of other equipment connected by visible wires. */
   connections?: string[]
+}
+
+/** Returns the first unused default label for equipment of the same type. */
+export function getDefaultItemLabel(
+  item: ItemType,
+  existingItems: readonly LayoutItem[]
+): string {
+  const existingLabels = new Set(
+    existingItems
+      .filter((existingItem) => existingItem.item.id === item.id)
+      .map((existingItem) => existingItem.label)
+  )
+  let index = 1
+  while (existingLabels.has(`${item.name} ${index}`)) index += 1
+  return `${item.name} ${index}`
 }

@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { assistantReplyExample } from './assistant/assistantReply'
 import { createLayoutHistory, layoutHistoryReducer } from './hooks/useHistory'
 import { findRuleViolations } from './hooks/useViolations'
-import { EQUIPMENT, getEquipment, type LayoutItem } from './items'
+import {
+  EQUIPMENT,
+  getDefaultItemLabel,
+  getEquipment,
+  type LayoutItem,
+} from './items'
 import { constrainPosition, initialLayout as items, snapToGrid } from './layout'
 
 describe('layout helpers', () => {
@@ -12,6 +17,17 @@ describe('layout helpers', () => {
     expect(getEquipment('panel').models[0]?.url).toBe('')
     expect(EQUIPMENT.filter((item) => item.models[0]?.url === '')).toHaveLength(
       3
+    )
+  })
+
+  it('creates a unique numbered default label for each equipment type', () => {
+    const drive = getEquipment('drive')
+    expect(getDefaultItemLabel(drive, items)).toBe('drive 2')
+    expect(
+      getDefaultItemLabel(drive, [...items, { ...items[0]!, label: 'drive 2' }])
+    ).toBe('drive 3')
+    expect(getDefaultItemLabel(getEquipment('cabinet'), items)).toBe(
+      'cabinet 2'
     )
   })
 
@@ -62,6 +78,7 @@ describe('layout history', () => {
       {
         id: 'panel-2',
         item: getEquipment('panel'),
+        label: 'panel 2',
         x: 2,
         z: 2,
         rotation: 0,

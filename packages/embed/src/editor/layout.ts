@@ -6,6 +6,7 @@ export const initialLayout: LayoutItem[] = [
   {
     id: 'drive-1',
     item: getEquipment('drive'),
+    label: 'drive 1',
     x: -5,
     z: -1.5,
     rotation: 0,
@@ -13,6 +14,7 @@ export const initialLayout: LayoutItem[] = [
   {
     id: 'cabinet-1',
     item: getEquipment('cabinet'),
+    label: 'cabinet 1',
     x: 0,
     z: -1.5,
     rotation: 0,
@@ -20,6 +22,7 @@ export const initialLayout: LayoutItem[] = [
   {
     id: 'panel-1',
     item: getEquipment('panel'),
+    label: 'panel 1',
     x: 5,
     z: 1.5,
     rotation: 0,

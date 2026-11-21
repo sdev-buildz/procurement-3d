@@ -3,6 +3,7 @@ import { PerformanceMonitor } from '@react-three/drei'
 import type { Dpr, ThreeEvent } from '@react-three/fiber'
 import { Canvas, useThree } from '@react-three/fiber'
 import { Perf } from 'r3f-perf'
+import { Html } from '@react-three/drei'
 import {
   useContext,
   useEffect,
@@ -34,6 +35,7 @@ type RoomSceneProps = {
   /** Selects an item, optionally extending the current selection. */
   onSelect: (id: string, extend: boolean) => void
   dpr: Dpr
+  showLabels: boolean
 } & Omit<ComponentProps<typeof RoomBounds>, 'handleItemUp'>
 
 function CameraControls({
@@ -74,6 +76,7 @@ export function RoomScene({
   topDown,
   onSelect,
   onClearSelection,
+  showLabels,
   itemPlaced,
   onPlace,
   dragHandlers,
@@ -173,6 +176,21 @@ export function RoomScene({
             draggingId={draggingId}
             handleItemUp={handleItemUp}
           ></RoomBounds>
+
+          {showLabels
+            ? items.map((item) => (
+                <Html
+                  key={item.id}
+                  position={[item.x, item.item.height + 0.2, item.z]}
+                  center
+                  distanceFactor={10}
+                  pointerEvents='none'
+                  zIndexRange={[20, 0]}
+                >
+                  <div className='ce-scene-label'>{item.label}</div>
+                </Html>
+              ))
+            : null}
 
           <InstancedEquipmentModels
             items={items}

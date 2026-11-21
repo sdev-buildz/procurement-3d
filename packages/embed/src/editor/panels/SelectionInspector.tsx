@@ -9,6 +9,7 @@ type SelectionInspectorProps = {
   selectedItems: LayoutItem[]
   selectedItem: LayoutItem | null
   onPositionChange: (axis: 'x' | 'z', value: number) => void
+  onLabelChange: (label: string) => void
   onRotate: () => void
   onDelete: () => void
   onAlign: () => void
@@ -26,6 +27,7 @@ export function SelectionInspector({
   selectedItems,
   selectedItem,
   onPositionChange,
+  onLabelChange,
   onRotate,
   onDelete,
   onAlign,
@@ -109,6 +111,17 @@ export function SelectionInspector({
                 </small>
               </div>
             </div>
+            <label className='ce-field-label' htmlFor='selected-item-label'>
+              {t('label')}
+            </label>
+            <input
+              id='selected-item-label'
+              className='ce-label-input'
+              type='text'
+              value={selectedItem.label}
+              onChange={(event) => onLabelChange(event.currentTarget.value)}
+              aria-label={t('label')}
+            />
             <label className='ce-field-label'>{t('position')}</label>
 
             {/* Edit Position */}

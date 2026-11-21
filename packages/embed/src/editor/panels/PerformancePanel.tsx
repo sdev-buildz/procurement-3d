@@ -3,7 +3,13 @@ import { useCallback, useContext, useState, type ReactElement } from 'react'
 import { useTranslation } from 'react-i18next'
 import { makeId } from '../../utils/makeId'
 import type { useHistory } from '../hooks/useHistory'
-import { getEquipment, ROOM, type ItemType, type LayoutItem } from '../items'
+import {
+  getDefaultItemLabel,
+  getEquipment,
+  ROOM,
+  type ItemType,
+  type LayoutItem,
+} from '../items'
 import { RoomContext } from '../scene/context'
 
 type PerformancePanelProps = {
@@ -13,6 +19,8 @@ type PerformancePanelProps = {
   open: boolean
   setIsOpen: (open: boolean) => void
   itemPlaced: ItemType | null
+  showLabels: boolean
+  setShowLabels: (show: boolean) => void
 } & Pick<ReturnType<typeof useHistory>, 'commitItems'>
 
 const shadingModes = [
@@ -35,6 +43,8 @@ export function PerformancePanel({
   open,
   setIsOpen,
   itemPlaced,
+  showLabels,
+  setShowLabels,
 }: PerformancePanelProps): ReactElement {
   const { t } = useTranslation()
   const [perfMonitorEnabled, setPerfMonitorEnabled] = useState(true)
@@ -79,6 +89,7 @@ export function PerformancePanel({
       itemsCopy.push({
         id: makeId(itemType),
         item: itemType,
+        label: getDefaultItemLabel(itemType, itemsCopy),
         x,
         z,
         rotation: 0,
@@ -107,6 +118,20 @@ export function PerformancePanel({
             These settings help adjust rendering quality and scene performance.
           </p>
           lod bound ={lodBound}
+          <fieldset className='ce-performance-options'>
+            <legend>{t('labels')}</legend>
+            <label className='ce-check-option' htmlFor='toggle-item-labels'>
+              <input
+                id='toggle-item-labels'
+                type='checkbox'
+                checked={showLabels}
+                onChange={(event) => setShowLabels(event.currentTarget.checked)}
+              />
+              <span>
+                <strong>{t('showLabels')}</strong>
+              </span>
+            </label>
+          </fieldset>
           <fieldset className='ce-performance-options'>
             <legend>Rendering</legend>
 

@@ -35,7 +35,7 @@ export function SelectionInspector({
   setIsPerfPanelOpen,
 }: SelectionInspectorProps): ReactElement {
   const { t } = useTranslation()
-  const [isPropertiesPanelOpen, setIsPropertiesPanelOpen] = useState(true)
+  const [isPropertiesPanelOpen, setIsPropertiesPanelOpen] = useState(false)
 
   const selectionWired =
     selectedItems.length > 1 &&

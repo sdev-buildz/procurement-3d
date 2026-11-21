@@ -4,16 +4,43 @@ import {
   formatCurrencyFromUSD,
   type TargetCurrency,
 } from '../../utils/currency'
-import type { ItemType, LayoutItem } from '../items'
+import type { LayoutItem } from '../items'
 
 /** Aggregated quantity and unit price for one BOM row. */
 type BillOfMaterialsRow = {
-  /** Catalog key for the row. */
-  equipment: ItemType
-  /** Number of matching pieces in the current layout. */
+  /** Stable row key. */
+  id: string
+  /** Display name or translation key for the row. */
+  name: string
+  /** Procurement identifier for the row. */
+  sku: string
+  /** Number of matching pieces or meters in the current layout. */
   quantity: number
-  /** Price for one piece in USD. */
+  /** Price for one piece or meter in USD. */
   unitPrice: number
+}
+
+/** Estimated cost of connection wire, in USD per meter. */
+export const wireUnitPriceUsd = 25
+
+/**
+ * Calculates the total length of unique connection wires in a layout.
+ * Reciprocal connections are counted once, and missing endpoints are ignored.
+ */
+export function calculateConnectionWireLength(items: LayoutItem[]): number {
+  const byId = new Map(items.map((item) => [item.id, item]))
+  let length = 0
+
+  for (const item of items) {
+    for (const connectionId of item.connections ?? []) {
+      if (item.id >= connectionId) continue
+      const connectedItem = byId.get(connectionId)
+      if (!connectedItem) continue
+      length += Math.hypot(connectedItem.x - item.x, connectedItem.z - item.z)
+    }
+  }
+
+  return length
 }
 
 /**
@@ -21,23 +48,38 @@ type BillOfMaterialsRow = {
  * @param items - Current room layout.
  * @returns One row per category present in the room.
  */
-function createBillOfMaterials(items: LayoutItem[]): BillOfMaterialsRow[] {
+export function createBillOfMaterials(
+  items: LayoutItem[]
+): BillOfMaterialsRow[] {
   const rows: BillOfMaterialsRow[] = []
 
   for (const item of items) {
-    const row = rows.find((row) => row.equipment.id === item.item.id)
+    const row = rows.find((row) => row.id === String(item.item.id))
     if (row) {
       row.quantity += 1
     } else {
       rows.push({
-        equipment: item.item,
+        id: String(item.item.id),
+        name: item.item.name,
+        sku: item.item.sku,
         quantity: 1,
         unitPrice: item.item.price,
       })
     }
   }
 
-  return [...rows.values()]
+  const wireLength = calculateConnectionWireLength(items)
+  if (wireLength > 0) {
+    rows.push({
+      id: 'connection-wire',
+      name: 'connectionWire',
+      sku: 'WIRE-1M',
+      quantity: wireLength,
+      unitPrice: wireUnitPriceUsd,
+    })
+  }
+
+  return rows
 }
 
 /**
@@ -64,8 +106,7 @@ export function BomPanel({ items }: { items: LayoutItem[] }): ReactElement {
           <h2>{t('billOfMaterials')}</h2>
         </div>
         <span className='ce-count-pill'>
-          {billOfMaterials.reduce((sum, row) => sum + row.quantity, 0)}{' '}
-          {t('items').toLowerCase()}
+          {items.length} {t('items').toLowerCase()}
         </span>
       </div>
       <div className='ce-table-scroll'>
@@ -80,7 +121,7 @@ export function BomPanel({ items }: { items: LayoutItem[] }): ReactElement {
           </thead>
           <tbody>
             {billOfMaterials.map((row) => (
-              <tr key={row.equipment.id}>
+              <tr key={row.id}>
                 <td>
                   <span
                     className='ce-table-color'
@@ -88,10 +129,14 @@ export function BomPanel({ items }: { items: LayoutItem[] }): ReactElement {
                       backgroundColor: '#000000',
                     }}
                   />
-                  {t(row.equipment.name)}
+                  {t(row.name)}
                 </td>
-                <td>{row.equipment.sku}</td>
-                <td>{row.quantity}</td>
+                <td>{row.sku}</td>
+                <td>
+                  {row.id === 'connection-wire'
+                    ? `${row.quantity.toFixed(2)} m`
+                    : row.quantity}
+                </td>
                 <td>{formatPrice(row.unitPrice)}</td>
               </tr>
             ))}

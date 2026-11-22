@@ -13,9 +13,7 @@ export const HtmlHeadChildren = () => {
         name='description'
         content='Demo website showcasing the apollo client state synchronization. Used in e2e tests.'
       />
-      <title>
-        Emterprise Procurement Workspace and 3D Configuration Workspace
-      </title>
+      <title>Enterprise Procurement and 3D Configuration Workspace</title>
 
       {/* Favicon */}
       <link rel='icon' type='image/svg' href='./static/assets/image.png' />

@@ -107,7 +107,7 @@ export function App() {
                 element={<ReviewBids rfqId={1} />}
               />
               <Route path='/supplier' element={<SupplierOnboarding />} />
-              <Route path='/sales/editor' element={<SalesEditor />} />
+              <Route path='/sales-3d-editor' element={<SalesEditor />} />
               <Route path='/3d-editor' element={<ConfigEditor />} />
               <Route
                 path='/sales-engineer'

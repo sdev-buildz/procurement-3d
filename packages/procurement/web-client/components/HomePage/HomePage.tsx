@@ -72,7 +72,7 @@ const roleHomeContent: Record<
       {
         title: '3D layouts',
         description: 'Create and update spatial designs for your projects.',
-        href: '/sales/editor',
+        href: '/sales-3d-editor',
       },
     ],
   },

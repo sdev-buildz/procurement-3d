@@ -16,17 +16,51 @@ I have a constant 120 FPS when using the micro-app on my laptop. My laptop is Mo
 When I added 500 objects to the scene with instancing, moving or rotating objects causes the frame rate to drop to around 20 to 40 FPS. But my app auto-adjusts by swapping models with their compressed versions and maintains the framerate between 60 and 120 FPS.
 ![3d-editor-micro-app-embedded-inside-host](./assets/embedded-iframe-3d-editor-screenshot.png)
 
-### AI Usage
+## Use of AI Tools:
 
-I used AI to create i18n translations, improve docs such as README.md, spot hidden bugs, polish UI, generate seed data for testing, create the 3D editor micro-app, and summarize manuals and API references.
+I used AI coding assistants to set up context-specific boilerplates; create, improve, and polish UI elements (such as HTML/CSS); set up 3D scenes; establish the 3D editor micro-app layout; generate i18n translations; improve documentation like README.md; analyze large codebases for debugging; generate seed data for testing; and summarize manuals and API references.
 
-I setup guardrails to enforce code quality and security standards using ESLint, Prettier, GitHub CodeQL Action, test cases, AGENTS.md, etc...
+### Guardrails:
 
-I used git worktrees to allow multiple AI agents and myself to work parallely in different branches of the same repository without conflicting with each other’s work.
+I set up guardrails to enforce code quality and security standards using tools such as ESLint (for coding, naming, and syntax conventions, cyclomatic complexity, and file boundaries), Prettier (for code formatting), GitHub CodeQL Action (for code quality and security in GitHub), jscpd (for code deduplication), automated test cases, AGENTS.md, and .copilotignore (to instruct agents to ignore certain files).
 
-Since the 3D viewer is more closely related to visual features, agents working on it spawned real browser instances and took screenshots to analyse the scenes. I kept monitoring at these circumstances to prevent overuse of tokens. Whenever possible, I did the resource heavy tasks such as browser testing, thus reducing token usage.
+When using APIs from external model providers, I enforce de-identification on input queries using regex filters, static secret scanners, and pseudonymization via language models such as openai/privacy-filter and GLiNER-PII. API requests and responses are routed through a local or private proxy server that performs this de-identification. Additionally, tool call requests from agents are reviewed via a human-in-the-loop process or a locally hosted LLM/SLM.
 
-I limited the agents' work areas to specific directories and files to avoid redundant token consumption. Whenever possible, I provided relevant line numbers and file paths, relieving the agents from having to search through the codebase files.
+### Context Optimization:
+
+Whenever possible, I split large tasks into smaller ones so agents do not hallucinate, and I manually handle resource-heavy tasks—such as CI checks with verbose logs—to reduce token usage and hallucinations. I limit agents' work areas to specific directories and files to avoid redundant token consumption, and whenever feasible, I provide relevant line numbers and file paths so agents do not have to search through the entire codebase.
+
+### Agentic Coding Assistants:
+
+I use the Pi AI agent for its high extensibility, pairing it with harnesses such as:
+
+- **Pi Web Access:** To extract web content and convert HTML to Markdown, leveraging browser-like requests and fallback providers to handle bot-protected pages.
+- **pi-vscode:** To access open, active files and selected text.
+- **rpiv-voice:** To input prompts via voice using the OpenAI Whisper model for speech-to-text, reducing time spent typing.
+- **pi-side-agent:** To use Git worktrees, allowing multiple AI agents and me to work in parallel on different branches of the same repository without conflicting with each other’s work.
+
+### CI:
+
+GitHub PRs are reviewed by AI agents such as GitHub Copilot.
+
+### Local LLMs (or Local SLMs):
+
+I use local SLMs to reduce cloud LLM token usage, avoid network latency from cloud API requests, work offline, and keep data private.
+
+My local machine is a Motobook 60 Pro laptop equipped with an Intel Core Ultra 5 225H 16-core CPU, Intel Arc iGPU, 16 GB DDR5 RAM, and a 512 GB SSD. I use llama.cpp, Ollama, and LM Studio to download and run SLMs locally, leveraging Vulkan to utilize my Intel Arc iGPU's unified memory (just as NVIDIA CUDA and Apple Metal utilize NVIDIA GPUs and Apple hardware, respectively). I run K-quantized models for lower memory usage and faster speeds with minimal quality loss, and I enable Flash Attention for faster prompt processing and longer context windows without extra memory overhead. Given my hardware capabilities, I set the maximum context size to 4,000–6,000 tokens to achieve roughly 20 tokens per second on the following local SLMs:
+
+- **Qwen3.5 9B Q4_K_M** (10 GB RAM) – For deep analysis and output.
+- **Qwen2.5 Coder 7B Instruct** (8 GB RAM) – For use alongside a heavy IDE, multiple browser tabs, or Docker containers.
+- **Qwen2.5 Coder 1.5B Instruct** (3 GB RAM) – For fast IDE autocompletions and quick loading.
+
+### External API Models:
+
+For higher inference speeds, faster token generation, and larger context windows, I use the free tiers of external API models such as:
+
+- **GPT-5.6 Luna** (~191–206 tok/s): Routine coding and debugging across the monorepo.
+- **MAI-Code-1.1-Flash:** Routine coding and debugging across the monorepo.
+- **Windsurf Tab 2**: Context-aware inline autocompletions (ghost previews) based on recent changes.
+- **Gemini 4 Hydrogen**: Analyzing and summarizing web pages during web searches.
 
 ## Follow the below steps to run the app locally
 

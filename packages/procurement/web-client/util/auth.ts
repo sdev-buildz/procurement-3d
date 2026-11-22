@@ -19,7 +19,9 @@ type CleanPothos<T> = {
 /**
  * Public identity information retained after successful authentication.
  */
-export type AuthenticatedUser = CleanPothos<LoginUser>
+export type AuthenticatedUser = Omit<CleanPothos<LoginUser>, 'salesProfile'> & {
+  salesProfile: LoginUser['salesProfile']
+}
 
 /**
  * @returns the URL path to the dashboard page associated with the given user role.

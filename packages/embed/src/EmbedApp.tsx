@@ -25,6 +25,10 @@ type EmbedAuthState =
  */
 export function EmbedApp(): ReactElement {
   const [auth, setAuth] = useState<EmbedAuthState>({ status: 'loading' })
+  const displayName =
+    auth.status === 'signed-in'
+      ? (auth.user.salesProfile?.name ?? auth.user.email)
+      : ''
 
   useEffect(() => {
     let cancelled = false
@@ -71,11 +75,11 @@ export function EmbedApp(): ReactElement {
       {auth.status === 'signed-in' ? (
         <header className='embed-user-bar'>
           <div className='embed-user-copy'>
-            <p className='embed-user-welcome'>Welcome, {auth.user.email}</p>
+            <p className='embed-user-welcome'>Welcome, {displayName}</p>
             <p className='embed-user-title'>{roleHomeTitle[auth.user.role]}</p>
           </div>
           <div className='embed-user-avatar' aria-hidden='true'>
-            {auth.user.email.slice(0, 1).toUpperCase()}
+            {displayName.slice(0, 1).toUpperCase()}
           </div>
         </header>
       ) : null}

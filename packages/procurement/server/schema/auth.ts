@@ -20,6 +20,14 @@ type LoginResult = {
   }
 }
 
+const SalesProfileRef = builder
+  .objectRef<{ name: string }>('SalesProfile')
+  .implement({
+    fields: (t) => ({
+      name: t.exposeString('name'),
+    }),
+  })
+
 const UserRef = builder.objectRef<LoginResult['user']>('LoginUser').implement({
   fields: (t) => ({
     id: t.exposeID('id'),
@@ -27,6 +35,15 @@ const UserRef = builder.objectRef<LoginResult['user']>('LoginUser').implement({
     role: t.field({
       type: UserRoleRef,
       resolve: (user) => user.role,
+    }),
+    salesProfile: t.field({
+      type: SalesProfileRef,
+      nullable: true,
+      resolve: (user, _args, context) =>
+        context.prisma.salesEngineer.findUnique({
+          where: { userId: user.id },
+          select: { name: true },
+        }),
     }),
   }),
 })

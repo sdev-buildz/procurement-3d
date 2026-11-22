@@ -70,6 +70,7 @@ type LoginUser {
   email: String
   id: ID
   role: UserRole
+  salesProfile: SalesProfile
 }
 
 """The schema root for mutating data"""
@@ -136,6 +137,10 @@ enum RfqStatus {
   CLOSED
   DRAFT
   OPEN
+}
+
+type SalesProfile {
+  name: String
 }
 
 enum SortBidsEnum {

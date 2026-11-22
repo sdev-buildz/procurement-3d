@@ -14,6 +14,7 @@ export type AuthenticatedUser = {
   id: string
   email: string
   role: UserRole
+  salesProfile: { name: string } | null
 }
 
 const meQuery = `
@@ -22,6 +23,9 @@ const meQuery = `
       id
       email
       role
+      salesProfile {
+        name
+      }
     }
   }
 `
@@ -36,6 +40,7 @@ type MeResponse = {
       id?: string | null
       email?: string | null
       role?: string | null
+      salesProfile?: { name?: string | null } | null
     } | null
   }
   errors?: Array<{ message: string }>
@@ -58,12 +63,15 @@ export const fetchCurrentUser = async (
 
   const result = (await response.json()) as MeResponse
   const user = result.data?.me
+  const salesProfileName = user?.salesProfile?.name
 
   if (
     result.errors?.length ||
     typeof user?.id !== 'string' ||
     typeof user.email !== 'string' ||
-    !isUserRole(user.role)
+    !isUserRole(user.role) ||
+    (user?.salesProfile != null &&
+      (typeof salesProfileName !== 'string' || salesProfileName.length === 0))
   ) {
     return null
   }
@@ -72,5 +80,7 @@ export const fetchCurrentUser = async (
     id: user.id,
     email: user.email,
     role: user.role,
+    salesProfile:
+      typeof salesProfileName === 'string' ? { name: salesProfileName } : null,
   }
 }

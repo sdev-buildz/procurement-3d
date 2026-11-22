@@ -83,6 +83,7 @@ export const GoogleSsoButton = () => {
         id: loginUser.id,
         email: loginUser.email,
         role: loginUser.role,
+        salesProfile: loginUser.salesProfile ?? null,
       })
       isLoggedIn(true)
       navigate(getRoleHomePath(loginUser.role), { replace: true })

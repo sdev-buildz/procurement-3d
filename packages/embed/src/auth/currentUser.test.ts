@@ -15,6 +15,7 @@ describe('fetchCurrentUser', () => {
             id: '7',
             email: 'sales1@example.test',
             role: 'SALES_ENGINEER',
+            salesProfile: { name: 'Jordan Lee' },
           },
         },
       }),
@@ -25,6 +26,7 @@ describe('fetchCurrentUser', () => {
       id: '7',
       email: 'sales1@example.test',
       role: 'SALES_ENGINEER',
+      salesProfile: { name: 'Jordan Lee' },
     })
     expect(fetchMock).toHaveBeenCalledWith(
       sharedConfig.graphqlEndpoint,

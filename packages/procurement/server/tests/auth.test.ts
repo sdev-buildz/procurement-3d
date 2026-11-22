@@ -4,12 +4,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { schema } from '../schema'
 import { pubsub } from '../util/pubsub'
 
-const { findUnique } = vi.hoisted(() => ({
+const { findUnique, findSalesProfile } = vi.hoisted(() => ({
   findUnique: vi.fn(),
+  findSalesProfile: vi.fn(),
 }))
 
 const prisma = {
   user1: { findUnique },
+  salesEngineer: { findUnique: findSalesProfile },
 }
 
 const testPassword = 'oNW-h7W5PHIOF2LK--facbM7'
@@ -77,6 +79,9 @@ const meQuery = `
       id
       email
       role
+      salesProfile {
+        name
+      }
     }
   }
 `
@@ -87,6 +92,7 @@ type MeResponse = {
       id: string
       email: string
       role: string
+      salesProfile: { name: string } | null
     } | null
   }
   errors?: Array<{ message: string }>
@@ -121,7 +127,40 @@ describe('me query', () => {
       id: '1',
       email: testUser.email,
       role: testUser.role,
+      salesProfile: null,
     })
+  })
+
+  it('returns the authenticated sales profile', async () => {
+    const yogaWithSalesUser = createYoga({
+      schema,
+      context: () => ({
+        currentUser: {
+          id: testUser.id,
+          email: 'sales1@example.test',
+          role: 'SALES_ENGINEER' as const,
+        },
+        prisma: {
+          ...prisma,
+          salesEngineer: {
+            findUnique: vi.fn().mockResolvedValue({ name: 'Jordan Lee' }),
+          },
+        },
+        reqOrigin: '',
+        pubsub,
+      }),
+    })
+
+    const response = await yogaWithSalesUser.fetch('http://localhost/graphql', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ query: meQuery }),
+    })
+    const result = (await response.json()) as MeResponse
+
+    expect(response.status).toBe(200)
+    expect(result.errors).toBeUndefined()
+    expect(result.data?.me?.salesProfile).toEqual({ name: 'Jordan Lee' })
   })
 
   it('returns null when no user is authenticated', async () => {

@@ -16,7 +16,7 @@ export const initialLayout: LayoutItem[] = [
     item: getEquipment('cabinet'),
     label: 'cabinet 1',
     x: 0,
-    z: -1.5,
+    z: -3,
     rotation: 0,
   },
   {

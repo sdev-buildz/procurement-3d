@@ -106,7 +106,6 @@ export function PerformancePanel({
           <p className='ce-performance-description'>
             These settings help adjust rendering quality and scene performance.
           </p>
-          lod bound ={lodBound}
           <fieldset className='ce-performance-options'>
             <legend>{t('labels')}</legend>
             <label className='ce-check-option' htmlFor='toggle-item-labels'>
@@ -136,7 +135,11 @@ export function PerformancePanel({
               />
               <span>
                 <strong>Performance monitor</strong>
-                <small>Automatically optimize rendering quality.</small>
+                <small>
+                  Automatically optimize model compressions to maintain frame
+                  rate to be higer than half of the screen's maximum frame rate.
+                  Currently compressing models upto {lodBound} levels.
+                </small>
               </span>
             </label>
           </fieldset>

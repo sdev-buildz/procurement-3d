@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { assistantReplyExample } from './assistant/assistantReply'
+import {
+  assistantReplyExample,
+  createProposalGhosts,
+} from './assistant/assistantReply'
 import { createLayoutHistory, layoutHistoryReducer } from './hooks/useHistory'
 import { findRuleViolations } from './hooks/useViolations'
 import {
@@ -104,5 +107,31 @@ describe('assistant response contract', () => {
     const response: unknown = JSON.parse(JSON.stringify(assistantReplyExample))
 
     expect(response).toEqual(assistantReplyExample)
+  })
+
+  it('creates previews for multiple existing items in one proposal', () => {
+    const ghosts = createProposalGhosts(items, [
+      { id: items[0]!.id, x: 2, z: 1, rotation: 90 },
+      { id: items[1]!.id, x: -2, z: -1, rotation: 0 },
+    ])
+
+    expect(ghosts).toEqual([
+      { ...items[0]!, x: 2, z: 1, rotation: 90 },
+      { ...items[1]!, x: -2, z: -1, rotation: 0 },
+    ])
+  })
+
+  it('rejects proposals with missing or repeated item IDs', () => {
+    expect(
+      createProposalGhosts(items, [
+        { id: 'missing-item', x: 2, z: 1, rotation: 90 },
+      ])
+    ).toBeNull()
+    expect(
+      createProposalGhosts(items, [
+        { id: items[0]!.id, x: 2, z: 1, rotation: 90 },
+        { id: items[0]!.id, x: -2, z: -1, rotation: 0 },
+      ])
+    ).toBeNull()
   })
 })

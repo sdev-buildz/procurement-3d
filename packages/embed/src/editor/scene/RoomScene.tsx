@@ -28,8 +28,8 @@ type RoomSceneProps = {
   selectedIds: Set<string>
   /** IDs participating in an active spacing violation. */
   violations: RuleViolation[]
-  /** Suggested item transform rendered as a translucent ghost. */
-  previewItem: LayoutItem | null
+  /** Suggested item transforms rendered as translucent ghosts. */
+  previewItems: LayoutItem[]
   /** Whether to show the synchronized top-down camera. */
   topDown: boolean
   /** Selects an item, optionally extending the current selection. */
@@ -72,7 +72,7 @@ export function RoomScene({
   itemsDisplayed: items,
   selectedIds,
   violations,
-  previewItem,
+  previewItems,
   topDown,
   onSelect,
   onClearSelection,
@@ -222,14 +222,15 @@ export function RoomScene({
             violationIds={violationIds}
           />
           {/* <InstancedPotAndCoals count={500} /> */}
-          {previewItem ? (
+          {previewItems.map((previewItem) => (
             <EquipmentModel
+              key={previewItem.id}
               item={previewItem}
               selected={false}
               violation={false}
               ghost
             />
-          ) : null}
+          ))}
         </Canvas>
       </div>
     </>

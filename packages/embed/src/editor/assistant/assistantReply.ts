@@ -4,7 +4,37 @@ import { type LayoutItem } from '../items'
  * Suggestion from an assistant
  */
 export type AssistantProposal = {
-  ghost: LayoutItem
+  ghosts: LayoutItem[]
+}
+
+/** Proposed transform for one existing piece of equipment. */
+export type AssistantProposedItem = Pick<
+  LayoutItem,
+  'id' | 'x' | 'z' | 'rotation'
+>
+
+/**
+ * Builds preview items for a set of proposed transforms.
+ * @param items - Current room contents.
+ * @param proposedItems - Proposed transforms for existing items.
+ * @returns Preview items, or null if an ID is missing or repeated.
+ */
+export function createProposalGhosts(
+  items: LayoutItem[],
+  proposedItems: AssistantProposedItem[]
+): LayoutItem[] | null {
+  const itemsById = new Map(items.map((item) => [item.id, item]))
+  const proposedIds = new Set<string>()
+  const ghosts: LayoutItem[] = []
+
+  for (const proposedItem of proposedItems) {
+    const item = itemsById.get(proposedItem.id)
+    if (!item || proposedIds.has(proposedItem.id)) return null
+    proposedIds.add(proposedItem.id)
+    ghosts.push({ ...item, ...proposedItem })
+  }
+
+  return ghosts.length ? ghosts : null
 }
 
 /** A machine-readable layout edit proposed alongside the assistant's message. */

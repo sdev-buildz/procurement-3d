@@ -106,16 +106,20 @@ export function AssistantPanel({
   const acceptProposal = () => {
     if (!proposal) return
     const currentItems = items
-    if (!currentItems.some((item) => item.id === proposal.ghost.id)) {
+    const ghostsById = new Map(proposal.ghosts.map((item) => [item.id, item]))
+    if (
+      proposal.ghosts.length === 0 ||
+      proposal.ghosts.some(
+        (ghost) => !currentItems.some((item) => item.id === ghost.id)
+      )
+    ) {
       setProposal(null)
       return
     }
     historyState.commitItems(
-      currentItems.map((item) =>
-        item.id === proposal.ghost.id ? proposal.ghost : item
-      )
+      currentItems.map((item) => ghostsById.get(item.id) ?? item)
     )
-    setSelectedIds(new Set([proposal.ghost.id]))
+    setSelectedIds(new Set(proposal.ghosts.map(({ id }) => id)))
     setProposal(null)
     setAnnouncement(t('accept'))
   }

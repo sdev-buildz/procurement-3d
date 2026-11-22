@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { findRuleViolations } from '../hooks/useViolations'
 import { LayoutItemScheme, type LayoutItem } from '../items'
 import type { AssistantPanelProps, ToolCallMessage } from './AssistantPanel'
+import { createProposalGhosts } from './assistantReply'
 /**
  * Handles communications with AI agents  
  */
@@ -106,43 +107,36 @@ export const useAssistant = (
   })
 
   const suggestSolution = tool({
-    description: 'Suggest a solution by moving an item',
+    description: 'Suggest a solution by moving one or more items',
     inputSchema: z.object({
-      item: LayoutItemScheme.omit({ item: true, label: true }).describe(
-        'The new state of the item to move'
-      ),
+      items: z
+        .array(
+          LayoutItemScheme.pick({
+            id: true,
+            x: true,
+            z: true,
+            rotation: true,
+          }).describe('A new transform for an existing item')
+        )
+        .min(1)
+        .describe('New transforms for one or more existing layout items'),
       message: z.string().optional().describe('message to the user'),
     }),
 
     execute: (input) => {
-      let movedItem: LayoutItem | undefined = undefined
-      const newLayout: LayoutItem[] = props.items.map((item) => {
-        if (item.id === input.item.id) {
-          movedItem = item
-          return {
-            ...item,
-            x: input.item.x,
-            z: input.item.z,
-            rotation: input.item.rotation,
-          }
-        }
-        return item
-      })
+      const ghosts = createProposalGhosts(props.items, input.items)
+      if (!ghosts) return 'Every proposed item must be a unique existing item.'
+
+      const ghostsById = new Map(ghosts.map((item) => [item.id, item]))
+      const newLayout: LayoutItem[] = props.items.map(
+        (item) => ghostsById.get(item.id) ?? item
+      )
       const violations = findRuleViolations(newLayout)
 
       if (violations.length) {
         return violations
       }
-      if (!movedItem) {
-        // The user made the same fix before the assistant could respond.
-        return
-      }
-      props.setProposal({
-        ghost: {
-          ...(movedItem as LayoutItem),
-          ...input.item,
-        },
-      })
+      props.setProposal({ ghosts })
     },
   })
 

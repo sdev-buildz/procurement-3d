@@ -304,7 +304,7 @@ export function ConfigEditor(): ReactElement {
           <StageFor3dViewer
             itemsDisplayed={itemsDisplayed}
             selectedIds={selectedIds}
-            previewItem={proposal?.ghost ?? null}
+            previewItems={proposal?.ghosts ?? []}
             itemPlaced={itemPlaced}
             topDown={topDown}
             onSelect={selectItem}

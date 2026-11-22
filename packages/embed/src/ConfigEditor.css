@@ -691,6 +691,11 @@
   outline: none;
 }
 
+.ce-scene-label-anchor,
+.ce-scene-label {
+  pointer-events: none;
+}
+
 .ce-scene-label {
   padding: 3px 7px;
   border: 1px solid rgb(105 215 189 / 45%);
@@ -701,6 +706,7 @@
   font-weight: 600;
   line-height: 1.2;
   cursor: default;
+  pointer-events: none;
   user-select: none;
   white-space: nowrap;
   -webkit-user-select: none;

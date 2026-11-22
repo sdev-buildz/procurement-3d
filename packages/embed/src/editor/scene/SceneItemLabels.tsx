@@ -81,7 +81,9 @@ export function SceneItemLabels({
             key={item.id}
             position={getSceneItemLabelPosition(item, topDown)}
             center
+            className='ce-scene-label-anchor'
             pointerEvents='none'
+            style={{ pointerEvents: 'none' }}
             zIndexRange={[20, 0]}
           >
             <div className='ce-scene-label'>{item.label}</div>

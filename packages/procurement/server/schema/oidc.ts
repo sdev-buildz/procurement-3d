@@ -167,6 +167,19 @@ builder.mutationField('exchangeAuthCode', (t) =>
         throw new GraphQLError('Google returned an invalid ID token.')
       }
 
+      const givenName =
+        'given_name' in tokenInfo && typeof tokenInfo.given_name === 'string'
+          ? tokenInfo.given_name.trim()
+          : ''
+      const fullName =
+        'name' in tokenInfo && typeof tokenInfo.name === 'string'
+          ? tokenInfo.name.trim()
+          : ''
+      const profileName = givenName || fullName
+      if (!profileName) {
+        throw new GraphQLError('Google did not provide a name.')
+      }
+
       const email = tokenInfo.email.trim().toLowerCase()
       if (!email) {
         throw new GraphQLError('Google did not provide a verified email.')
@@ -191,6 +204,9 @@ builder.mutationField('exchangeAuthCode', (t) =>
           passwordHash: passwordHash.toString('hex'),
           salt,
           role: 'SALES_ENGINEER',
+          salesProfile: {
+            create: { name: profileName },
+          },
         },
         update: {},
         select: {

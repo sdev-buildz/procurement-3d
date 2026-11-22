@@ -152,6 +152,8 @@ describe('OIDC mutations', () => {
             iss: 'https://accounts.google.com',
             sub: 'google-user-id',
             email: testUser.email,
+            given_name: 'Google',
+            name: 'Google User',
             email_verified: 'true',
             exp: String(Math.floor(Date.now() / 1000) + 3600),
             nonce: authorizationUrl.searchParams.get('nonce'),
@@ -200,6 +202,9 @@ describe('OIDC mutations', () => {
           role: 'SALES_ENGINEER',
           passwordHash: expect.any(String),
           salt: expect.any(String),
+          salesProfile: {
+            create: { name: 'Google' },
+          },
         }),
         update: {},
       })
@@ -218,6 +223,51 @@ describe('OIDC mutations', () => {
     expect(replayResult.errors).toHaveLength(1)
     expect(replayResult.data?.exchangeAuthCode).toBeNull()
     expect(fetchSpy).toHaveBeenCalledTimes(2)
+  })
+
+  it('uses the Google full name when no given name is available', async () => {
+    const { authorizationUrl } = await startOidcSession()
+    const pkceSessionToken = authorizationUrl.searchParams.get('state')
+    if (!pkceSessionToken) throw new Error('Expected an OAuth state value.')
+
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ id_token: 'google-id-token' }), {
+          status: 200,
+        })
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            aud: 'test-client-id',
+            iss: 'https://accounts.google.com',
+            sub: 'google-user-id',
+            email: testUser.email,
+            name: 'Google User',
+            email_verified: true,
+            exp: String(Math.floor(Date.now() / 1000) + 3600),
+            nonce: authorizationUrl.searchParams.get('nonce'),
+          }),
+          { status: 200 }
+        )
+      )
+
+    const response = await execute(exchangeAuthCodeMutation, {
+      pkceSessionToken,
+      authorizationCode: 'authorization-code',
+    })
+    const result = (await response.json()) as ExchangeAuthCodeResponse
+
+    expect(result.errors).toBeUndefined()
+    expect(prisma.user1.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({
+          salesProfile: {
+            create: { name: 'Google User' },
+          },
+        }),
+      })
+    )
   })
 
   it('does not create or log in a user for an unverified Google email', async () => {
@@ -280,6 +330,7 @@ describe('OIDC mutations', () => {
             iss: 'https://accounts.google.com',
             sub: 'google-user-id',
             email: testUser.email,
+            name: 'Google User',
             email_verified: true,
             exp: String(Math.floor(Date.now() / 1000) + 3600),
             nonce: authorizationUrl.searchParams.get('nonce'),

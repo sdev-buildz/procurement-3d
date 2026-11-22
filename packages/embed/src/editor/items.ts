@@ -125,9 +125,9 @@ export const EQUIPMENT: ItemType[] = [
     name: 'carConcept',
     nameKey: 'carConcept',
     sku: 'MDL-CAR',
-    width: 2.8,
-    depth: 1.4,
-    height: 1.4,
+    width: 1,
+    depth: 1.5,
+    height: 1,
     color: '#d98d8d',
     price: 3200,
     models: [

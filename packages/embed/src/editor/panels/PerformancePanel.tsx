@@ -23,14 +23,6 @@ type PerformancePanelProps = {
   setShowLabels: (show: boolean) => void
 } & Pick<ReturnType<typeof useHistory>, 'commitItems'>
 
-const shadingModes = [
-  'original',
-  'lambert',
-  'phong',
-  'standard',
-  'wireframe',
-] as const
-
 /**
  * Displays editable properties and arrangement actions for the selection.
  * The side panel that shows properties for the currently selected equipment(s).
@@ -48,11 +40,8 @@ export function PerformancePanel({
 }: PerformancePanelProps): ReactElement {
   const { t } = useTranslation()
   const [perfMonitorEnabled, setPerfMonitorEnabled] = useState(true)
-  const [mergeEnabled, setMergeEnabled] = useState(false)
   const [minDpr, setMinDpr] = useState(1)
   const [maxDpr, setMaxDpr] = useState(1.5)
-  const [shading, setShading] =
-    useState<(typeof shadingModes)[number]>('original')
   const { lodBound } = useContext(RoomContext)
 
   const updateDpr = useCallback(
@@ -150,22 +139,6 @@ export function PerformancePanel({
                 <small>Automatically optimize rendering quality.</small>
               </span>
             </label>
-
-            {/* xToggle Merging of compatible meshes into 1 one. */}
-            <label className='ce-check-option' htmlFor='toggle-merging'>
-              <input
-                id='toggle-merging'
-                type='checkbox'
-                checked={mergeEnabled}
-                onChange={(event) =>
-                  setMergeEnabled(event.currentTarget.checked)
-                }
-              />
-              <span>
-                <strong>{t('merging')}</strong>
-                <small>Reduce draw calls for compatible objects.</small>
-              </span>
-            </label>
           </fieldset>
           {/* DPR Range - Dots to Pixel Ratio */}
           <fieldset className='ce-performance-options'>
@@ -199,26 +172,6 @@ export function PerformancePanel({
                   }
                 />
               </label>
-            </div>
-          </fieldset>
-          <fieldset className='ce-performance-options'>
-            {/* Toggle shading mode. */}
-            <legend>Shading</legend>
-            <div className='ce-radio-options'>
-              {shadingModes.map((mode) => (
-                <label>
-                  <input
-                    type='radio'
-                    name='shading'
-                    value={mode}
-                    checked={shading === mode}
-                    onChange={(event) =>
-                      event.target.checked && setShading(mode)
-                    }
-                  />
-                  <span>{mode}</span>
-                </label>
-              ))}
             </div>
           </fieldset>
           <button

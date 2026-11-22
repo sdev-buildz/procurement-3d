@@ -70,6 +70,8 @@ Open your terminal application from the root of the repository folder and execut
 docker compose up --build
 ```
 
+Refer to the below sections for more details on ports and environment variables.
+
 ## 🛠️ Setup for development
 
 ### 1. Install Dependencies
@@ -161,9 +163,11 @@ Open the url "https://localhost:443" (use the port you set in ./packages/procure
 
 Open the url "https://localhost:3000" (use the port you set in ./packages/procurement/.env) in the same browser. If it shows like "Your connection is not private", click Advanced => "Proceed to localhost (unsafe)" (or equivalent).
 
+Authenticate:
+
 ### 8. Use the micro-app as a sales-engineer
 
-Once the login page opens, use these credentials to login.
+Once the login page opens, click "Continue With Google" or use these credentials to login.
 
 Username: sales1@example.test  
 Password: oNW-h7W5PHIOF2LK--facbM7

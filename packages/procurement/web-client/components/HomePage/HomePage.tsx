@@ -122,7 +122,7 @@ export const HomePage = ({ role }: { role: UserRole }) => {
       <Stack spacing={4}>
         <Stack spacing={1}>
           <Typography color='text.secondary' variant='body2'>
-            Welcome, {user.email}
+            Welcome, {user.salesProfile?.name ?? user.email}
           </Typography>
           <Typography component='h1' variant='h3'>
             {content.title}

@@ -26,6 +26,9 @@ const loginMutation = gql`
         id
         email
         role
+        salesProfile {
+          name
+        }
       }
     }
   }
@@ -56,7 +59,7 @@ export const LoginPage = () => {
         id: loginUser.id,
         email: loginUser.email,
         role: loginUser.role,
-        salesProfile: null,
+        salesProfile: loginUser.salesProfile ?? null,
       })
       isLoggedIn(true)
       navigate(getRoleHomePath(loginUser.role), { replace: true })

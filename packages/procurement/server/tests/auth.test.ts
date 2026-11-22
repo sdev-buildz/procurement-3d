@@ -34,6 +34,9 @@ const loginMutation = `
         id
         email
         role
+        salesProfile {
+          name
+        }
       }
     }
   }
@@ -57,6 +60,7 @@ type LoginResponse = {
         id: string
         email: string
         role: string
+        salesProfile: { name: string } | null
       }
     } | null
   }
@@ -195,6 +199,7 @@ describe('login mutation', () => {
         id: '1',
         email: testUser.email,
         role: 'BUYER',
+        salesProfile: null,
       },
     })
     if (!login) {

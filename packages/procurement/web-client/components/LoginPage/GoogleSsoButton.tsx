@@ -34,6 +34,9 @@ const exchangeAuthCodeMutation = gql`
         id
         email
         role
+        salesProfile {
+          name
+        }
       }
     }
   }

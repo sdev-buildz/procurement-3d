@@ -12,6 +12,11 @@
 **/dist-tsc
 **/.turbo
 
+# agent skills for Prisma library
+./packages/db/.agents
+./packages/db/.claude
+./packages/db/.windsurf
+
 **/*.env*
 !.env.example
 

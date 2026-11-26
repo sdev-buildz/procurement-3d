@@ -51,7 +51,7 @@ My local machine is a Motobook 60 Pro laptop equipped with an Intel Core Ultra 5
 
 - **Qwen3.5 9B Q4_K_M** (10 GB RAM) – For deep analysis and output.
 - **Qwen2.5 Coder 7B Instruct** (8 GB RAM) – For use alongside a heavy IDE, multiple browser tabs, or Docker containers.
-- **Qwen2.5 Coder 1.5B Instruct** (3 GB RAM) – For fast IDE autocompletions and quick loading.
+- **Qwen2.5 Coder 1.5B** (3 GB RAM) – For fast IDE autocompletions and quick loading.
 
 ### External API Models:
 

@@ -19,7 +19,7 @@ describe('layout helpers', () => {
     expect(getEquipment('cabinet').models[0]?.url).toBe('')
     expect(getEquipment('panel').models[0]?.url).toBe('')
     expect(EQUIPMENT.filter((item) => item.models[0]?.url === '')).toHaveLength(
-      3
+      4
     )
   })
 

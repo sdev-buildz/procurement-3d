@@ -55,7 +55,7 @@ type CuringTelemetry = {
   connectionState: 'connected' | 'degraded' | 'reconnecting'
 }
 
-const DEFAULT_CURING_TELEMETRY: CuringTelemetry = {
+const defaultCuringTelemetry: CuringTelemetry = {
   machineId: 'CURING-01',
   timestamp: new Date().toISOString(),
   cycleTimeMs: 420000,
@@ -70,7 +70,7 @@ const DEFAULT_CURING_TELEMETRY: CuringTelemetry = {
   connectionState: 'connected',
 }
 
-const CURING_TELEMETRY_SUBSCRIPTION = gql`
+const curingTelemetrySubscription = gql`
   subscription CuringTelemetry {
     curingTelemetry {
       machineId
@@ -143,11 +143,11 @@ export function RoomScene({
   )
   const { lodBound, setLodBound } = useContext(RoomContext)
   const curingItems = items.filter((item) => item.item.name === 'tyreCuring')
-  const { data: curingData } = useSubscription(CURING_TELEMETRY_SUBSCRIPTION, {
+  const { data: curingData } = useSubscription(curingTelemetrySubscription, {
     skip: curingItems.length === 0,
     fetchPolicy: 'network-only',
   })
-  const telemetry = curingData?.curingTelemetry ?? DEFAULT_CURING_TELEMETRY
+  const telemetry = curingData?.curingTelemetry ?? defaultCuringTelemetry
 
   /** Handles pressing mouse button down on an object. */
   const handleItemDown = (

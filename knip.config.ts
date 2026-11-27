@@ -36,13 +36,15 @@ const config: KnipConfig = {
     'packages/procurement': {
       ...webAppWorkspaceConfig,
       entry: [
-        './server/worker.ts',
         './server/schema/prisma-objects.ts',
         './web-client/lib/colors.ts',
       ],
     },
     'packages/embed': {
       ...webAppWorkspaceConfig,
+    },
+    'packages/mock-machines': {
+      entry: ['./src/index.ts', './src/start-machines.ts'],
     },
     'packages/db': {
       ignoreDependencies: [

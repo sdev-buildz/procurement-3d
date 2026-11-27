@@ -1,9 +1,7 @@
 /**
  * @packageDocumentation
  * @module TimeSeries
- *
  * Exposes a graphql subscription to emit time series data from the machines.
- *
  */
 import {
   mockCuringMachine,

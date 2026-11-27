@@ -17,6 +17,9 @@ export type CuringTelemetry = {
   connectionState: 'connected' | 'degraded' | 'reconnecting'
 }
 
+/**
+ * Configuration options for the mock curing machine.
+ */
 export type CuringMachineOptions = {
   machineId?: string
   intervalMs?: number
@@ -28,6 +31,7 @@ export type CuringMachineOptions = {
  * Produces realistic, slowly changing curing telemetry.
  * Occasional packets are retained as packet-loss/degradation events instead of
  * silently stopping the stream, making data reliability visible in the twin.
+ * @yields {CuringTelemetry} The next mock curing telemetry packet.
  */
 export async function* mockCuringMachine({
   machineId = 'CURING-01',

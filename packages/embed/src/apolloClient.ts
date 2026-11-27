@@ -38,6 +38,9 @@ const splitLink = ApolloLink.split(
   httpLink
 )
 
+/**
+ * Shared Apollo client for GraphQL queries and subscriptions.
+ */
 export const apolloClient = new ApolloClient({
   link: ApolloLink.from([authLink, splitLink]),
   cache: new InMemoryCache(),

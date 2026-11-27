@@ -10,6 +10,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
   type ComponentProps,
 } from 'react'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
@@ -53,6 +54,47 @@ type CuringTelemetry = {
   pressureBar: number
   packetLossPercent: number
   connectionState: 'connected' | 'degraded' | 'reconnecting'
+}
+
+const curingTelemetryStorageKey = 'ce-curing-telemetry-v1'
+const maxCuringTelemetryHistory = 1000
+
+function isCuringTelemetry(value: unknown): value is CuringTelemetry {
+  if (typeof value !== 'object' || value === null) return false
+  const telemetry = value as Record<string, unknown>
+  return (
+    typeof telemetry.machineId === 'string' &&
+    typeof telemetry.timestamp === 'string' &&
+    Number.isFinite(Date.parse(telemetry.timestamp)) &&
+    typeof telemetry.cycleTimeMs === 'number' &&
+    typeof telemetry.cycleTimeVariationPercent === 'number' &&
+    typeof telemetry.alert === 'string' &&
+    typeof telemetry.rootCause === 'string' &&
+    typeof telemetry.oeePercent === 'number' &&
+    typeof telemetry.machineHealthPercent === 'number' &&
+    typeof telemetry.temperatureC === 'number' &&
+    typeof telemetry.pressureBar === 'number' &&
+    typeof telemetry.packetLossPercent === 'number' &&
+    (telemetry.connectionState === 'connected' ||
+      telemetry.connectionState === 'degraded' ||
+      telemetry.connectionState === 'reconnecting')
+  )
+}
+
+function readCuringTelemetryHistory(): CuringTelemetry[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const stored = window.localStorage.getItem(curingTelemetryStorageKey)
+    if (!stored) return []
+    const parsed: unknown = JSON.parse(stored)
+    if (!Array.isArray(parsed) || !parsed.every(isCuringTelemetry)) {
+      throw new Error('Stored curing telemetry history has an invalid format')
+    }
+    return parsed.slice(-maxCuringTelemetryHistory)
+  } catch (error) {
+    console.error('Unable to load local curing telemetry history', error)
+    return []
+  }
 }
 
 const defaultCuringTelemetry: CuringTelemetry = {
@@ -143,11 +185,65 @@ export function RoomScene({
   )
   const { lodBound, setLodBound } = useContext(RoomContext)
   const curingItems = items.filter((item) => item.item.name === 'tyreCuring')
+  const [telemetryHistory, setTelemetryHistory] = useState(
+    readCuringTelemetryHistory
+  )
+  const [replayIndex, setReplayIndex] = useState<number | null>(null)
+  const [isReplayPlaying, setIsReplayPlaying] = useState(false)
   const { data: curingData } = useSubscription(curingTelemetrySubscription, {
     skip: curingItems.length === 0,
     fetchPolicy: 'network-only',
   })
-  const telemetry = curingData?.curingTelemetry ?? defaultCuringTelemetry
+  const latestTelemetry = telemetryHistory.at(-1) ?? defaultCuringTelemetry
+  const selectedTelemetry =
+    replayIndex === null
+      ? latestTelemetry
+      : (telemetryHistory[replayIndex] ?? latestTelemetry)
+  const telemetry = selectedTelemetry
+
+  useEffect(() => {
+    const received = curingData?.curingTelemetry
+    if (!received) return
+    setTelemetryHistory((history) => {
+      if (
+        history.some(
+          (entry) =>
+            entry.machineId === received.machineId &&
+            entry.timestamp === received.timestamp
+        )
+      ) {
+        return history
+      }
+      return [...history, received]
+        .sort(
+          (first, second) =>
+            Date.parse(first.timestamp) - Date.parse(second.timestamp)
+        )
+        .slice(-maxCuringTelemetryHistory)
+    })
+  }, [curingData])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    try {
+      window.localStorage.setItem(
+        curingTelemetryStorageKey,
+        JSON.stringify(telemetryHistory)
+      )
+    } catch (error) {
+      console.error('Unable to save local curing telemetry history', error)
+    }
+  }, [telemetryHistory])
+
+  useEffect(() => {
+    if (!isReplayPlaying || replayIndex === null) return
+    if (replayIndex >= telemetryHistory.length - 1) {
+      setIsReplayPlaying(false)
+      return
+    }
+    const timer = window.setTimeout(() => setReplayIndex(replayIndex + 1), 1000)
+    return () => window.clearTimeout(timer)
+  }, [isReplayPlaying, replayIndex, telemetryHistory.length])
 
   /** Handles pressing mouse button down on an object. */
   const handleItemDown = (
@@ -345,6 +441,63 @@ export function RoomScene({
                   {telemetry.pressureBar.toFixed(1)} bar
                 </span>
               </article>
+            </div>
+            <div className='ce-replay-controls'>
+              <div className='ce-replay-actions'>
+                <button
+                  type='button'
+                  onClick={() => {
+                    if (isReplayPlaying) {
+                      setIsReplayPlaying(false)
+                      return
+                    }
+                    if (
+                      replayIndex === null ||
+                      replayIndex >= telemetryHistory.length - 1
+                    ) {
+                      setReplayIndex(0)
+                    }
+                    setIsReplayPlaying(telemetryHistory.length > 1)
+                  }}
+                  disabled={telemetryHistory.length < 2}
+                >
+                  {isReplayPlaying
+                    ? 'Pause'
+                    : replayIndex === null ||
+                        replayIndex >= telemetryHistory.length - 1
+                      ? 'Replay'
+                      : 'Resume'}
+                </button>
+                <button
+                  type='button'
+                  onClick={() => {
+                    setIsReplayPlaying(false)
+                    setReplayIndex(null)
+                  }}
+                  disabled={replayIndex === null}
+                >
+                  Live
+                </button>
+                <time dateTime={telemetry.timestamp}>
+                  {new Date(telemetry.timestamp).toLocaleString()}
+                </time>
+              </div>
+              <input
+                aria-label='Replay telemetry timeline'
+                type='range'
+                min={0}
+                max={Math.max(telemetryHistory.length - 1, 0)}
+                value={
+                  replayIndex === null
+                    ? Math.max(telemetryHistory.length - 1, 0)
+                    : Math.min(replayIndex, telemetryHistory.length - 1)
+                }
+                disabled={telemetryHistory.length < 2}
+                onChange={(event) => {
+                  setIsReplayPlaying(false)
+                  setReplayIndex(Number(event.currentTarget.value))
+                }}
+              />
             </div>
           </section>
         ) : null}

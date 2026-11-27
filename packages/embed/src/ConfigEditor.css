@@ -810,6 +810,51 @@
   white-space: nowrap;
 }
 
+.ce-replay-controls {
+  margin-top: 8px;
+  pointer-events: auto;
+}
+
+.ce-replay-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ce-replay-actions button {
+  padding: 4px 8px;
+  border: 1px solid var(--ce-border);
+  border-radius: 5px;
+  color: var(--ce-text);
+  background: var(--ce-panel-raised);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.625rem;
+}
+
+.ce-replay-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.ce-replay-actions time {
+  margin-left: auto;
+  color: var(--ce-muted);
+  font-size: 0.5625rem;
+}
+
+.ce-replay-controls input[type='range'] {
+  display: block;
+  width: 100%;
+  margin: 7px 0 0;
+  accent-color: var(--ce-accent);
+  cursor: pointer;
+}
+
+.ce-replay-controls input[type='range']:disabled {
+  cursor: not-allowed;
+}
+
 .ce-mini-orthographic-view {
   position: absolute;
   left: 10px;

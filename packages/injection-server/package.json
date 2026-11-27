@@ -1,0 +1,12 @@
+{
+  "name": "injection-server",
+  "version": "1.0.0",
+  "description": "go server which listens to mqtt events.",
+  "scripts": {
+    "start-server": "go run ./cmd/server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}

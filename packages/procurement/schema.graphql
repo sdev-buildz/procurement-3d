@@ -168,7 +168,7 @@ type Subscription {
   """Notifies whenever any bids are approved."""
   bidApprovals: [BidLineItem!]
 
-  """Streams mock tyre-curing machine telemetry."""
+  """Streams tyre-curing machine telemetry."""
   curingTelemetry: CuringTelemetry
 }
 

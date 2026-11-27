@@ -155,7 +155,26 @@ Run the below command to seed the database with sample data.
 pnpm run prisma:seed
 ```
 
-### 4. Start API Server for both the Surfaces
+### 4. Run the curing telemetry pipeline
+
+The Postgres image includes pg_partman and the MQTT broker is available on port 1883. Start both services with:
+
+```shell
+pnpm run docker:compose-up postgres mqtt
+```
+
+In separate terminals, start the Go injection server and mock curing machine:
+
+```shell
+pnpm run start-go-server
+pnpm run start-machines
+```
+
+Set `use-go=true` in `packages/procurement/.env` to stream GraphQL telemetry
+from Postgres notifications. Leave it unset or set it to `false` to stream
+directly from the mock machine.
+
+### 5. Start API Server for both the Surfaces
 
 Open a **new** dedicated terminal window/tab and run:
 

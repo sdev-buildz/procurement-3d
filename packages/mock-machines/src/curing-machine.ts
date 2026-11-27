@@ -47,6 +47,7 @@ export async function* mockCuringMachine({
 
   while (!signal?.aborted) {
     await new Promise((resolve) => setTimeout(resolve, intervalMs))
+    if (signal?.aborted) return
     tick += 1
 
     cycleTimeMs += (Math.random() - 0.48) * 4_500

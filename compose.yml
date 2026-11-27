@@ -1,5 +1,8 @@
 name: procurement-3d
 
+include:
+  - ./packages/injection-server/compose.yml
+
 x-workspace-build: &workspace-build
   context: .
   additional_contexts:
@@ -7,7 +10,9 @@ x-workspace-build: &workspace-build
 
 services:
   postgres:
-    image: postgres:18
+    build:
+      context: .
+      dockerfile: packages/db/postgres.Dockerfile
     ports:
       - name: db-port
         target: '${POSTGRES_TARGET_PORT:-5432}'
@@ -16,6 +21,18 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-fs-template}
+    command:
+      [
+        'postgres',
+        '-c',
+        'shared_preload_libraries=pg_partman_bgw',
+        '-c',
+        'pg_partman_bgw.dbname=${POSTGRES_DB:-fs-template}',
+        '-c',
+        'pg_partman_bgw.role=${POSTGRES_USER:-postgres}',
+        '-c',
+        'pg_partman_bgw.interval=3600',
+      ]
     volumes:
       - ${PG_VOLUME_HOST_PATH:-C:\projects\postgres-volumes}:${PG_VOLUME_CONTAINER_PATH:-/var/lib/postgresql/18/docker}
     healthcheck:

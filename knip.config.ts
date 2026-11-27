@@ -43,8 +43,9 @@ const config: KnipConfig = {
     'packages/embed': {
       ...webAppWorkspaceConfig,
     },
-    'packages/mock-machines': {
-      entry: ['./src/index.ts', './src/start-machines.ts'],
+    'packages/mock-machines': {},
+    'packages/injection-server': {
+      ignoreBinaries: ['go'],
     },
     'packages/db': {
       ignoreDependencies: [

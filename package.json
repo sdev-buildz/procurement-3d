@@ -6,6 +6,9 @@
   "scripts": {
     "start-server": "pnpm --filter=./packages/procurement run start-server",
     "start-server:watch": "pnpm --filter=./packages/procurement run start-server:watch",
+    "start-mqtt-injector": "pnpm --filter=./packages/injection-server run start-server",
+    "start-mqtt-broker": "docker compose up --build mqtt",
+    "start-machines": "pnpm --filter=./packages/mock-machines run start-machines",
     "start-react:watch": "pnpm --filter=./packages/procurement run start-react:watch",
     "build:embed": "pnpm --filter=./packages/embed run build",
     "start-embed:watch": "pnpm --filter=./packages/embed run start-react:watch",

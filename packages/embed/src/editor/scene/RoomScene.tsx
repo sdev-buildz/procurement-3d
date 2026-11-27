@@ -1,3 +1,5 @@
+import { gql, type TypedDocumentNode } from '@apollo/client'
+import { useSubscription } from '@apollo/client/react'
 import { A11yAnnouncer } from '@react-three/a11y'
 import { PerformanceMonitor } from '@react-three/drei'
 import type { Dpr, ThreeEvent } from '@react-three/fiber'
@@ -8,7 +10,6 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState,
   type ComponentProps,
 } from 'react'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
@@ -69,69 +70,24 @@ const DEFAULT_CURING_TELEMETRY: CuringTelemetry = {
   connectionState: 'connected',
 }
 
-function useCuringTelemetry(enabled: boolean) {
-  const [telemetry, setTelemetry] = useState(DEFAULT_CURING_TELEMETRY)
-
-  useEffect(() => {
-    if (!enabled || typeof window === 'undefined') return
-
-    let socket: WebSocket | null = null
-    let reconnectTimer: number | undefined
-    let disposed = false
-
-    const connect = () => {
-      if (disposed) return
-      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-      socket = new WebSocket(
-        `${wsProtocol}//${window.location.host}/api/graphql`,
-        'graphql-transport-ws'
-      )
-      socket.onopen = () => {
-        socket?.send(JSON.stringify({ type: 'connection_init', payload: {} }))
-        socket?.send(
-          JSON.stringify({
-            id: 'curing-telemetry',
-            type: 'subscribe',
-            payload: {
-              query: `subscription CuringTelemetry {
-              curingTelemetry {
-                machineId timestamp cycleTimeMs cycleTimeVariationPercent
-                alert rootCause oeePercent machineHealthPercent
-                temperatureC pressureBar packetLossPercent connectionState
-              }
-            }`,
-            },
-          })
-        )
-      }
-      socket.onmessage = (event) => {
-        try {
-          const message = JSON.parse(event.data as string)
-          if (message.type === 'next') {
-            const packet = message.payload?.data?.curingTelemetry as
-              CuringTelemetry | undefined
-            if (packet) setTelemetry(packet)
-          }
-        } catch {
-          // Ignore malformed transport frames and keep the last valid packet.
-        }
-      }
-      socket.onclose = () => {
-        if (!disposed) reconnectTimer = window.setTimeout(connect, 2500)
-      }
-      socket.onerror = () => socket?.close()
+const CURING_TELEMETRY_SUBSCRIPTION = gql`
+  subscription CuringTelemetry {
+    curingTelemetry {
+      machineId
+      timestamp
+      cycleTimeMs
+      cycleTimeVariationPercent
+      alert
+      rootCause
+      oeePercent
+      machineHealthPercent
+      temperatureC
+      pressureBar
+      packetLossPercent
+      connectionState
     }
-
-    connect()
-    return () => {
-      disposed = true
-      if (reconnectTimer !== undefined) window.clearTimeout(reconnectTimer)
-      socket?.close()
-    }
-  }, [enabled])
-
-  return telemetry
-}
+  }
+` as TypedDocumentNode<{ curingTelemetry: CuringTelemetry }>
 
 function CameraControls({
   topDown,
@@ -187,7 +143,11 @@ export function RoomScene({
   )
   const { lodBound, setLodBound } = useContext(RoomContext)
   const curingItems = items.filter((item) => item.item.name === 'tyreCuring')
-  const telemetry = useCuringTelemetry(curingItems.length > 0)
+  const { data: curingData } = useSubscription(CURING_TELEMETRY_SUBSCRIPTION, {
+    skip: curingItems.length === 0,
+    fetchPolicy: 'network-only',
+  })
+  const telemetry = curingData?.curingTelemetry ?? DEFAULT_CURING_TELEMETRY
 
   /** Handles pressing mouse button down on an object. */
   const handleItemDown = (

@@ -287,6 +287,18 @@ export const EQUIPMENT: ItemType[] = [
       },
     ],
   },
+  {
+    id: 9,
+    name: 'tyreCuring',
+    nameKey: 'tyreCuring',
+    sku: 'CUR-DRUM',
+    width: 2.4,
+    depth: 1.8,
+    height: 2.8,
+    color: '#c5a76a',
+    price: 185000,
+    models: [{ id: 91, url: '', size: 0 }],
+  },
 ]
 
 /** Supported equipment categories in the room. */
@@ -299,6 +311,7 @@ export type EquipmentName =
   | 'sheenChair'
   | 'diffuseTransmissionTeacup'
   | 'potOfCoals'
+  | 'tyreCuring'
 
 /** Returns catalog metadata by stable name. */
 export function getEquipment(name: EquipmentName): ItemType {

@@ -1,77 +1,15 @@
-# 3D electrical-room editor
+The role
+Your first programme is a production digital twin of tyre curing and building lines for a leading tyre manufacturer, now rolling out to further plants. You work on the Cloudworx platform as a client-facing Forward Deployed Engineer (FDE), full time at the client's digital innovation hub beside their developers, owning the plant data path and the analytics behind the twin. As product delivery to the end client matures, you transition into a larger platform role inside Cloudworx: the per-plant replication model, the managed data path and the agent runtime.
 
-This package exports `ConfigEditor`, a self-contained React editor. Procurement
-hosts it as an iframe on a separate localhost origin (`https://localhost:3001`
-by default) at `/sales/editor`. When the editor is iframed, it requests the
-host auth token over `postMessage`, signs in with the procurement GraphQL `me`
-query, and shows the current user the same way the procurement app does.
+What you will do
 
-Run the iframe app with `pnpm start-embed:watch` (in addition to
-`pnpm start-react:watch` for the procurement host).
+Plant data path: PLC tags over MQTT and OPC UA into AWS Kinesis, S3 and Timestream.
+Data reliability: Chase missing signals and dropped connections until every machine reports.
+Analytics: Cycle-time variation, alerts and root cause, OEE, replay and machine health.
+Replication: Per-plant isolation on EKS and the same application at each new plant.
+AI agents: Support the multi-agent layer on Bedrock, AgentCore and MCP.
 
-## Structure
-
-- `src/ConfigEditor.tsx` composes the editor panels and owns scene, selection,
-  history, and assistant state.
-- `src/ConfigEditor.css` contains the responsive, editor-scoped styles.
-- `src/editor/types.ts` defines the room, equipment catalog, and layout types.
-- `src/editor/layout.ts` contains the grid, spacing-rule, and BOM calculations.
-- `src/editor/history.ts` keeps layout changes undoable and redoable.
-- `src/editor/assistant/AssistantPanel.tsx` contains the isolated, streaming
-  mock-assistant panel and clickable sample conversations that preview layout
-  changes.
-- `src/editor/assistant/assistantReply.ts` defines and documents the JSON reply
-  contract and exports an example.
-- `src/editor/scene/RoomScene.tsx` renders the room and equipment with
-  React Three Fiber.
-- `src/editor/i18n.ts` initializes English and Spanish UI translations with
-  i18next and react-i18next.
-
-## Editing
-
-Choose an equipment type, then click a floor cell to place it. Drag equipment
-to move it, or select it to edit its position, rotation, and connections.
-Shift-click selects multiple items; the selection tools can align, distribute,
-rotate, connect, copy, and paste equipment. The top-down plan and 3D camera
-share the same layout state.
-
-The assistant is intentionally mocked: it streams a locally generated answer
-and shows a proposed move as a ghost item. Accepting the suggestion is a normal
-undoable layout edit. Layout edits remain in browser memory and reset on
-refresh; this package does not save to a backend.
-
-### Assistant reply contract
-
-The assistant replies with a `message` and a nullable `proposedChange`. The
-proposed operation currently supports moving one existing item. Coordinates
-are in meters and are snapped to the room grid before previewing. `itemId`
-must refer to an item in the current layout. The TypeScript type comments in
-`src/editor/assistant/assistantReply.ts` document each field.
-
-This JSONC example shows the response shape; remove the comments before parsing
-it as strict JSON:
-
-```jsonc
-{
-  "message": "I can move the cabinet to improve the spacing.",
-  "proposedChange": {
-    "action": "move_item", // The supported scene operation.
-    "itemId": "cabinet-1", // ID of the existing layout item.
-    "target": {
-      "x": 2, // Target X coordinate in meters.
-      "z": -1.5, // Target Z coordinate in meters.
-    },
-    "rationale": "This gives nearby equipment more clearance.",
-  },
-}
-```
-
-Use `"proposedChange": null` for a response that only answers a question.
-The exported `assistantReplyExample` is a valid, comment-free object suitable
-for JSON serialization.
-
-Keyboard shortcuts: arrow keys move the selection by one cell, Delete removes
-it, Ctrl/Cmd+Z undoes, Ctrl/Cmd+Y redoes, and Ctrl/Cmd+C/V copy and paste.
-
-Run the layout and history unit tests with `pnpm --filter @packages/embed-3d
-test`.
+AWS: Kinesis, S3, a time-series store, MongoDB or DocumentDB, Redis and EKS.
+Time series: High-frequency telemetry, retention and downsampling.
+Real-time: Socket.IO push to browsers.
+Ownership: Hold scope beside a client's team through change control.

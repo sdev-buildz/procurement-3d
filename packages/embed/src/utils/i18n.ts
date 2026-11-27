@@ -132,6 +132,7 @@ const resources = {
       commercialRefrigerator: 'Commercial refrigerator',
       sheenChair: 'Sheen chair',
       diffuseTransmissionTeacup: 'Transmission teacup',
+      tyreCuring: 'Tyre curing press',
       language: 'Language',
     },
   },

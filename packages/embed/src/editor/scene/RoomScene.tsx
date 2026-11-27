@@ -8,6 +8,7 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
   type ComponentProps,
 } from 'react'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
@@ -37,6 +38,100 @@ type RoomSceneProps = {
   dpr: Dpr
   showLabels: boolean
 } & Omit<ComponentProps<typeof RoomBounds>, 'handleItemUp'>
+
+type CuringTelemetry = {
+  machineId: string
+  timestamp: string
+  cycleTimeMs: number
+  cycleTimeVariationPercent: number
+  alert: string
+  rootCause: string
+  oeePercent: number
+  machineHealthPercent: number
+  temperatureC: number
+  pressureBar: number
+  packetLossPercent: number
+  connectionState: 'connected' | 'degraded' | 'reconnecting'
+}
+
+const DEFAULT_CURING_TELEMETRY: CuringTelemetry = {
+  machineId: 'CURING-01',
+  timestamp: new Date().toISOString(),
+  cycleTimeMs: 420000,
+  cycleTimeVariationPercent: 1.8,
+  alert: 'Normal',
+  rootCause: 'No active fault',
+  oeePercent: 91.2,
+  machineHealthPercent: 96.4,
+  temperatureC: 171,
+  pressureBar: 18.2,
+  packetLossPercent: 0.4,
+  connectionState: 'connected',
+}
+
+function useCuringTelemetry(enabled: boolean) {
+  const [telemetry, setTelemetry] = useState(DEFAULT_CURING_TELEMETRY)
+
+  useEffect(() => {
+    if (!enabled || typeof window === 'undefined') return
+
+    let socket: WebSocket | null = null
+    let reconnectTimer: number | undefined
+    let disposed = false
+
+    const connect = () => {
+      if (disposed) return
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+      socket = new WebSocket(
+        `${wsProtocol}//${window.location.host}/api/graphql`,
+        'graphql-transport-ws'
+      )
+      socket.onopen = () => {
+        socket?.send(JSON.stringify({ type: 'connection_init', payload: {} }))
+        socket?.send(
+          JSON.stringify({
+            id: 'curing-telemetry',
+            type: 'subscribe',
+            payload: {
+              query: `subscription CuringTelemetry {
+              curingTelemetry {
+                machineId timestamp cycleTimeMs cycleTimeVariationPercent
+                alert rootCause oeePercent machineHealthPercent
+                temperatureC pressureBar packetLossPercent connectionState
+              }
+            }`,
+            },
+          })
+        )
+      }
+      socket.onmessage = (event) => {
+        try {
+          const message = JSON.parse(event.data as string)
+          if (message.type === 'next') {
+            const packet = message.payload?.data?.curingTelemetry as
+              CuringTelemetry | undefined
+            if (packet) setTelemetry(packet)
+          }
+        } catch {
+          // Ignore malformed transport frames and keep the last valid packet.
+        }
+      }
+      socket.onclose = () => {
+        if (!disposed) reconnectTimer = window.setTimeout(connect, 2500)
+      }
+      socket.onerror = () => socket?.close()
+    }
+
+    connect()
+    return () => {
+      disposed = true
+      if (reconnectTimer !== undefined) window.clearTimeout(reconnectTimer)
+      socket?.close()
+    }
+  }, [enabled])
+
+  return telemetry
+}
 
 function CameraControls({
   topDown,
@@ -91,6 +186,8 @@ export function RoomScene({
     [violations]
   )
   const { lodBound, setLodBound } = useContext(RoomContext)
+  const curingItems = items.filter((item) => item.item.name === 'tyreCuring')
+  const telemetry = useCuringTelemetry(curingItems.length > 0)
 
   /** Handles pressing mouse button down on an object. */
   const handleItemDown = (
@@ -195,6 +292,18 @@ export function RoomScene({
             onPointerUp={handleItemUp}
             onPointerCancel={handleItemUp}
           />
+          {curingItems.map((item) => (
+            <EquipmentModel
+              key={item.id}
+              item={item}
+              selected={selectedIds.has(item.id)}
+              violation={violationIds.has(item.id)}
+              onPointerDown={(event) => handleItemDown(item, event)}
+              onPointerMove={(event) => handleItemMove(item, event)}
+              onPointerUp={handleItemUp}
+              onPointerCancel={handleItemUp}
+            />
+          ))}
           {EQUIPMENT.filter((itemType) => itemType.models[0]?.url).map(
             (itemType) => {
               const instancesInScene = items.filter(
@@ -232,6 +341,53 @@ export function RoomScene({
             />
           ))}
         </Canvas>
+        {curingItems.length ? (
+          <section
+            className='ce-curing-metrics'
+            aria-label='Tyre curing plant metrics'
+          >
+            <header>
+              <div>
+                <span
+                  className={`ce-metric-status ${telemetry.connectionState}`}
+                />
+                <strong>{telemetry.machineId}</strong>
+              </div>
+              <small>{telemetry.connectionState}</small>
+            </header>
+            <div className='ce-curing-metric-grid'>
+              <article>
+                <small>Cycle-time variation</small>
+                <strong>
+                  {telemetry.cycleTimeVariationPercent.toFixed(1)}%
+                </strong>
+                <span>{Math.round(telemetry.cycleTimeMs / 1000)}s / cycle</span>
+              </article>
+              <article
+                className={telemetry.alert === 'Normal' ? '' : 'is-alert'}
+              >
+                <small>Alert & root cause</small>
+                <strong>{telemetry.alert}</strong>
+                <span>{telemetry.rootCause}</span>
+              </article>
+              <article>
+                <small>OEE</small>
+                <strong>{telemetry.oeePercent.toFixed(1)}%</strong>
+                <span>
+                  {telemetry.packetLossPercent.toFixed(1)}% packet loss
+                </span>
+              </article>
+              <article>
+                <small>Machine health</small>
+                <strong>{telemetry.machineHealthPercent.toFixed(1)}%</strong>
+                <span>
+                  {telemetry.temperatureC.toFixed(1)} C /{' '}
+                  {telemetry.pressureBar.toFixed(1)} bar
+                </span>
+              </article>
+            </div>
+          </section>
+        ) : null}
       </div>
     </>
   )

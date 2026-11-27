@@ -1,4 +1,5 @@
 import type { BidLineItem } from '@packages/db/prisma-client'
+import type { CuringTelemetry } from '@packages/mock-machines'
 import { createPubSub } from 'graphql-yoga'
 
 /**
@@ -6,6 +7,7 @@ import { createPubSub } from 'graphql-yoga'
  */
 export type PubsubEventsType = {
   bidApproval: [Pick<BidLineItem, 'id'>[]]
+  curingTelemetry: [CuringTelemetry]
 }
 
 /**

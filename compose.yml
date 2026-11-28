@@ -17,22 +17,26 @@ services:
       - name: db-port
         target: '${POSTGRES_TARGET_PORT:-5432}'
         published: '${POSTGRES_PUBLISHED_PORT:-5434}'
+    env_file:
+      - path: ./packages/db/.env
+        required: false
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: ${POSTGRES_DB:-fs-template}
-    command:
-      [
-        'postgres',
-        '-c',
-        'shared_preload_libraries=pg_partman_bgw',
-        '-c',
-        'pg_partman_bgw.dbname=${POSTGRES_DB:-fs-template}',
-        '-c',
-        'pg_partman_bgw.role=${POSTGRES_USER:-postgres}',
-        '-c',
-        'pg_partman_bgw.interval=3600',
-      ]
+    # the command to install pg_partman to partition tables for timeseries based partitioning
+    # command:
+    #   [
+    #     'postgres',
+    #     '-c',
+    #     'shared_preload_libraries=pg_partman_bgw',
+    #     '-c',
+    #     'pg_partman_bgw.dbname=${POSTGRES_DB:-fs-template}',
+    #     '-c',
+    #     'pg_partman_bgw.role=${POSTGRES_USER:-postgres}',
+    #     '-c',
+    #     'pg_partman_bgw.interval=3600',
+    #   ]
     volumes:
       - ${PG_VOLUME_HOST_PATH:-C:\projects\postgres-volumes}:${PG_VOLUME_CONTAINER_PATH:-/var/lib/postgresql/18/docker}
     healthcheck:
@@ -55,7 +59,8 @@ services:
       <<: *workspace-build
       dockerfile: packages/db/Dockerfile
     env_file:
-      - ./packages/db/.env
+      - path: ./packages/db/.env
+        required: false
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fs-template}
     depends_on:
@@ -67,8 +72,10 @@ services:
       <<: *workspace-build
       dockerfile: packages/procurement/Dockerfile.api
     env_file:
-      - ./packages/procurement/.env
-      - ./packages/db/.env
+      - path: ./packages/db/.env
+        required: false
+      - path: ./packages/procurement/.env
+        required: false
     environment:
       HOST: 0.0.0.0
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fs-template}
@@ -83,7 +90,8 @@ services:
       <<: *workspace-build
       dockerfile: packages/procurement/Dockerfile.react
     env_file:
-      - ./packages/procurement/.env
+      - path: ./packages/procurement/.env
+        required: false
     environment:
       HOST: 0.0.0.0
     ports:
@@ -92,12 +100,42 @@ services:
       procurement-api:
         condition: service_started
 
+  injection-server:
+    build:
+      context: .
+      dockerfile: packages/injection-server/Dockerfile
+    env_file:
+      - path: ./packages/injection-server/.env
+        required: false
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-fs-template}
+      MQTT_URL: tcp://mqtt:1883
+    depends_on:
+      db-migrate:
+        condition: service_completed_successfully
+      mqtt:
+        condition: service_started
+
+  mock-machines:
+    build:
+      <<: *workspace-build
+      dockerfile: packages/mock-machines/Dockerfile
+    env_file:
+      - path: ./packages/mock-machines/.env
+        required: false
+    environment:
+      MQTT_URL: mqtt://mqtt:1883
+    depends_on:
+      mqtt:
+        condition: service_started
+
   embed:
     build:
       <<: *workspace-build
       dockerfile: packages/embed/Dockerfile
     env_file:
-      - ./packages/embed/.env
+      - path: ./packages/embed/.env
+        required: false
     environment:
       HOST: 0.0.0.0
     ports:

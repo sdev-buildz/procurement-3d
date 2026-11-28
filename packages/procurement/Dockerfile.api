@@ -11,6 +11,7 @@ COPY packages/procurement/buildGql.ts ./
 COPY packages/procurement/server/ ./server/
 COPY packages/procurement/web-client ./web-client
 COPY packages/web-app-utils/src/ /workspace/packages/web-app-utils/src/
+COPY packages/mock-machines/src/ /workspace/packages/mock-machines/src/
 
 RUN find /workspace/packages/db/migrations -mindepth 1 -maxdepth 1 -type d -empty -delete
 

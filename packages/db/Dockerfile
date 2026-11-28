@@ -6,6 +6,7 @@ COPY packages/db/dotenv-configured.ts ./
 COPY packages/db/migrations/ ./migrations/
 COPY packages/db/prisma/ ./prisma/
 COPY packages/db/prisma.config.ts ./
+COPY packages/web-app-utils/src/ /workspace/packages/web-app-utils/src/
 
 RUN find migrations -mindepth 1 -maxdepth 1 -type d -empty -delete
 
